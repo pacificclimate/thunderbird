@@ -18,8 +18,8 @@ thunderbird
     :alt: Join the chat at https://gitter.im/bird-house/birdhouse
 
 
-thunderbird (the bird)
-  *thunderbird is a bird ...*
+Thunderbird
+  *The Thunderbird is a mythical creature that is said to be the dominating force of all natural activity. Located in the Pacific North Western Mountains, the Thunderbird creates booms of thunder by flapping his wings and shoots bolts of lightning from his eyes, when hunters got too close to his home.*
 
 A Web Processing Service for Climate Explorer data preparation
 
