@@ -1,0 +1,13 @@
+name: thunderbird
+channels:
+# - conda-forge
+- defaults
+dependencies:
+- pip
+- jinja2
+- click
+- psutil
+# tests
+- pytest
+- pip:
+  - pywps==4.2.3

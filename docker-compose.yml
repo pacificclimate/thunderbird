@@ -1,0 +1,13 @@
+version: '3'
+services:
+  wps:
+    build: .
+    image: nikola-rados/thunderbird
+    ports:
+      - "5001:5001"
+
+
+# docker-compose build
+# docker-compose up
+# docker-compose down
+# docker-compose rm
