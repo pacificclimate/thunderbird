@@ -5,5 +5,5 @@
 # See: https://packaging.python.org/guides/single-sourcing-package-version
 
 __author__ = """Nikola Rados"""
-__email__ = 'nrados@uvic.ca'
-__version__ = '0.1.0'
+__email__ = "nrados@uvic.ca"
+__version__ = "0.1.0"

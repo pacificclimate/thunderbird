@@ -10,6 +10,8 @@ def test_wps_hello():
     datainputs = "name=LovelySugarBird"
     resp = client.get(
         "?service=WPS&request=Execute&version=1.0.0&identifier=hello&datainputs={}".format(
-            datainputs))
+            datainputs
+        )
+    )
     assert_response_success(resp)
-    assert get_output(resp.xml) == {'output': "Hello LovelySugarBird"}
+    assert get_output(resp.xml) == {"output": "Hello LovelySugarBird"}
