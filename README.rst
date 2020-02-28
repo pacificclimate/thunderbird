@@ -5,12 +5,12 @@ thunderbird
    :target: http://thunderbird.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://travis-ci.org/nikola-rados/thunderbird.svg?branch=master
-   :target: https://travis-ci.org/nikola-rados/thunderbird
+.. image:: https://travis-ci.org/pacificclimate/thunderbird.svg?branch=master
+   :target: https://travis-ci.org/pacificclimate/thunderbird
    :alt: Travis Build
 
-.. image:: https://img.shields.io/github/license/nikola-rados/thunderbird.svg
-    :target: https://github.com/nikola-rados/thunderbird/blob/master/LICENSE.txt
+.. image:: https://img.shields.io/github/license/pacificclimate/thunderbird.svg
+    :target: https://github.com/pacificclimate/thunderbird/blob/master/LICENSE.txt
     :alt: GitHub license
 
 .. image:: https://badges.gitter.im/bird-house/birdhouse.svg

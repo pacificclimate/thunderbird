@@ -20,6 +20,7 @@ custom.cfg
 *.sqlite
 *.bak
 __pycache__
+venv/
 
 # Unit test / Coverage reports
 .cache

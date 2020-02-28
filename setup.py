@@ -41,7 +41,7 @@ setup(
     long_description=README + "\n\n" + CHANGES,
     author=about["__author__"],
     author_email=about["__email__"],
-    url="https://github.com/nikola-rados/thunderbird",
+    url="https://github.com/pacificclimate/thunderbird",
     classifiers=classifiers,
     license="GNU General Public License v3",
     keywords="wps pywps birdhouse thunderbird",

@@ -21,7 +21,7 @@ Check out code from the thunderbird GitHub repo and start the installation:
 
 .. code-block:: console
 
-   $ git clone https://github.com/nikola-rados/thunderbird.git
+   $ git clone https://github.com/pacificclimate/thunderbird.git
    $ cd thunderbird
 
 Create Conda environment named `thunderbird`:
