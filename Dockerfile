@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.6
 
 MAINTAINER https://github.com/pacificclimate/thunderbird
 LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.1.0"
