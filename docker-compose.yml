@@ -2,7 +2,7 @@ version: '3'
 services:
   wps:
     build: .
-    image: nikola-rados/thunderbird
+    image: pacificclimate/thunderbird
     ports:
       - "5001:5001"
 
