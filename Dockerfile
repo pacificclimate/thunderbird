@@ -1,12 +1,23 @@
-FROM python:3.6
+FROM python:3.7-slim
 
 MAINTAINER https://github.com/pacificclimate/thunderbird
 LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.1.0"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Update Debian system
 RUN apt-get update && apt-get install -y \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
+    build-essential \
+    cdo \
+    git \
+    # HDF5 libraries for cdo
+    libhdf5-serial-dev \
+    netcdf-bin \
+    libnetcdf-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    # this line combats the issue found here:
+    # https://superuser.com/questions/1347723/arch-on-wsl-libqt5core-so-5-not-found-despite-being-installed
+    strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
 
 # Upgrade pip
 RUN pip install --upgrade pip
