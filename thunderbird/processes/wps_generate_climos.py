@@ -48,6 +48,8 @@ class GenerateClimos(Process):
                 abstract="Year ranges",
                 min_occurs=1,
                 max_occurs=6,
+                mode=0,
+                default=["6190", "7100", "8100", "2020", "2050", "2080",],
                 allowed_values=["6190", "7100", "8100", "2020", "2050", "2080",],
                 data_type="string",
             ),
@@ -60,9 +62,30 @@ class GenerateClimos(Process):
                 data_type="string",
             ),
             LiteralInput(
+                "convert_longitudes",
+                "Convert Longitudes",
+                default=True,
+                abstract="Transform longitude range from [0, 360) to [-180, 180)",
+                data_type="boolean",
+            ),
+            LiteralInput(
+                "split_vars",
+                "Split Variables",
+                default=True,
+                abstract="Generate a separate file for each dependent variable in the file",
+                data_type="boolean",
+            ),
+            LiteralInput(
+                "split_intervals",
+                "Split Intervals",
+                default=True,
+                abstract="Generate a separate file for each climatological period",
+                data_type="boolean",
+            ),
+            LiteralInput(
                 "dry_run",
                 "Dry Run",
-                abstract="Opt-in dry run on file set",
+                abstract="Checks file to ensure compatible with process",
                 data_type="boolean",
             ),
         ]
@@ -118,59 +141,79 @@ class GenerateClimos(Process):
                 report += f"{attr}: {getattr(input_file, attr)}\n"
         return report
 
-    def _handler(self, request, response):
-        response.update_status("Process started.", 0)
+    def collect_climo_files(self):
+        return [file for file in os.listdir(self.workdir) if file.endswith('.nc')]
 
-        # set up from args
+    def build_meta_link(self, climo_files):
+        meta_link = MetaLink4(
+            "outputs", "Output of netCDF climo files", workdir=self.workdir
+        )
+
+        for file in climo_files:
+            # Create a MetaFile instance, which instantiates a ComplexOutput object.
+            meta_file = MetaFile(f'{file}', 'Climatology', fmt=FORMATS.NETCDF)
+            meta_file.file = os.path.join(self.workdir, file)
+            meta_link.append(meta_file)
+
+        return meta_link.xml
+
+    def collect_args(self, request):
         climo = [climo.data for climo in request.inputs["climo"]]
-        resolutions = [resolution.data for resolution in request.inputs["resolutions"]]
-        dry_run = request.inputs["dry_run"][0].data
         operation = request.inputs["operation"][0].data
+        resolutions = [resolution.data for resolution in request.inputs["resolutions"]]
+        convert_longitudes = request.inputs["convert_longitudes"][0].data
+        split_vars = request.inputs["split_vars"][0].data
+        split_intervals = request.inputs["split_intervals"][0].data
+        dry_run = request.inputs["dry_run"][0].data
+        return climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation
 
-        # todel
-        print(f"CLIMO: {climo}")
-        print(f"RESOLUTIONS: {resolutions}")
-        print(f"OPERATION: {operation}")
+    def _handler(self, request, response):
+        progress = 0
+        response.update_status("Starting Process", progress)
 
-        # set up data items
+        climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation = self.collect_args(request)
         resource = request.inputs["dataset"][0]
         filepath = resource.url
 
         if dry_run:
+            del response.outputs['output']  # remove unnecessary output
             response.outputs["dry_output"].data = self.dry_run_info(filepath, climo)
+
         else:
-            print(f"Processing: {filepath}")
+            del response.outputs['dry_output']  # remove unnecessary output
+            response.update_status(f"Processing {filepath}")
             input_file = CFDataset(filepath)
+
+            # update progress bar
+            progress += 5
+            total_files = len([item for item in input_file.climo_periods.keys() & climo])
+            remaining_files = total_files
+            progress_increment = (95 - progress - total_files) / total_files
+
             for period in input_file.climo_periods.keys() & climo:
+                progress += 1
+                response.update_status(f'Processing file {remaining_files}/{total_files}', progress)
+
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
                     self.workdir,
                     input_file,
                     operation,
                     *t_range,
-                    convert_longitudes=False,
-                    split_vars=False,
+                    convert_longitudes=convert_longitudes,
+                    split_vars=split_vars,
                     output_resolutions=resolutions,
                 )
 
-            expected_files = [
-                "tasmin_aClimMean_BCCAQv2_inmcm4_historical+rcp85_r1i1p1_19610101-19901231_Canada.nc",
-                "tasmin_sClimMean_BCCAQv2_inmcm4_historical+rcp85_r1i1p1_19610101-19901231_Canada.nc",
-                "tasmin_mClimMean_BCCAQv2_inmcm4_historical+rcp85_r1i1p1_19610101-19901231_Canada.nc",
-            ]
+                progress += progress_increment
+                remaining_files -= 1
+                response.update_status("Climo file created", progress)
 
-            # Create metalink bundle for output
-            meta_link = MetaLink4(
-                "outputs", "Output of netCDF climo files", workdir=self.workdir
-            )
+            climo_files = self.collect_climo_files()
+            print(f"Climo files: {climo_files}")
 
-            for file in expected_files:
-                # Create a MetaFile instance, which instantiates a ComplexOutput object.
-                meta_file = MetaFile(f'{file}', 'Climatology', fmt=FORMATS.NETCDF)
-                meta_file.file = os.path.join(self.workdir, file)
-                meta_link.append(meta_file)
+            response.update_status('Collecting output files', progress)
+            response.outputs["output"].data = self.build_meta_link(climo_files)
 
-            response.outputs["output"].data = meta_link.xml
-
-        response.update_status("Process completed.", 100)
+        response.update_status("Completed process", 100)
         return response
