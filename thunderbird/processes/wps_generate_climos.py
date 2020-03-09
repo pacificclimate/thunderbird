@@ -97,11 +97,12 @@ class GenerateClimos(Process):
                 as_reference=True,
                 supported_formats=[FORMATS.META4],
             ),
-            LiteralOutput(
+            ComplexOutput(
                 "dry_output",
                 "Dry Output",
+                as_reference=True,
                 abstract="File information",
-                data_type="string",
+                supported_formats=[FORMATS.TEXT]
             ),
         ]
 
@@ -122,24 +123,26 @@ class GenerateClimos(Process):
         )
 
     def dry_run_info(self, filepath, climo):
-        report = "Dry Run\n"
-        report += f"File: {filepath}\n"
-        try:
-            input_file = CFDataset(filepath)
-        except Exception as e:
-            report += f"{e.__class__.__name__}: {e}\n"
-        else:
-            periods = input_file.climo_periods.keys() & climo
-            report += f"climo_periods: {periods}\n"
-            for attr in "project institution model emissions run".split():
-                try:
-                    report += f"{attr}: {getattr(input_file.metadata, attr)}\n"
-                except Exception as e:
-                    report += f"{attr}: {e.__class__.__name__}: {e}\n"
-            report += f"dependent_varnames: {input_file.dependent_varnames()}\n"
-            for attr in "time_resolution is_multi_year_mean".split():
-                report += f"{attr}: {getattr(input_file, attr)}\n"
-        return report
+        filename = os.path.join(self.workdir, 'dry.txt')
+        with open(filename, 'w') as f:
+            f.write("Dry Run\n")
+            f.write(f"File: {filepath}\n")
+            try:
+                input_file = CFDataset(filepath)
+            except Exception as e:
+                f.write(f"{e.__class__.__name__}: {e}\n")
+            else:
+                periods = input_file.climo_periods.keys() & climo
+                f.write(f"climo_periods: {periods}\n")
+                for attr in "project institution model emissions run".split():
+                    try:
+                        f.write(f"{attr}: {getattr(input_file.metadata, attr)}\n")
+                    except Exception as e:
+                        f.write(f"{attr}: {e.__class__.__name__}: {e}\n")
+                f.write(f"dependent_varnames: {input_file.dependent_varnames()}\n")
+                for attr in "time_resolution is_multi_year_mean".split():
+                    f.write(f"{attr}: {getattr(input_file, attr)}\n")
+            return filename
 
     def collect_climo_files(self):
         return [file for file in os.listdir(self.workdir) if file.endswith('.nc')]
@@ -179,7 +182,7 @@ class GenerateClimos(Process):
 
         if dry_run:
             del response.outputs['output']  # remove unnecessary output
-            response.outputs["dry_output"].data = self.dry_run_info(filepath, climo)
+            response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
 
         else:
             del response.outputs['dry_output']  # remove unnecessary output
