@@ -158,9 +158,9 @@ class GenerateClimos(Process):
         return meta_link.xml
 
     def collect_args(self, request):
-        climo = [climo.data for climo in request.inputs["climo"]]
+        climo = set(climo.data for climo in request.inputs["climo"])
         operation = request.inputs["operation"][0].data
-        resolutions = [resolution.data for resolution in request.inputs["resolutions"]]
+        resolutions = set(resolution.data for resolution in request.inputs["resolutions"])
         convert_longitudes = request.inputs["convert_longitudes"][0].data
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
@@ -174,6 +174,8 @@ class GenerateClimos(Process):
         climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation = self.collect_args(request)
         resource = request.inputs["dataset"][0]
         filepath = resource.url
+
+        print(f'{climo}, {resolutions}')
 
         if dry_run:
             del response.outputs['output']  # remove unnecessary output
