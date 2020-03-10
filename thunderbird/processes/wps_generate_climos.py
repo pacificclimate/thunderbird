@@ -20,6 +20,9 @@ from dp.generate_climos import create_climo_files
 import logging
 import os
 
+# Local imports
+from .utils.loading_bar import LoadingBar
+
 
 LOGGER = logging.getLogger("PYWPS")
 
@@ -171,33 +174,31 @@ class GenerateClimos(Process):
         return climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation
 
     def _handler(self, request, response):
-        progress = 0
-        response.update_status("Starting Process", progress)
+        loading_bar = LoadingBar(response, start=0, end=5, num_processes=1)
+        loading_bar.begin()
 
         climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation = self.collect_args(request)
         resource = request.inputs["dataset"][0]
         filepath = resource.url
 
-        print(f'{climo}, {resolutions}')
+        loading_bar.update_status('Collected Variables')
 
         if dry_run:
             del response.outputs['output']  # remove unnecessary output
+            loading_bar.update_range(end=99, num_processes=1)
+            loading_bar.begin('Starting Dry Run')
             response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
 
         else:
             del response.outputs['dry_output']  # remove unnecessary output
-            response.update_status(f"Processing {filepath}")
             input_file = CFDataset(filepath)
 
-            # update progress bar
-            progress += 5
-            total_files = len([item for item in input_file.climo_periods.keys() & climo])
-            remaining_files = total_files
-            progress_increment = (95 - progress - total_files) / total_files
+            periods = [period for period in input_file.climo_periods.keys() & climo]
+            loading_bar.update_range(end=99, num_processes=(len(periods)*2) + 1)
+            loading_bar.begin(f'Processing {filepath}')
 
-            for period in input_file.climo_periods.keys() & climo:
-                progress += 1
-                response.update_status(f'Processing file {remaining_files}/{total_files}', progress)
+            for period in periods:
+                loading_bar.update_status(f'Processing period: {period}')
 
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
@@ -210,15 +211,12 @@ class GenerateClimos(Process):
                     output_resolutions=resolutions,
                 )
 
-                progress += progress_increment
-                remaining_files -= 1
-                response.update_status("Climo file created", progress)
+                loading_bar.update_status("Climo file created")
 
             climo_files = self.collect_climo_files()
-            print(f"Climo files: {climo_files}")
 
-            response.update_status('Collecting output files', progress)
+            loading_bar.update_status('Collecting output files')
             response.outputs["output"].data = self.build_meta_link(climo_files)
 
-        response.update_status("Completed process", 100)
+        loading_bar.finish_process()
         return response
