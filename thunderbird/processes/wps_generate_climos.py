@@ -29,6 +29,9 @@ LOGGER = logging.getLogger("PYWPS")
 
 class GenerateClimos(Process):
     def __init__(self):
+        self.climos = {'historical': ['6190', '7100', '8100'], 'futures': ['2020', '2050', '2080']}
+        self.resolutions = ["all", "yearly", "seasonal", "monthy",]
+
         inputs = [
             ComplexInput(
                 "dataset",
@@ -52,8 +55,7 @@ class GenerateClimos(Process):
                 min_occurs=1,
                 max_occurs=6,
                 mode=0,
-                default=["6190", "7100", "8100", "2020", "2050", "2080",],
-                allowed_values=["6190", "7100", "8100", "2020", "2050", "2080",],
+                allowed_values=["all"] + [key for key in self.climos.keys()] + [item for value in self.climos.values() for item in value],
                 data_type="string",
             ),
             LiteralInput(
@@ -61,7 +63,7 @@ class GenerateClimos(Process):
                 "Temporal Resolutions",
                 min_occurs=1,
                 max_occurs=3,
-                allowed_values=["yearly", "seasonal", "monthy",],
+                allowed_values=self.resolutions,
                 data_type="string",
             ),
             LiteralInput(
@@ -148,7 +150,7 @@ class GenerateClimos(Process):
         with open(filename, 'w') as f:
             for line in output:
                 f.write(f'{line}\n')
-        
+
         return filename
 
     def collect_climo_files(self):
@@ -167,8 +169,16 @@ class GenerateClimos(Process):
 
         return meta_link.xml
 
+    def format_climo(self, climo):
+        if 'all' in climo:
+            return self.climos['historical'] + self.climos['futures']
+
+        # loop over given climo, replace items ('historical', 'futures') with
+        # items from list
+        return set([item for c in climo for item in (self.climos[c] if c in self.climos.keys() else [c])])
+
     def collect_args(self, request):
-        climo = set(climo.data for climo in request.inputs["climo"])
+        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         operation = request.inputs["operation"][0].data
         resolutions = set(resolution.data for resolution in request.inputs["resolutions"])
         convert_longitudes = request.inputs["convert_longitudes"][0].data
