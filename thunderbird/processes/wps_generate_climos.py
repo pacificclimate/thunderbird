@@ -126,26 +126,30 @@ class GenerateClimos(Process):
         )
 
     def dry_run_info(self, filepath, climo):
+        output = ["Dry Run"]
+        output.append(f"File: {filepath}")
+        try:
+            input_file = CFDataset(filepath)
+        except Exception as e:
+            output.append(f"{e.__class__.__name__}: {e}")
+        else:
+            periods = input_file.climo_periods.keys() & climo
+            output.append(f"climo_periods: {periods}")
+            for attr in "project institution model emissions run".split():
+                try:
+                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
+                except Exception as e:
+                    output.append(f"{attr}: {e.__class__.__name__}: {e}")
+            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
+            for attr in "time_resolution is_multi_year_mean".split():
+                output.append(f"{attr}: {getattr(input_file, attr)}")
+
         filename = os.path.join(self.workdir, 'dry.txt')
         with open(filename, 'w') as f:
-            f.write("Dry Run\n")
-            f.write(f"File: {filepath}\n")
-            try:
-                input_file = CFDataset(filepath)
-            except Exception as e:
-                f.write(f"{e.__class__.__name__}: {e}\n")
-            else:
-                periods = input_file.climo_periods.keys() & climo
-                f.write(f"climo_periods: {periods}\n")
-                for attr in "project institution model emissions run".split():
-                    try:
-                        f.write(f"{attr}: {getattr(input_file.metadata, attr)}\n")
-                    except Exception as e:
-                        f.write(f"{attr}: {e.__class__.__name__}: {e}\n")
-                f.write(f"dependent_varnames: {input_file.dependent_varnames()}\n")
-                for attr in "time_resolution is_multi_year_mean".split():
-                    f.write(f"{attr}: {getattr(input_file, attr)}\n")
-            return filename
+            for line in output:
+                f.write(f'{line}\n')
+        
+        return filename
 
     def collect_climo_files(self):
         return [file for file in os.listdir(self.workdir) if file.endswith('.nc')]
