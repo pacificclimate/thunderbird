@@ -1,4 +1,4 @@
-class LoadingBar():
+class LoadingBar:
     def __init__(self, response, start=0, end=0, num_processes=1):
         self.response = response
         self.start = start
@@ -8,7 +8,9 @@ class LoadingBar():
 
     def set_increment(self, num_processes):
         if self.start >= self.end:
-            raise(f'Starting percentage ({self.start}) must be smaller than ending percentage ({self.end})')
+            raise (
+                f"Starting percentage ({self.start}) must be smaller than ending percentage ({self.end})"
+            )
 
         return (self.end - self.start) / num_processes
 
@@ -21,8 +23,8 @@ class LoadingBar():
         self.progress += self.increment
         self.response.update_status(status, self.progress)
 
-    def begin(self, status='Starting Process'):
+    def begin(self, status="Starting Process"):
         self.response.update_status(status, self.start)
 
-    def finish_process(self, status='Process Completed'):
+    def finish_process(self, status="Process Completed"):
         self.response.update_status(status, 100)

@@ -29,8 +29,16 @@ LOGGER = logging.getLogger("PYWPS")
 
 class GenerateClimos(Process):
     def __init__(self):
-        self.climos = {'historical': ['6190', '7100', '8100'], 'futures': ['2020', '2050', '2080']}
-        self.resolutions = ["all", "yearly", "seasonal", "monthy",]
+        self.climos = {
+            "historical": ["6190", "7100", "8100"],
+            "futures": ["2020", "2050", "2080"],
+        }
+        self.resolutions = [
+            "all",
+            "yearly",
+            "seasonal",
+            "monthy",
+        ]
 
         inputs = [
             ComplexInput(
@@ -55,7 +63,9 @@ class GenerateClimos(Process):
                 min_occurs=1,
                 max_occurs=6,
                 mode=0,
-                allowed_values=["all"] + [key for key in self.climos.keys()] + [item for value in self.climos.values() for item in value],
+                allowed_values=["all"]
+                + [key for key in self.climos.keys()]
+                + [item for value in self.climos.values() for item in value],
                 data_type="string",
             ),
             LiteralInput(
@@ -107,7 +117,7 @@ class GenerateClimos(Process):
                 "Dry Output",
                 as_reference=True,
                 abstract="File information",
-                supported_formats=[FORMATS.TEXT]
+                supported_formats=[FORMATS.TEXT],
             ),
         ]
 
@@ -139,22 +149,28 @@ class GenerateClimos(Process):
             output.append(f"climo_periods: {periods}")
             for attr in "project institution model emissions run".split():
                 try:
-                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
+                    output.append(
+                        f"{attr}: {getattr(input_file.metadata, attr)}"
+                    )
                 except Exception as e:
                     output.append(f"{attr}: {e.__class__.__name__}: {e}")
-            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
+            output.append(
+                f"dependent_varnames: {input_file.dependent_varnames()}"
+            )
             for attr in "time_resolution is_multi_year_mean".split():
                 output.append(f"{attr}: {getattr(input_file, attr)}")
 
-        filename = os.path.join(self.workdir, 'dry.txt')
-        with open(filename, 'w') as f:
+        filename = os.path.join(self.workdir, "dry.txt")
+        with open(filename, "w") as f:
             for line in output:
-                f.write(f'{line}\n')
+                f.write(f"{line}\n")
 
         return filename
 
     def collect_climo_files(self):
-        return [file for file in os.listdir(self.workdir) if file.endswith('.nc')]
+        return [
+            file for file in os.listdir(self.workdir) if file.endswith(".nc")
+        ]
 
     def build_meta_link(self, climo_files):
         meta_link = MetaLink4(
@@ -163,62 +179,102 @@ class GenerateClimos(Process):
 
         for file in climo_files:
             # Create a MetaFile instance, which instantiates a ComplexOutput object.
-            meta_file = MetaFile(f'{file}', 'Climatology', fmt=FORMATS.NETCDF)
+            meta_file = MetaFile(f"{file}", "Climatology", fmt=FORMATS.NETCDF)
             meta_file.file = os.path.join(self.workdir, file)
             meta_link.append(meta_file)
 
         return meta_link.xml
 
     def format_climo(self, climo):
-        if 'all' in climo:
-            return self.climos['historical'] + self.climos['futures']
+        if "all" in climo:
+            return self.climos["historical"] + self.climos["futures"]
 
         # loop over given climo, replace items ('historical', 'futures') with
         # items from list
-        return list(set([item for c in climo for item in (self.climos[c] if c in self.climos.keys() else [c])]))
+        return list(
+            set(
+                [
+                    item
+                    for c in climo
+                    for item in (
+                        self.climos[c] if c in self.climos.keys() else [c]
+                    )
+                ]
+            )
+        )
 
     def format_resolutions(self, resolutions):
-        if 'all' in resolutions:
-            return [resolution for resolution in self.resolutions if resolution != 'all']
+        if "all" in resolutions:
+            return [
+                resolution
+                for resolution in self.resolutions
+                if resolution != "all"
+            ]
 
         return list(set(resolutions))
 
     def collect_args(self, request):
-        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
+        climo = self.format_climo(
+            [climo.data for climo in request.inputs["climo"]]
+        )
         operation = request.inputs["operation"][0].data
-        resolutions = self.format_resolutions([resolution.data for resolution in request.inputs["resolutions"]])
+        resolutions = self.format_resolutions(
+            [resolution.data for resolution in request.inputs["resolutions"]]
+        )
         convert_longitudes = request.inputs["convert_longitudes"][0].data
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
         dry_run = request.inputs["dry_run"][0].data
-        return climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation
+        return (
+            climo,
+            resolutions,
+            convert_longitudes,
+            split_vars,
+            split_intervals,
+            dry_run,
+            operation,
+        )
 
     def _handler(self, request, response):
         loading_bar = LoadingBar(response, start=0, end=5, num_processes=1)
         loading_bar.begin()
 
-        climo, resolutions, convert_longitudes, split_vars, split_intervals, dry_run, operation = self.collect_args(request)
+        (
+            climo,
+            resolutions,
+            convert_longitudes,
+            split_vars,
+            split_intervals,
+            dry_run,
+            operation,
+        ) = self.collect_args(request)
         resource = request.inputs["dataset"][0]
         filepath = resource.url
 
-        loading_bar.update_status('Collected Variables')
+        loading_bar.update_status("Collected Variables")
 
         if dry_run:
-            del response.outputs['output']  # remove unnecessary output
+            del response.outputs["output"]  # remove unnecessary output
             loading_bar.update_range(end=99, num_processes=1)
-            loading_bar.begin('Starting Dry Run')
-            response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
+            loading_bar.begin("Starting Dry Run")
+            response.outputs["dry_output"].file = self.dry_run_info(
+                filepath, climo
+            )
 
         else:
-            del response.outputs['dry_output']  # remove unnecessary output
+            del response.outputs["dry_output"]  # remove unnecessary output
             input_file = CFDataset(filepath)
 
-            periods = [period for period in input_file.climo_periods.keys() & climo]
-            loading_bar.update_range(end=99, num_processes=(len(periods)*2) + 1)
-            loading_bar.begin(f'Processing {filepath}')
+            periods = [
+                period for period in input_file.climo_periods.keys() & climo
+            ]
+            loading_bar.update_range(
+                end=99, num_processes=(len(periods) * 2) + 1
+            )
+            loading_bar.begin(f"Processing {filepath}")
 
             for period in periods:
-                loading_bar.update_status(f'Processing period: {period}')
+                loading_bar.update_status(f"Processing period: {period}")
 
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
@@ -235,7 +291,7 @@ class GenerateClimos(Process):
 
             climo_files = self.collect_climo_files()
 
-            loading_bar.update_status('Collecting output files')
+            loading_bar.update_status("Collecting output files")
             response.outputs["output"].data = self.build_meta_link(climo_files)
 
         loading_bar.finish_process()

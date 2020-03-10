@@ -81,7 +81,9 @@ def _run(application, bind_host=None, daemon=False):
     host, port = get_host()
     bind_host = bind_host or host
     # need to serve the wps outputs
-    static_files = {"/outputs": configuration.get_config_value("server", "outputpath")}
+    static_files = {
+        "/outputs": configuration.get_config_value("server", "outputpath")
+    }
     run_simple(
         hostname=bind_host,
         port=port,
@@ -138,7 +140,10 @@ def stop():
     help="hostname in PyWPS configuration.",
 )
 @click.option(
-    "--port", metavar="PORT", default="5001", help="port in PyWPS configuration."
+    "--port",
+    metavar="PORT",
+    default="5001",
+    help="port in PyWPS configuration.",
 )
 @click.option(
     "--maxsingleinputsize",
@@ -191,7 +196,9 @@ def start(
     This service is by default available at http://localhost:5001/wps
     """
     if os.path.exists(PID_FILE):
-        click.echo('PID file exists: "{}". Service still running?'.format(PID_FILE))
+        click.echo(
+            'PID file exists: "{}". Service still running?'.format(PID_FILE)
+        )
         os._exit(0)
     cfgfiles = []
     cfgfiles.append(
