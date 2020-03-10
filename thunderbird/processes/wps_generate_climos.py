@@ -175,12 +175,18 @@ class GenerateClimos(Process):
 
         # loop over given climo, replace items ('historical', 'futures') with
         # items from list
-        return set([item for c in climo for item in (self.climos[c] if c in self.climos.keys() else [c])])
+        return list(set([item for c in climo for item in (self.climos[c] if c in self.climos.keys() else [c])]))
+
+    def format_resolutions(self, resolutions):
+        if 'all' in resolutions:
+            return [resolution for resolution in self.resolutions if resolution != 'all']
+
+        return list(set(resolutions))
 
     def collect_args(self, request):
         climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         operation = request.inputs["operation"][0].data
-        resolutions = set(resolution.data for resolution in request.inputs["resolutions"])
+        resolutions = self.format_resolutions([resolution.data for resolution in request.inputs["resolutions"]])
         convert_longitudes = request.inputs["convert_longitudes"][0].data
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
