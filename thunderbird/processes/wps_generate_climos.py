@@ -6,11 +6,13 @@ from pywps import (
     LiteralOutput,
     ComplexOutput,
     FORMATS,
+    Format,
 )
 from pywps.app.Common import Metadata
 from pywps.inout.outputs import MetaLink, MetaLink4, MetaFile
 from pywps.inout.literaltypes import AllowedValue
 from pywps.validator.mode import MODE
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from nchelpers import CFDataset
@@ -42,12 +44,20 @@ class GenerateClimos(Process):
 
         inputs = [
             ComplexInput(
-                "dataset",
+                "opendap",
                 "Daily NetCDF Dataset",
                 abstract="Path to OPEnDAP resource",
-                min_occurs=1,
+                min_occurs=0,
                 max_occurs=1,
                 supported_formats=[FORMATS.DODS],
+            ),
+            ComplexInput(
+                "netcdf",
+                "Daily NetCDF Dataset",
+                abstract="NetCDF file",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF],
             ),
             LiteralInput(
                 "operation",
@@ -235,6 +245,14 @@ class GenerateClimos(Process):
             operation,
         )
 
+    def get_filepath(self, request):
+        if "opendap" in request.inputs:
+            return request.inputs["opendap"][0].url
+        elif "netcdf" in request.inputs:
+            return request.inputs["netcdf"][0].file
+        else:
+            raise ProcessError("You must provide a data source")
+
     def _handler(self, request, response):
         loading_bar = LoadingBar(response, start=0, end=5, num_processes=1)
         loading_bar.begin()
@@ -248,8 +266,7 @@ class GenerateClimos(Process):
             dry_run,
             operation,
         ) = self.collect_args(request)
-        resource = request.inputs["dataset"][0]
-        filepath = resource.url
+        filepath = self.get_filepath(request)
 
         loading_bar.update_status("Collected Variables")
 
