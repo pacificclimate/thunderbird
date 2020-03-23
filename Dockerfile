@@ -19,23 +19,21 @@ RUN apt-get update && apt-get install -y \
     # https://superuser.com/questions/1347723/arch-on-wsl-libqt5core-so-5-not-found-despite-being-installed
     strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
 
-# Upgrade pip
-RUN pip install --upgrade pip
+WORKDIR /code
 
-# Copy WPS project
-COPY . /opt/wps
-WORKDIR /opt/wps
+COPY requirements.txt .
 
-# Create python environment
-RUN python3 -m venv venv
+RUN pip install --upgrade pip && \
+#    python3 -m venv venv && \
+#    source venv/bin/activate && \
+    pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt && \
+    pip install gunicorn
 
-# Install WPS
-RUN ["/bin/bash", "-c", "source venv/bin/activate && pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt && pip install -e ."]
+COPY . .
 
-# Start WPS service on port 5001 on 0.0.0.0
 EXPOSE 5001
-ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["source venv/bin/activate && exec thunderbird start -b 0.0.0.0 -c /opt/wps/etc/demo.cfg"]
+
+CMD ["gunicorn", "--bind=0.0.0.0:5001", "thunderbird.wsgi:application"]
 
 # docker build -t pacificclimate/thunderbird .
 # docker run -p 5001:5001 pacificclimate/thunderbird
