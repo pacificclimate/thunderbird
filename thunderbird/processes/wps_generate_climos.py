@@ -22,9 +22,6 @@ from dp.generate_climos import create_climo_files
 import logging
 import os
 
-# Local imports
-from .utils.loading_bar import LoadingBar
-
 
 LOGGER = logging.getLogger("PYWPS")
 
@@ -254,8 +251,8 @@ class GenerateClimos(Process):
             raise ProcessError("You must provide a data source")
 
     def _handler(self, request, response):
-        loading_bar = LoadingBar(response, start=0, end=5, num_processes=1)
-        loading_bar.begin()
+        progress = 0
+        response.update_status('Starting Process', progress)
 
         (
             climo,
@@ -268,12 +265,13 @@ class GenerateClimos(Process):
         ) = self.collect_args(request)
         filepath = self.get_filepath(request)
 
-        loading_bar.update_status("Collected Variables")
+        progress += 5
+        response.update_status("Collected Variables", progress)
 
         if dry_run:
             del response.outputs["output"]  # remove unnecessary output
-            loading_bar.update_range(end=99, num_processes=1)
-            loading_bar.begin("Starting Dry Run")
+            response.update_range(end=99, num_processes=1)
+            response.begin("Starting Dry Run")
             response.outputs["dry_output"].file = self.dry_run_info(
                 filepath, climo
             )
@@ -285,14 +283,11 @@ class GenerateClimos(Process):
             periods = [
                 period for period in input_file.climo_periods.keys() & climo
             ]
-            loading_bar.update_range(
-                end=99, num_processes=(len(periods) * 2) + 1
-            )
-            loading_bar.begin(f"Processing {filepath}")
+
+            progress += 5
+            response.update_status(f"Processing {filepath}", progress)
 
             for period in periods:
-                loading_bar.update_status(f"Processing period: {period}")
-
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
                     self.workdir,
@@ -304,12 +299,14 @@ class GenerateClimos(Process):
                     output_resolutions=resolutions,
                 )
 
-                loading_bar.update_status("Climo file created")
+            progress += 85
+            response.update_status("File Processing Complete", progress)
 
             climo_files = self.collect_climo_files()
 
-            loading_bar.update_status("Collecting output files")
+            progress += 1
+            response.update_status("Collecting output files", progress)
             response.outputs["output"].data = self.build_meta_link(climo_files)
 
-        loading_bar.finish_process()
+        response.update_status("Process Complete", 100)
         return response
