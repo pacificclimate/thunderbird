@@ -23,6 +23,34 @@ Thunderbird
 
 A Web Processing Service for Climate Explorer data preparation
 
+Installation
+------------
+Set up the virtual environment:
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv)$ pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt
+(venv)$ pip install .
+```
+
+**Note:** In order to run `thunderbird` a few packages will also need to be installed.
+```
+$ sudo apt-get update && apt-get install -y build-essential cdo libhdf5-serial-dev netcdf-bin libnetcdf-dev
+```
+
+Run
+----
+Use the built-in `cli`:
+```
+(venv)$ thunderbird start
+(venv)$ thunderbird stop
+```
+Or use `make`:
+```
+(venv)$ make start
+(venv)$ make stop
+```
+
 Documentation
 -------------
 
