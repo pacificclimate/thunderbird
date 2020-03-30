@@ -269,9 +269,9 @@ class GenerateClimos(Process):
         response.update_status("Collected Variables", progress)
 
         if dry_run:
+            progress += 1
+            response.update_status("Dry Run", progress)
             del response.outputs["output"]  # remove unnecessary output
-            response.update_range(end=99, num_processes=1)
-            response.begin("Starting Dry Run")
             response.outputs["dry_output"].file = self.dry_run_info(
                 filepath, climo
             )
