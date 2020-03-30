@@ -156,14 +156,10 @@ class GenerateClimos(Process):
             output.append(f"climo_periods: {periods}")
             for attr in "project institution model emissions run".split():
                 try:
-                    output.append(
-                        f"{attr}: {getattr(input_file.metadata, attr)}"
-                    )
+                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
                 except Exception as e:
                     output.append(f"{attr}: {e.__class__.__name__}: {e}")
-            output.append(
-                f"dependent_varnames: {input_file.dependent_varnames()}"
-            )
+            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
             for attr in "time_resolution is_multi_year_mean".split():
                 output.append(f"{attr}: {getattr(input_file, attr)}")
 
@@ -175,9 +171,7 @@ class GenerateClimos(Process):
         return filename
 
     def collect_climo_files(self):
-        return [
-            file for file in os.listdir(self.workdir) if file.endswith(".nc")
-        ]
+        return [file for file in os.listdir(self.workdir) if file.endswith(".nc")]
 
     def build_meta_link(self, climo_files):
         meta_link = MetaLink4(
@@ -203,9 +197,7 @@ class GenerateClimos(Process):
                 [
                     item
                     for c in climo
-                    for item in (
-                        self.climos[c] if c in self.climos.keys() else [c]
-                    )
+                    for item in (self.climos[c] if c in self.climos.keys() else [c])
                 ]
             )
         )
@@ -213,17 +205,13 @@ class GenerateClimos(Process):
     def format_resolutions(self, resolutions):
         if "all" in resolutions:
             return [
-                resolution
-                for resolution in self.resolutions
-                if resolution != "all"
+                resolution for resolution in self.resolutions if resolution != "all"
             ]
 
         return list(set(resolutions))
 
     def collect_args(self, request):
-        climo = self.format_climo(
-            [climo.data for climo in request.inputs["climo"]]
-        )
+        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         operation = request.inputs["operation"][0].data
         resolutions = self.format_resolutions(
             [resolution.data for resolution in request.inputs["resolutions"]]
@@ -252,7 +240,7 @@ class GenerateClimos(Process):
 
     def _handler(self, request, response):
         progress = 0
-        response.update_status('Starting Process', progress)
+        response.update_status("Starting Process", progress)
 
         (
             climo,
@@ -272,17 +260,13 @@ class GenerateClimos(Process):
             progress += 1
             response.update_status("Dry Run", progress)
             del response.outputs["output"]  # remove unnecessary output
-            response.outputs["dry_output"].file = self.dry_run_info(
-                filepath, climo
-            )
+            response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
 
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
             input_file = CFDataset(filepath)
 
-            periods = [
-                period for period in input_file.climo_periods.keys() & climo
-            ]
+            periods = [period for period in input_file.climo_periods.keys() & climo]
 
             progress += 5
             response.update_status(f"Processing {filepath}", progress)
