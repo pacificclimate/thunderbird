@@ -17,6 +17,7 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from nchelpers import CFDataset
 from dp.generate_climos import create_climo_files
+import dp
 
 # Library imports
 import logging
@@ -68,7 +69,6 @@ class GenerateClimos(Process):
                 "Climatological Period",
                 abstract="Year ranges",
                 min_occurs=1,
-                max_occurs=6,
                 mode=0,
                 allowed_values=["all"]
                 + [key for key in self.climos.keys()]
@@ -131,7 +131,7 @@ class GenerateClimos(Process):
         super(GenerateClimos, self).__init__(
             self._handler,
             identifier="generate_climos",
-            version="0.8.0",
+            version=dp.__version__,
             title="Generate Climatological Means",
             abstract="Generate files containing climatological means from input files of daily, monthly, or yearly data that adhere to the PCIC metadata standard (and consequently to CMIP5 and CF standards).",
             metadata=[
