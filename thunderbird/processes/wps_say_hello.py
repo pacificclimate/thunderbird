@@ -39,9 +39,13 @@ class SayHello(Process):
             metadata=[
                 Metadata("PyWPS", "https://pywps.org/"),
                 Metadata("Birdhouse", "http://bird-house.github.io/"),
-                Metadata("PyWPS Demo", "https://pywps-demo.readthedocs.io/en/latest/"),
                 Metadata(
-                    "Emu: PyWPS examples", "https://emu.readthedocs.io/en/latest/"
+                    "PyWPS Demo",
+                    "https://pywps-demo.readthedocs.io/en/latest/",
+                ),
+                Metadata(
+                    "Emu: PyWPS examples",
+                    "https://emu.readthedocs.io/en/latest/",
                 ),
             ],
             version="1.5",
@@ -54,6 +58,8 @@ class SayHello(Process):
     @staticmethod
     def _handler(request, response):
         LOGGER.info("say hello")
-        response.outputs["output"].data = "Hello " + request.inputs["name"][0].data
+        response.outputs["output"].data = (
+            "Hello " + request.inputs["name"][0].data
+        )
         response.outputs["output"].uom = UOM("unity")
         return response
