@@ -15,7 +15,7 @@ def resource_file(filepath):
 
 TESTDATA = {
     "test_local_nc": "file:///{}".format(resource_file("test.nc")),
-    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",  # noqa
+    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
 }
 
 
