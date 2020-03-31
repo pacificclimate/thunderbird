@@ -17,3 +17,7 @@ services:
     volumes:
     - ../../thunderbird/pavics-component/thunderbird-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/thunderbird-magpie-permission.cfg:ro
     - ../../thunderbird/pavics-component/thunderbird-magpie-provider.cfg:/opt/local/src/magpie/config/providers/thunderbird-magpie-provider.cfg:ro
+
+  proxy:
+    volumes:
+      - ../../thunderbird/pavics-component/thunderbird_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/thunderbird_canarie_api_monitoring.py:ro
