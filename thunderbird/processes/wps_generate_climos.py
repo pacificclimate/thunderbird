@@ -131,7 +131,7 @@ class GenerateClimos(Process):
         super(GenerateClimos, self).__init__(
             self._handler,
             identifier="generate_climos",
-            version=dp.__version__,
+            version="0.7.0",
             title="Generate Climatological Means",
             abstract="Generate files containing climatological means from input files of daily, monthly, or yearly data that adhere to the PCIC metadata standard (and consequently to CMIP5 and CF standards).",
             metadata=[
@@ -198,17 +198,14 @@ class GenerateClimos(Process):
 
         # loop over given climo, replace items ('historical', 'futures') with
         # items from list
-        return list(
-            set(
-                [
-                    item
-                    for c in climo
-                    for item in (
-                        self.climos[c] if c in self.climos.keys() else [c]
-                    )
-                ]
+        return {
+            item
+            for c in climo
+            for item in (
+                self.climos[c] if c in self.climos.keys() else [c]
             )
-        )
+        }
+
 
     def format_resolutions(self, resolutions):
         if "all" in resolutions:
