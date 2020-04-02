@@ -34,7 +34,6 @@ class GenerateClimos(Process):
             "futures": ["2020", "2050", "2080"],
         }
         self.resolutions = [
-            "all",
             "yearly",
             "seasonal",
             "monthy",
@@ -80,7 +79,7 @@ class GenerateClimos(Process):
                 "Temporal Resolutions",
                 min_occurs=1,
                 max_occurs=3,
-                allowed_values=self.resolutions,
+                allowed_values=["all"] + self.resolutions,
                 data_type="string",
             ),
             LiteralInput(
@@ -196,24 +195,20 @@ class GenerateClimos(Process):
         if "all" in climo:
             return self.climos["historical"] + self.climos["futures"]
 
-        # loop over given climo, replace items ('historical', 'futures') with
-        # items from list
-        return {
-            item
-            for c in climo
-            for item in (
-                self.climos[c] if c in self.climos.keys() else [c]
-            )
-        }
-
+        # replace 'historical', 'futures' with values
+        return list(
+            {
+                item
+                for c in climo
+                for item in (
+                    self.climos[c] if c in self.climos.keys() else [c]
+                )
+            }
+        )
 
     def format_resolutions(self, resolutions):
         if "all" in resolutions:
-            return [
-                resolution
-                for resolution in self.resolutions
-                if resolution != "all"
-            ]
+            return self.resolutions
 
         return list(set(resolutions))
 
