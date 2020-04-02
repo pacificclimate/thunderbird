@@ -240,7 +240,9 @@ class GenerateClimos(Process):
         elif "netcdf" in request.inputs:
             return request.inputs["netcdf"][0].file
         else:
-            raise ProcessError("You must provide a data source")
+            raise ProcessError(
+                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+            )
 
     def _handler(self, request, response):
         progress = 0
