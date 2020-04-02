@@ -4,6 +4,7 @@ MAINTAINER https://github.com/pacificclimate/thunderbird
 LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.1.0"
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
 # Update Debian system
 RUN apt-get update && apt-get install -y \
@@ -24,9 +25,7 @@ WORKDIR /code
 COPY requirements.txt .
 
 RUN pip install --upgrade pip && \
-#    python3 -m venv venv && \
-#    source venv/bin/activate && \
-    pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt && \
+    pip install -r requirements.txt && \
     pip install gunicorn
 
 COPY . .
