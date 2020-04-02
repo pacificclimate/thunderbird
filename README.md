@@ -12,7 +12,7 @@ Set up the virtual environment:
 ```
 $ python3 -m venv venv
 $ source venv/bin/activate
-(venv)$ pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt
+(venv)$ pip install -r requirements.txt
 (venv)$ pip install .
 ```
 
