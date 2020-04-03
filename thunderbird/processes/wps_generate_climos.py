@@ -245,8 +245,7 @@ class GenerateClimos(Process):
             )
 
     def _handler(self, request, response):
-        progress = 0
-        response.update_status("Starting Process", progress)
+        response.update_status("Starting Process", 0)
 
         (
             climo,
@@ -259,12 +258,8 @@ class GenerateClimos(Process):
         ) = self.collect_args(request)
         filepath = self.get_filepath(request)
 
-        progress += 5
-        response.update_status("Collected Variables", progress)
-
         if dry_run:
-            progress += 1
-            response.update_status("Dry Run", progress)
+            response.update_status("Dry Run", 10)
             del response.outputs["output"]  # remove unnecessary output
             response.outputs["dry_output"].file = self.dry_run_info(
                 filepath, climo
@@ -278,8 +273,7 @@ class GenerateClimos(Process):
                 period for period in input_file.climo_periods.keys() & climo
             ]
 
-            progress += 5
-            response.update_status(f"Processing {filepath}", progress)
+            response.update_status(f"Processing {filepath}", 10)
 
             for period in periods:
                 t_range = input_file.climo_periods[period]
@@ -293,13 +287,11 @@ class GenerateClimos(Process):
                     output_resolutions=resolutions,
                 )
 
-            progress += 85
-            response.update_status("File Processing Complete", progress)
+            response.update_status("File Processing Complete", 90)
 
             climo_files = self.collect_climo_files()
 
-            progress += 1
-            response.update_status("Collecting output files", progress)
+            response.update_status("Collecting output files", 95)
             response.outputs["output"].data = self.build_meta_link(climo_files)
 
         response.update_status("Process Complete", 100)
