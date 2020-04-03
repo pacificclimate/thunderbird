@@ -30,7 +30,7 @@ import owslib.wps
             {
                 "operation": "std",
                 "climo": "7100",
-                "resolutions": "seasonal",
+                "resolutions": "monthly",
                 "convert_longitudes": "False",
                 "split_vars": "False",
                 "split_intervals": "False",
