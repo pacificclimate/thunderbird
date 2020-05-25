@@ -1,0 +1,15 @@
+permissions:
+  - service: thunderbird
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: thunderbird
+    permission: describeprocess
+    group: anonymous
+    action: create
+
+  - service: thunderbird
+    permission: execute
+    group: anonymous
+    action: create

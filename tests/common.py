@@ -2,9 +2,21 @@ from pywps import get_ElementMakerForVersion
 from pywps.app.basic import get_xpath_ns
 from pywps.tests import WpsClient, WpsTestResponse
 
+import os
+
 VERSION = "1.0.0"
-WPS, OWS = get_ElementMakerForVersion(VERSION)
 xpath_ns = get_xpath_ns(VERSION)
+TESTS_HOME = os.path.abspath(os.path.dirname(__file__))
+
+
+def resource_file(filepath):
+    return os.path.join(TESTS_HOME, "testdata", filepath)
+
+
+TESTDATA = {
+    "test_local_nc": "file:///{}".format(resource_file("test.nc")),
+    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
+}
 
 
 class WpsTestClient(WpsClient):

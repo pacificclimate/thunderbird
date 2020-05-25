@@ -1,0 +1,5 @@
+jupyterlab
+ipywidgets
+nodejs
+birdhouse-birdy
+beautifulsoup4

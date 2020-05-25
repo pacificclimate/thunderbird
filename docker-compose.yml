@@ -4,7 +4,7 @@ services:
     build: .
     image: pacificclimate/thunderbird
     ports:
-      - "5001:5001"
+      - "8099:5001"
 
 
 # docker-compose build
