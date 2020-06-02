@@ -3,3 +3,5 @@ jinja2
 click
 psutil
 ce-dataprep==0.8.0
+cftime
+xarray
