@@ -13,6 +13,7 @@ from pywps.inout.outputs import MetaLink, MetaLink4, MetaFile
 from pywps.inout.literaltypes import AllowedValue
 from pywps.validator.mode import MODE
 from pywps.app.exceptions import ProcessError
+from requests.exceptions import ConnectionError, InvalidSchema, MissingSchema
 
 # Tool imports
 from nchelpers import CFDataset
@@ -33,22 +34,25 @@ class GeneratePrsn(Process):
                 "prec",
                 "Precipitation",
                 abstract="Precipitation file to process",
-                min_occurs=max_occurs=1,
-                supported_formats=[FORMATS.DODS, FORMATS.NETCDF],
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             ComplexInput(
                 "tasmin",
                 "Tasmin",
                 abstract="Tasmin file to process",
-                min_occurs=max_occurs=1,
-                supported_formats=[FORMATS.DODS, FORMATS.NETCDF],
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             ComplexInput(
                 "tasmax",
                 "Tasmax",
                 abstract="Tasmax file to process",
-                min_occurs=max_occurs=1,
-                supported_formats=[FORMATS.DODS, FORMATS.NETCDF],
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "chunk_size",
@@ -95,11 +99,11 @@ class GeneratePrsn(Process):
         ]
 
         super(GeneratePrsn, self).__init__(
-            self.__handler,
+            self._handler,
             identifier="generate_prsn",
             #version=?
             title="Generate Precipitation as Snow",
-            #abstract=?
+            abstract="Generate Precipitation as Snow",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -110,7 +114,7 @@ class GeneratePrsn(Process):
             status_supported=True,
         )
 
-    def collect_args(request):
+    def collect_args(self, request):
         chunk_size = request.inputs["chunk_size"][0].data
         loglevel = request.inputs["loglevel"][0].data
         dry_run = request.inputs["dry_run"][0].data
@@ -122,7 +126,7 @@ class GeneratePrsn(Process):
             output_file,
         )
 
-    def get_filepaths(request):
+    def get_filepaths(self, request):
         filepaths = {}
         var_list = ["pr", "tasmin", "tasmax"]
         data_files = [
@@ -131,17 +135,10 @@ class GeneratePrsn(Process):
             request.inputs["tasmax"][0],
         ]
         for var, path in zip(var_list, data_files):
-            if path.Format == FORMATS.DODS:
-                filepaths[var] == path.url
-            elif path.Format == FORMATS.NETCDF:
-                filepaths[var] == path.file
-            else:
-                raise ProcessError(
-                    "You must provide a data source (opendap/netcdf)."
-                )
+            filepaths[var] = path.data
         return filepaths
    
-    def setup_logger(level):
+    def setup_logger(self, level):
         formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s",
                                       "%Y-%m-%d %H:%M:%S")
         handler = logging.StreamHandler()
@@ -164,7 +161,7 @@ class GeneratePrsn(Process):
 
         return meta_link.xml
 
-    def __handler(self, request, response):
+    def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
         (
