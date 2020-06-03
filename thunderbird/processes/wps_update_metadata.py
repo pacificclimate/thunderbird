@@ -84,36 +84,32 @@ class UpdateMetadata(Process):
         )
 
 
-    def get_filepath_and_copy(self, request):
+    def copy_and_get_filepath(self, request):
         if "opendap" in request.inputs: 
             url = request.inputs["opendap"][0].url
             input_dataset = xr.open_dataset(url)
 
             filename = url.split("/")[-1]
             original = os.path.join(self.workdir, filename)
-
             input_dataset.to_netcdf(original)
-
-            copy = original[:-3] + "_copy.nc"
-            shutil.copyfile(original, copy)
-
-            return copy
 
         elif "netcdf" in request.inputs:
             original = request.inputs["netcdf"][0].file
-            copy = original[:-3] + "_copy.nc"
-            shutil.copyfile(original, copy)
-            return copy
 
         else:
             raise ProcessError(
                 f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
             )
 
+        copy = original[:-3] + "_copy.nc"
+        shutil.copyfile(original, copy)
+        return copy
+        
+
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
-        filepath = self.get_filepath_and_copy(request)
+        filepath = self.copy_and_get_filepath(request)
         response.update_status(f"Processing {filepath}", 10)
 
         updates = request.inputs["updates"][0].data
