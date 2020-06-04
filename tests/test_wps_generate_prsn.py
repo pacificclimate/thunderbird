@@ -8,7 +8,7 @@ from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 import owslib.wps
 
-#@pytest.mark.online
+@pytest.mark.online
 @pytest.mark.parametrize(
     ("kwargs"),
     [
@@ -17,6 +17,7 @@ import owslib.wps
                 "prec": TESTDATA["test_local_pr_nc"],
                 "tasmin": TESTDATA["test_local_tasmin_nc"],
                 "tasmax": TESTDATA["test_local_tasmax_nc"],
+                "chunk_size": "50",
                 "dry_run": "False",
                 "output_file": "prsn_test1.nc",
             }
@@ -56,6 +57,7 @@ def test_runs(kwargs):
         "prec={prec};"
         "tasmin={tasmin};"
         "tasmax={tasmax};"
+        "chunk_size={chunk_size};"
         "dry_run={dry_run};"
         "output_file={output_file};"
     ).format(**kwargs)
