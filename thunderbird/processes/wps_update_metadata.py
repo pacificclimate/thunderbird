@@ -3,24 +3,14 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    LiteralOutput,
     ComplexOutput,
     FORMATS,
     Format,
 )
 
-from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink, MetaLink4, MetaFile
-from pywps.inout.literaltypes import AllowedValue
-from pywps.validator.mode import MODE
-from pywps.app.exceptions import ProcessError
-
-from argparse import ArgumentParser
-
 # Tool imports
-from nchelpers import CFDataset
 from dp.update_metadata import process_updates, logger
-from dp.argparse_helpers import log_level_choices
+from nchelpers import CFDataset
 
 # Library imports
 import shutil
@@ -55,7 +45,7 @@ class UpdateMetadata(Process):
             ),
             LiteralInput(
                 "updates",
-                "Updates File",
+                "Updates File(yaml)",
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
@@ -75,7 +65,7 @@ class UpdateMetadata(Process):
         super(UpdateMetadata, self).__init__(
             self._handler,
             identifier="update_metadata",
-            title="Update NetCDF file",
+            title="Update NetCDF Metadata",
             abstract="Update file containing missing, invalid, or incorrectly named global or variable metadata attributes",
             store_supported=True,
             status_supported=True,
@@ -85,6 +75,15 @@ class UpdateMetadata(Process):
 
 
     def copy_and_get_filepath(self, request):
+        '''
+        This function takes an input "request" and returns a filepath to the input data.
+        As the update_metadata simply updates the original file "in place", copying the
+        input data is necessary for two reasons.
+        
+        1. The original file is maintained without any corruption
+        2. Writing back to OPeNDAP file is nearly impossible
+
+        '''
         if "opendap" in request.inputs: 
             url = request.inputs["opendap"][0].url
             input_dataset = xr.open_dataset(url)

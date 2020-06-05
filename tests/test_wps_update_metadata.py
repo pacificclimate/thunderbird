@@ -1,4 +1,4 @@
-import pytest
+import pytest import mark, warns
 
 from pywps import Service
 from pywps.tests import assert_response_success
@@ -6,22 +6,31 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 import owslib.wps
-
+import os
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendap", "updates"), 
+    ("opendap"), [(TESTDATA["test_opendap"])],
+)
+@pytest.mark.parametrize(
+    ("updates"), 
     [
-        (TESTDATA["test_opendap"], "./metadata-conversion/simple_conversion/modify_history.yaml"),
+        (os.getcwd()+"/tests/metadata-conversion/updates-CLIMDEX-downscale-BCCAQ.yaml"),
+        (os.getcwd()+"/tests/metadata-conversion/updates-downscaled.yaml"),
+        (os.getcwd()+"/tests/metadata-conversion/updates-downscaled-climo.yaml"),
+        (os.getcwd()+"/tests/metadata-conversion/updates-hydromodel-dgcm.yaml"),
+        ("""
+global:
+    history: "today is a nice day"
+        """)
     ],
 )
-
-def test_wps_update_metadata_opendap(opendap, kwargs):
+def test_wps_update_metadata_opendap(opendap, updates):
     client = client_for(Service(processes=[UpdateMetadata()]))
     datainputs = (
         "opendap=@xlink:href={0};"
-        "updates={updates};"
-    ).format(opendap, **kwargs)
+        "updates={1};"
+    ).format(opendap, updates)
 
     resp = client.get(
         service="wps",
@@ -30,5 +39,5 @@ def test_wps_update_metadata_opendap(opendap, kwargs):
         identifier="update_metadata",
         datainputs=datainputs,
     )
-
+    print(resp)
     assert_response_success(resp)
