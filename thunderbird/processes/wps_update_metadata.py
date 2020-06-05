@@ -114,11 +114,21 @@ class UpdateMetadata(Process):
 
         updates = request.inputs["updates"][0].data
 
-        with open(updates) as ud:
-            updates = yaml.safe_load(ud)
+        try:
+            with open(updates) as ud:
+                updates_instruction = yaml.safe_load(ud)
+
+        except FileNotFoundError:
+            updates_yaml = os.path.join(self.workdir, "updates.yaml")
+    
+            with open(updates_yaml, "w+") as yamlfile:
+                yamlfile.write(updates)
+            with open(updates_yaml) as ud:
+                updates_instruction = yaml.safe_load(ud)
 
         with CFDataset(filepath, mode='r+') as dataset:
-            process_updates(dataset, updates)
+            process_updates(dataset, updates_instruction)
+
 
         response.outputs["output"].file = filepath
 
