@@ -1,4 +1,4 @@
-import pytest import mark, warns
+import pytest
 
 from pywps import Service
 from pywps.tests import assert_response_success
