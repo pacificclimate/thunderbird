@@ -2,4 +2,4 @@ pywps>=4.2.0<4.3
 jinja2
 click
 psutil
-ce-dataprep==0.8.0
+ce-dataprep==0.8.1

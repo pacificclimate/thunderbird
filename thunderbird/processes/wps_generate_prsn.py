@@ -19,7 +19,7 @@ from requests.exceptions import ConnectionError, MissingSchema, InvalidSchema
 # Tool imports
 from nchelpers import CFDataset
 from dp.generate_prsn import generate_prsn_file
-#from dp.generate_prsn import dry_run as dry_run_info
+from dp.generate_prsn import dry_run as dry_run_info
 import dp
 
 # Library imports
@@ -114,31 +114,6 @@ class GeneratePrsn(Process):
             store_supported=True,
             status_supported=True,
         )
-
-    def dry_run_info(self, filepaths, output_to_file=False, workdir=None):
-        '''Perform metadata checks on the input files'''
-        if output_to_file: # Used for wps process in thunderbird
-            output = ['Dry Run']
-            for filepath in filepaths.values():
-                output.append('File: {}'.format(filepath))
-                try:
-                    dataset = CFDataset(filepath)
-                except Exception as e:
-                    output.append('{}: {}'.format(e.__class__.__name__, e))
-
-                for attr in 'project model institute experiment ensemble_member'.split():
-                    try:
-                        output.append('{}: {}'.format(attr, getattr(dataset.metadata, attr)))
-                    except Exception as e:
-                        output.append('{}: {}: {}'.format(attr, e.__class__.__name__, e))
-                output.append('dependent_varnames: {}'.format(dataset.dependent_varnames()))
-
-            filename = os.path.join(workdir, 'dry.txt')
-            with open(filename, 'w') as f:
-                for line in output:
-                    f.write('{}\n'.format(line))
-
-            return filename
 
     def collect_args(self, request):
         chunk_size = request.inputs["chunk_size"][0].data
@@ -235,12 +210,9 @@ class GeneratePrsn(Process):
         if dry_run:
             response.update_status("Dry Run", 10)
             del response.outputs["output"]  # remove unnecessary output
-            # dry_output_path = os.path.join(self.workdir, 'dry.txt')
-            # dry_run_info(filepaths, dry_output_path)
-            # response.outputs["dry_output"].file = dry_output_path
-            response.outputs["dry_output"].file = self.dry_run_info(
-                filepaths, output_to_file=True, workdir=self.workdir
-            )
+            dry_output_path = os.path.join(self.workdir, 'dry.txt')
+            dry_run_info(filepaths, dry_output_path)
+            response.outputs["dry_output"].file = dry_output_path
 
         else:
             del response.outputs["dry_output"] # remove unnecessary output
