@@ -15,12 +15,12 @@ def resource_file(filepath):
 TESTDATA = {
     "test_local_nc": "file:///{}".format(resource_file("test.nc")),
     "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
-    "test_local_pr_nc": os.path.abspath("generate_prsn_test_files/pr_week_test.nc"),
-    "test_local_tasmin_nc": os.path.abspath("generate_prsn_test_files/tasmin_week_test.nc"),
-    "test_local_tasmax_nc": os.path.abspath("generate_prsn_test_files/tasmax_week_test.nc"),
-    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/pr_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
-    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/tasmin_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
-    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/tasmax_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
+    "test_local_pr_nc": "file:///{}".format(os.path.abspath("tests/generate_prsn_test_files/pr_week_test.nc")),
+    "test_local_tasmin_nc": "file:///{}".format(os.path.abspath("tests/generate_prsn_test_files/tasmin_week_test.nc")),
+    "test_local_tasmax_nc": "file:///{}".format(os.path.abspath("tests/generate_prsn_test_files/tasmax_week_test.nc")),
+    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/pr_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
+    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/tasmin_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
+    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/tasmax_day_BCCAQv2+ANUSPLIN300_NorESM1-M_historical+rcp26_r1i1p1_19500101-19501231.nc",
 }
 
 class WpsTestClient(WpsClient):

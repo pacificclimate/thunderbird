@@ -65,6 +65,7 @@ class GeneratePrsn(Process):
             LiteralInput(
                 "output_file",
                 "Output File",
+                default="None",
                 abstract="Optional custom name of output file",
                 data_type="string",
             ),
@@ -102,9 +103,8 @@ class GeneratePrsn(Process):
         super(GeneratePrsn, self).__init__(
             self._handler,
             identifier="generate_prsn",
-            #version=?
             title="Generate Precipitation as Snow",
-            abstract="Generate Precipitation as Snow",
+            abstract="Generate precipitation as snow file from precipitation, and minimum/maximum temperature data",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -225,7 +225,11 @@ class GeneratePrsn(Process):
             dry_run,
             output_file
         ) = self.collect_args(request)
+        output_file = None if output_file == "None" else output_file
         filepaths = self.get_filepaths(request)
+        filepaths["pr"] = filepaths["pr"].replace(" ", "+")
+        filepaths["tasmin"] = filepaths["tasmin"].replace(" ", "+")
+        filepaths["tasmax"] = filepaths["tasmax"].replace(" ", "+")
         self.setup_logger(loglevel)
 
         if dry_run:
