@@ -1,12 +1,11 @@
 import pytest
-import os
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
-import owslib.wps
+
 
 @pytest.mark.online
 @pytest.mark.parametrize(
@@ -46,6 +45,7 @@ def test_default(kwargs):
         datainputs=datainputs,
     )
     assert_response_success(resp)
+
 
 @pytest.mark.online
 @pytest.mark.parametrize(

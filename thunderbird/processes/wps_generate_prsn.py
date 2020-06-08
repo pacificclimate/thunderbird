@@ -3,16 +3,11 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    LiteralOutput,
     ComplexOutput,
     FORMATS,
-    Format,
 )
 from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink, MetaLink4, MetaFile
-from pywps.inout.literaltypes import AllowedValue
-from pywps.validator.mode import MODE
-from pywps.app.exceptions import ProcessError
+from pywps.inout.outputs import MetaLink4, MetaFile
 from requests import head
 from requests.exceptions import ConnectionError, MissingSchema, InvalidSchema
 
@@ -20,13 +15,13 @@ from requests.exceptions import ConnectionError, MissingSchema, InvalidSchema
 from nchelpers import CFDataset
 from dp.generate_prsn import generate_prsn_file
 from dp.generate_prsn import dry_run as dry_run_info
-import dp
 
 # Library imports
 import logging
 import os
 
 logger = logging.getLogger("PYWPS")
+
 
 class GeneratePrsn(Process):
     def __init__(self):
@@ -127,7 +122,7 @@ class GeneratePrsn(Process):
             output_file,
         )
 
-    def is_opendap_url(self, url): # From Finch bird
+    def is_opendap_url(self, url):  # From Finch bird
         """
         Check if a provided url is an OpenDAP url.
         The DAP Standard specifies that a specific tag must be included in the
@@ -167,10 +162,11 @@ class GeneratePrsn(Process):
             else:
                 filepaths[var] = path.file
         return filepaths
-   
+
     def setup_logger(self, level):
-        formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s",
-                                      "%Y-%m-%d %H:%M:%S")
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
+        )
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         logger.addHandler(handler)
@@ -185,7 +181,9 @@ class GeneratePrsn(Process):
         )
 
         # Create a MetaFile instance, which instantiates a ComplexOutput object.
-        meta_file = MetaFile(f"{prsn_file}", "Precipitation as snow", fmt=FORMATS.NETCDF)
+        meta_file = MetaFile(
+            f"{prsn_file}", "Precipitation as snow", fmt=FORMATS.NETCDF
+        )
         meta_file.file = os.path.join(self.workdir, prsn_file)
         meta_link.append(meta_file)
 
@@ -194,12 +192,7 @@ class GeneratePrsn(Process):
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
-        (
-            chunk_size,
-            loglevel,
-            dry_run,
-            output_file
-        ) = self.collect_args(request)
+        (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         output_file = None if output_file == "None" else output_file
         filepaths = self.get_filepaths(request)
         filepaths["pr"] = filepaths["pr"].replace(" ", "+")
@@ -210,12 +203,12 @@ class GeneratePrsn(Process):
         if dry_run:
             response.update_status("Dry Run", 10)
             del response.outputs["output"]  # remove unnecessary output
-            dry_output_path = os.path.join(self.workdir, 'dry.txt')
+            dry_output_path = os.path.join(self.workdir, "dry.txt")
             dry_run_info(filepaths, dry_output_path)
             response.outputs["dry_output"].file = dry_output_path
 
         else:
-            del response.outputs["dry_output"] # remove unnecessary output
+            del response.outputs["dry_output"]  # remove unnecessary output
 
             response.update_status("Processing files", 10)
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
@@ -228,4 +221,3 @@ class GeneratePrsn(Process):
 
         response.update_status("Process complete", 100)
         return response
-            
