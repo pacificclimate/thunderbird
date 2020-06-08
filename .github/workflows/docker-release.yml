@@ -1,0 +1,30 @@
+name: Docker Release
+
+on:
+  push:
+    branches:
+      - master
+  release:
+    types:
+      - created
+
+jobs:
+  docker-publish:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Wait for image to be published
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: bump
+          ref: ${{ github.sha }}
+      - uses: actions/checkout@master
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.pcicdevops_at_dockerhub_username }}
+          password: ${{ secrets.pcicdevops_at_dockerhub_password }}
+          repository: pcic/thunderbird
+          tag_with_ref: true
