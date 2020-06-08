@@ -115,6 +115,8 @@ class GeneratePrsn(Process):
         loglevel = request.inputs["loglevel"][0].data
         dry_run = request.inputs["dry_run"][0].data
         output_file = request.inputs["output_file"][0].data
+        if output_file == "None":
+            output_file = None  # generate_prsn_file uses NoneType to indicate no custom output file name
         return (
             chunk_size,
             loglevel,
@@ -193,7 +195,6 @@ class GeneratePrsn(Process):
         response.update_status("Starting Process", 0)
 
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
-        output_file = None if output_file == "None" else output_file
         filepaths = self.get_filepaths(request)
         filepaths["pr"] = filepaths["pr"].replace(" ", "+")
         filepaths["tasmin"] = filepaths["tasmin"].replace(" ", "+")
