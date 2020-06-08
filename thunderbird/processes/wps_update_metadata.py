@@ -90,7 +90,7 @@ class UpdateMetadata(Process):
 
             filename = url.split("/")[-1]
             original = os.path.join(self.workdir, filename)
-            input_dataset.to_netcdf(original)
+            input_dataset.to_netcdf(original, format = "NETCDF4_CLASSIC")
 
         elif "netcdf" in request.inputs:
             original = request.inputs["netcdf"][0].file
