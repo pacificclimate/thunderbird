@@ -22,6 +22,7 @@ jobs:
           checkName: bump
           ref: ${{ github.sha }}
       - uses: actions/checkout@master
+        if: steps.wait-for-build.outputs.conclusion == 'success'
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.pcicdevops_at_dockerhub_username }}
