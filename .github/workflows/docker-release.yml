@@ -9,7 +9,7 @@ on:
       - created
 
 jobs:
-  docker-publish:
+  docker-release:
 
     runs-on: ubuntu-18.04
 

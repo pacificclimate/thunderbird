@@ -6,7 +6,7 @@ on:
       - 'i*'
 
 jobs:
-  docker-publish:
+  docker-publish-branch:
 
     runs-on: ubuntu-18.04
 
