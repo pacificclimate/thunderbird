@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-find /storage/data/climate/downscale/CMIP5/BCCAQ/climdex/ -name "*.nc" -exec update_metadata -u metadata-conversion/updates-CLIMDEX-downscale-BCCAQ.yaml {} \; &>metadata-conversion/updates-CLIMDEX-downscale-BCCAQ.log
