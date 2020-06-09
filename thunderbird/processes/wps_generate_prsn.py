@@ -7,14 +7,11 @@ from pywps import (
     FORMATS,
 )
 from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink4, MetaFile
-from requests import head
-from requests.exceptions import ConnectionError, MissingSchema, InvalidSchema
 
 # Tool imports
-from nchelpers import CFDataset
 from dp.generate_prsn import generate_prsn_file
 from dp.generate_prsn import dry_run as dry_run_info
+from thunderbird.utils import is_opendap_url, collect_output_files, build_meta_link
 
 # Library imports
 import logging
@@ -124,32 +121,6 @@ class GeneratePrsn(Process):
             output_file,
         )
 
-    def is_opendap_url(self, url):  # From Finch bird
-        """
-        Check if a provided url is an OpenDAP url.
-        The DAP Standard specifies that a specific tag must be included in the
-        Content-Description header of every request. This tag is one of:
-            "dods-dds" | "dods-das" | "dods-data" | "dods-error"
-        So we can check if the header starts with `dods`.
-        Even then, some OpenDAP servers seem to not include the specified header...
-        So we need to let the netCDF4 library actually open the file.
-       """
-        try:
-            content_description = head(url, timeout=5).headers.get(
-                "Content-Description"
-            )
-        except (ConnectionError, MissingSchema, InvalidSchema):
-            return False
-
-        if content_description:
-            return content_description.lower().startswith("dods")
-        else:
-            try:
-                dataset = CFDataset(url)
-            except OSError:
-                return False
-            return dataset.disk_format in ("DAP2", "DAP4")
-
     def get_filepaths(self, request):
         filepaths = {}
         var_list = ["pr", "tasmin", "tasmax"]
@@ -159,7 +130,7 @@ class GeneratePrsn(Process):
             request.inputs["tasmax"][0],
         ]
         for var, path in zip(var_list, data_files):
-            if self.is_opendap_url(path.url):
+            if is_opendap_url(path.url):
                 filepaths[var] = path.url
             else:
                 filepaths[var] = path.file
@@ -173,23 +144,6 @@ class GeneratePrsn(Process):
         handler.setFormatter(formatter)
         logger.addHandler(handler)
         logger.setLevel(level)
-
-    def collect_prsn_file(self):
-        return [file for file in os.listdir(self.workdir) if "prsn" in file][0]
-
-    def build_meta_link(self, prsn_file):
-        meta_link = MetaLink4(
-            "output", "Output of netCDF prsn file", workdir=self.workdir
-        )
-
-        # Create a MetaFile instance, which instantiates a ComplexOutput object.
-        meta_file = MetaFile(
-            f"{prsn_file}", "Precipitation as snow", fmt=FORMATS.NETCDF
-        )
-        meta_file.file = os.path.join(self.workdir, prsn_file)
-        meta_link.append(meta_file)
-
-        return meta_link.xml
 
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
@@ -215,10 +169,12 @@ class GeneratePrsn(Process):
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
             response.update_status("File processing complete", 90)
-            prsn_file = self.collect_prsn_file()
+            prsn_file = collect_output_files("prsn", self.workdir)[0]
 
             response.update_status("Collecting output file", 95)
-            response.outputs["output"].data = self.build_meta_link(prsn_file)
+            response.outputs["output"].data = build_meta_link(
+                "prsn", "Precipitation as Snow", [prsn_file], self.workdir
+            )
 
         response.update_status("Process complete", 100)
         return response
