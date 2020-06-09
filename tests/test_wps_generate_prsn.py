@@ -55,9 +55,9 @@ def test_default_local(kwargs):
     [
         (
             {
-                "prec": TESTDATA["test_opendap_pr_nc"],
-                "tasmin": TESTDATA["test_opendap_tasmin_nc"],
-                "tasmax": TESTDATA["test_opendap_tasmax_nc"],
+                "prec": TESTDATA["test_local_pr_nc"],
+                "tasmin": TESTDATA["test_local_tasmin_nc"],
+                "tasmax": TESTDATA["test_local_tasmax_nc"],
                 "chunk_size": "50",
                 "dry_run": "True",
                 "output_file": "prsn_test_local.nc",
