@@ -39,5 +39,5 @@ def test_wps_update_metadata_opendap(opendap, updates):
         identifier="update_metadata",
         datainputs=datainputs,
     )
-    print(resp)
+
     assert_response_success(resp)
