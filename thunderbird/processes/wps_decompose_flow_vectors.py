@@ -84,9 +84,27 @@ class DecomposeFlowVectors(Process):
             outputs=outputs,
         )
 
+    def get_filepath(self, request):
+        if "opendap" in request.inputs:
+            return request.inputs["opendap"][0].url
+        elif "netcdf" in request.inputs:
+            return request.inputs["netcdf"][0].file
+        else:
+            raise ProcessError(
+                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+            )
+
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
+        source_file = self.get_filepath(request)
+        variable = request.inputs["variable"][0].data
+        dest_file = request.inputs["dest_file"][0].data
+        args = arguments(source_file, variable, dest_file)
+
+        dfv.main(args)
+
+        response.outputs["output"].file = dest_file
 
         response.update_status("Process Complete", 100)
         return response
