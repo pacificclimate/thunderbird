@@ -32,6 +32,14 @@ class arguments:
         self.variable = variable
         self.dest_file = dest_file
 
+class ArgumentParserMocker:
+    def __init__(self):
+        self.prog = 'decompose_flow_vectors'
+        self.usage = None
+        self.description = 'Process an indexed flow direction netCDF into a vectored netCDF suitable for ncWMS display'
+        self.formatter_class= "<class 'argparse.HelpFormatter'>"
+        self.conflict_handler= 'error'
+        self.add_help=True
 
 class DecomposeFlowVectors(Process):
     def __init__(self):
@@ -100,9 +108,11 @@ class DecomposeFlowVectors(Process):
         source_file = self.get_filepath(request)
         variable = request.inputs["variable"][0].data
         dest_file = request.inputs["dest_file"][0].data
+        
         args = arguments(source_file, variable, dest_file)
+        parser = ArgumentParserMocker()
 
-        dfv.main(args)
+        dfv.main(args, parser)
 
         response.outputs["output"].file = dest_file
 
