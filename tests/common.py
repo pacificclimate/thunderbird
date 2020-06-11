@@ -2,20 +2,16 @@ from pywps import get_ElementMakerForVersion
 from pywps.app.basic import get_xpath_ns
 from pywps.tests import WpsClient, WpsTestResponse
 
-import os
-import re
+import pkg_resources
 
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
-TESTS_HOME = os.path.abspath(os.path.dirname(__file__))
 
-DATA_DIR = os.path.join(TESTS_HOME, "data")
-test_files = ["file:///{}".format(os.path.join(DATA_DIR, test_file)) 
-                for test_file in os.listdir(DATA_DIR)]
+test_files = ["file:///{}".format(pkg_resources.resource_filename("tests", "data/"+test_file)) 
+                for test_file in pkg_resources.resource_listdir("tests", "data")]
 
-YAML_DIR = os.path.join(TESTS_HOME, "metadata-conversion")
-yaml_files = [os.path.join(YAML_DIR, test_file)
-                for test_file in os.listdir(YAML_DIR)]
+yaml_files = [pkg_resources.resource_filename("tests", "metadata-conversion/"+test_file)
+                for test_file in pkg_resources.resource_listdir("tests", "metadata-conversion")]
 yaml_str = [        
 """
 global:
