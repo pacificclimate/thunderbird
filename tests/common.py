@@ -2,20 +2,31 @@ from pywps import get_ElementMakerForVersion
 from pywps.app.basic import get_xpath_ns
 from pywps.tests import WpsClient, WpsTestResponse
 
-import os
+import pkg_resources
 
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
-TESTS_HOME = os.path.abspath(os.path.dirname(__file__))
 
+test_files = ["file:///{}".format(pkg_resources.resource_filename(__name__, "data/"+test_file)) 
+                for test_file in pkg_resources.resource_listdir(__name__, "data")]
 
-def resource_file(filepath):
-    return os.path.join(TESTS_HOME, "testdata", filepath)
+yaml_files = [pkg_resources.resource_filename(__name__, "metadata-conversion/"+test_file)
+                for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")]
+yaml_str = [        
+"""
+global:
+    history: "today is a nice day"
+"""
+]
 
+vector_flow_netcdf = "file:///{}".format(pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc"))
+vector_flow_opendap = "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
 
 TESTDATA = {
-    "test_local_nc": "file:///{}".format(resource_file("test.nc")),
+    "test_local_nc": test_files,
     "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
+    "test_yaml": yaml_files + yaml_str,
+    "test_vector_flow": {"netcdf": vector_flow_netcdf, "opendap": vector_flow_opendap}
 }
 
 
