@@ -88,7 +88,8 @@ class GenerateClimos(Process):
                 "split_vars",
                 "Split Variables",
                 default=True,
-                abstract="Generate a separate file for each dependent variable in the file",
+                abstract="Generate a separate file for each "
+                         "dependent variable in the file",
                 data_type="boolean",
             ),
             LiteralInput(
@@ -127,7 +128,10 @@ class GenerateClimos(Process):
             identifier="generate_climos",
             version="0.7.0",
             title="Generate Climatological Means",
-            abstract="Generate files containing climatological means from input files of daily, monthly, or yearly data that adhere to the PCIC metadata standard (and consequently to CMIP5 and CF standards).",
+            abstract="Generate files containing climatological means from "
+                     "input files of daily, monthly, or yearly data that adhere "
+                     "to the PCIC metadata standard (and consequently to "
+                     "CMIP5 and CF standards).",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -226,7 +230,8 @@ class GenerateClimos(Process):
             return request.inputs["netcdf"][0].file
         else:
             raise ProcessError(
-                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+                "You must provide a data source (opendap/netcdf). "
+                f"Inputs provided: {request.inputs}"
             )
 
     def _handler(self, request, response):

@@ -13,7 +13,8 @@ def resource_file(filepath):
 
 TESTDATA = {
     "test_local_nc": "file:///{}".format(resource_file("test.nc")),
-    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
+    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/"
+                    "sresa1b_ncar_ccsm3_0_run1_200001.nc",
     "test_local_pr_nc": "file:///{}".format(
         os.path.abspath("tests/data/pr_week_test.nc")
     ),
@@ -23,9 +24,18 @@ TESTDATA = {
     "test_local_tasmax_nc": "file:///{}".format(
         os.path.abspath("tests/data/tasmax_week_test.nc")
     ),
-    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/"
+    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
+    "r1i1p1_19500101-19500107.nc",
+    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/"
+    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
+    "r1i1p1_19500101-19500107.nc",
+    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/"
+    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
+    "r1i1p1_19500101-19500107.nc",
 }
 
 

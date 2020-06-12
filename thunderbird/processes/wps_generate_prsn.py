@@ -96,7 +96,8 @@ class GeneratePrsn(Process):
             self._handler,
             identifier="generate_prsn",
             title="Generate Precipitation as Snow",
-            abstract="Generate precipitation as snow file from precipitation and minimum/maximum temperature data",
+            abstract="Generate precipitation as snow file from precipitation "
+                     "and minimum/maximum temperature data",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -113,7 +114,8 @@ class GeneratePrsn(Process):
         dry_run = request.inputs["dry_run"][0].data
         output_file = request.inputs["output_file"][0].data
         if output_file == "None":
-            output_file = None  # generate_prsn_file uses NoneType to indicate no custom output file name
+            output_file = None
+            # generate_prsn_file uses NoneType to indicate no custom output file name
         return (
             chunk_size,
             loglevel,
