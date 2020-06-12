@@ -7,7 +7,8 @@ from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 
-def run(kwargs):
+def run_wps_process(kwargs):
+    """Run generate_prsn process using data inputs given by kwargs"""
     client = client_for(Service(processes=[GeneratePrsn()]))
     if (
         "chunk_size" in kwargs.keys() and "output_file" in kwargs.keys()
@@ -51,7 +52,7 @@ def run(kwargs):
     ],
 )
 def test_default_local(kwargs):
-    run(kwargs)
+    run_wps_process(kwargs)
 
 
 @pytest.mark.parametrize(
@@ -70,7 +71,7 @@ def test_default_local(kwargs):
     ],
 )
 def test_run_local(kwargs):
-    run(kwargs)
+    run_wps_process(kwargs)
 
 
 @pytest.mark.online
@@ -88,7 +89,7 @@ def test_run_local(kwargs):
     ],
 )
 def test_default_opendap(kwargs):
-    run(kwargs)
+    run_wps_process(kwargs)
 
 
 @pytest.mark.online
@@ -108,7 +109,7 @@ def test_default_opendap(kwargs):
     ],
 )
 def test_run_opendap(kwargs):
-    run(kwargs)
+    run_wps_process(kwargs)
 
 
 @pytest.mark.online
@@ -138,4 +139,4 @@ def test_run_opendap(kwargs):
     ],
 )
 def test_run_mixed(kwargs):
-    run(kwargs)
+    run_wps_process(kwargs)
