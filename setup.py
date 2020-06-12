@@ -46,6 +46,12 @@ setup(
     license="GNU General Public License v3",
     keywords="wps pywps birdhouse thunderbird",
     packages=find_packages(),
+    package_data = {
+        'thunderbird': [
+            'tests/data/*.nc',
+            'tests/metadata-conversion/*.yaml'
+        ]
+    },
     include_package_data=True,
     install_requires=reqs,
     extras_require={"dev": dev_reqs,},  # pip install ".[dev]"
