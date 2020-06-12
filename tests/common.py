@@ -7,11 +7,11 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-test_files = ["file:///{}".format(pkg_resources.resource_filename("tests", "data/"+test_file)) 
-                for test_file in pkg_resources.resource_listdir("tests", "data")]
+test_files = ["file:///{}".format(pkg_resources.resource_filename(__name__, "data/"+test_file)) 
+                for test_file in pkg_resources.resource_listdir(__name__, "data")]
 
-yaml_files = [pkg_resources.resource_filename("tests", "metadata-conversion/"+test_file)
-                for test_file in pkg_resources.resource_listdir("tests", "metadata-conversion")]
+yaml_files = [pkg_resources.resource_filename(__name__, "metadata-conversion/"+test_file)
+                for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")]
 yaml_str = [        
 """
 global:
