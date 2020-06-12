@@ -7,7 +7,8 @@ from pywps.inout.outputs import MetaLink4, MetaFile
 # Tool import
 from nchelpers import CFDataset
 
-# Library import
+# Library imports
+import logging
 import os
 
 
@@ -73,3 +74,13 @@ def build_meta_link(varname, desc, outfiles, outdir=os.getcwd()):
         meta_link.append(meta_file)
 
     return meta_link.xml
+
+
+def setup_logger(logger, level):
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
+    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(level)

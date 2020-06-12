@@ -11,7 +11,12 @@ from pywps.app.Common import Metadata
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
 from dp.generate_prsn import dry_run as dry_run_info
-from thunderbird.utils import is_opendap_url, collect_output_files, build_meta_link
+from thunderbird.utils import (
+    is_opendap_url,
+    collect_output_files,
+    build_meta_link,
+    setup_logger,
+)
 
 # Library imports
 import logging
@@ -97,7 +102,7 @@ class GeneratePrsn(Process):
             identifier="generate_prsn",
             title="Generate Precipitation as Snow",
             abstract="Generate precipitation as snow file from precipitation "
-                     "and minimum/maximum temperature data",
+            "and minimum/maximum temperature data",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -138,21 +143,12 @@ class GeneratePrsn(Process):
                 filepaths[var] = path.file
         return filepaths
 
-    def setup_logger(self, level):
-        formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
-        )
-        handler = logging.StreamHandler()
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-        logger.setLevel(level)
-
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         filepaths = self.get_filepaths(request)
-        self.setup_logger(loglevel)
+        setup_logger(logger, loglevel)
 
         if dry_run:
             response.update_status("Dry Run", 10)
