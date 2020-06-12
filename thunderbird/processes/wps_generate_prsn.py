@@ -96,7 +96,7 @@ class GeneratePrsn(Process):
             self._handler,
             identifier="generate_prsn",
             title="Generate Precipitation as Snow",
-            abstract="Generate precipitation as snow file from precipitation, and minimum/maximum temperature data",
+            abstract="Generate precipitation as snow file from precipitation and minimum/maximum temperature data",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -150,9 +150,6 @@ class GeneratePrsn(Process):
 
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         filepaths = self.get_filepaths(request)
-        filepaths["pr"] = filepaths["pr"].replace(" ", "+")
-        filepaths["tasmin"] = filepaths["tasmin"].replace(" ", "+")
-        filepaths["tasmax"] = filepaths["tasmax"].replace(" ", "+")
         self.setup_logger(loglevel)
 
         if dry_run:
@@ -169,11 +166,11 @@ class GeneratePrsn(Process):
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
             response.update_status("File processing complete", 90)
-            prsn_file = collect_output_files("prsn", self.workdir)[0]
+            prsn_file = collect_output_files("prsn", self.workdir)
 
             response.update_status("Collecting output file", 95)
             response.outputs["output"].data = build_meta_link(
-                "prsn", "Precipitation as Snow", [prsn_file], self.workdir
+                "prsn", "Precipitation as Snow", prsn_file, self.workdir
             )
 
         response.update_status("Process complete", 100)
