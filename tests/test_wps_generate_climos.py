@@ -5,7 +5,6 @@ from pywps.tests import assert_response_success
 
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_climos import GenerateClimos
-import owslib.wps
 
 
 @pytest.mark.online
@@ -65,13 +64,13 @@ def test_wps_gen_climos_opendap(opendap, kwargs):
 @pytest.mark.parametrize(
     ("resolutions", "expected"),
     [
-        (["all",], ["yearly", "seasonal", "monthy",]),
-        (["all", "yearly"], ["yearly", "seasonal", "monthy",]),
-        (["yearly",], ["yearly",]),
-        (["monthly", "seasonal"], ["seasonal", "monthly",]),
+        (["all"], ["yearly", "seasonal", "monthy"]),
+        (["all", "yearly"], ["yearly", "seasonal", "monthy"]),
+        (["yearly"], ["yearly"]),
+        (["monthly", "seasonal"], ["seasonal", "monthly"]),
     ],
 )
-def test_format_climo(resolutions, expected):
+def test_format_resolutions(resolutions, expected):
     gc = GenerateClimos()
     output = gc.format_resolutions(resolutions)
     assert len(output) == len(expected)
@@ -82,21 +81,15 @@ def test_format_climo(resolutions, expected):
 @pytest.mark.parametrize(
     ("climo", "expected"),
     [
-        (["all",], ["6190", "7100", "8100", "2020", "2050", "2080",]),
-        (
-            ["all", "historical"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
-        ),
-        (
-            ["all", "futures"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
-        ),
-        (["futures",], ["2020", "2050", "2080",]),
-        (["futures", "6190"], ["2020", "2050", "2080", "6190",]),
-        (["historical", "2050"], ["6190", "7100", "8100", "2050",]),
+        (["all"], ["6190", "7100", "8100", "2020", "2050", "2080"]),
+        (["all", "historical"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
+        (["all", "futures"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
+        (["futures"], ["2020", "2050", "2080"]),
+        (["futures", "6190"], ["2020", "2050", "2080", "6190"]),
+        (["historical", "2050"], ["6190", "7100", "8100", "2050"]),
         (
             ["historical", "futures", "6190", "2080"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
+            ["6190", "7100", "8100", "2020", "2050", "2080"],
         ),
     ],
 )
