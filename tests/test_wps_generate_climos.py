@@ -9,7 +9,7 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendap"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), [(TESTDATA["test_opendap"])],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -38,10 +38,10 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
         ),
     ],
 )
-def test_wps_gen_climos_opendap(opendap, kwargs):
+def test_wps_gen_climos_opendap(netcdf, kwargs):
     client = client_for(Service(processes=[GenerateClimos()]))
     datainputs = (
-        "opendap=@xlink:href={0};"
+        "netcdf=@xlink:href={0};"
         "operation={operation};"
         "climo={climo};"
         "resolutions={resolutions};"
@@ -49,7 +49,7 @@ def test_wps_gen_climos_opendap(opendap, kwargs):
         "split_vars={split_vars};"
         "split_intervals={split_intervals};"
         "dry_run={dry_run};"
-    ).format(opendap, **kwargs)
+    ).format(netcdf, **kwargs)
 
     resp = client.get(
         service="wps",
@@ -64,8 +64,8 @@ def test_wps_gen_climos_opendap(opendap, kwargs):
 @pytest.mark.parametrize(
     ("resolutions", "expected"),
     [
-        (["all"], ["yearly", "seasonal", "monthy"]),
-        (["all", "yearly"], ["yearly", "seasonal", "monthy"]),
+        (["all"], ["yearly", "seasonal", "monthly"]),
+        (["all", "yearly"], ["yearly", "seasonal", "monthly"]),
         (["yearly"], ["yearly"]),
         (["monthly", "seasonal"], ["seasonal", "monthly"]),
     ],

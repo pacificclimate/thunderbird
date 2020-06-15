@@ -11,6 +11,7 @@ from pywps import (
 # Tool imports
 from dp.update_metadata import process_updates, logger
 from nchelpers import CFDataset
+from thunderbird.utils import is_opendap_url
 
 # Library imports
 import shutil
@@ -28,20 +29,12 @@ class UpdateMetadata(Process):
 
         inputs = [
             ComplexInput(
-                "opendap",
-                "Daily NetCDF Dataset",
-                abstract="Path to OpenDAP resource",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[FORMATS.DODS],
-            ),
-            ComplexInput(
                 "netcdf",
                 "Daily NetCDF Dataset",
                 abstract="NetCDF file",
-                min_occurs=0,
+                min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.NETCDF],
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "updates",
@@ -83,16 +76,17 @@ class UpdateMetadata(Process):
         2. Writing back to OPeNDAP file is nearly impossible
 
         """
-        if "opendap" in request.inputs:
-            url = request.inputs["opendap"][0].url
+        path = request.inputs["netcdf"][0]
+        if is_opendap_url(path.url):
+            url = path.url
             input_dataset = xr.open_dataset(url)
 
             filename = url.split("/")[-1]
             original = os.path.join(self.workdir, filename)
             input_dataset.to_netcdf(original, format="NETCDF4_CLASSIC")
 
-        elif "netcdf" in request.inputs:
-            original = request.inputs["netcdf"][0].file
+        elif path.file.endswith(".nc"):
+            original = path.file
 
         else:
             raise ProcessError(

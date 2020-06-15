@@ -139,8 +139,13 @@ class GeneratePrsn(Process):
         for var, path in zip(var_list, data_files):
             if is_opendap_url(path.url):
                 filepaths[var] = path.url
-            else:
+            elif path.file.endswith(".nc"):
                 filepaths[var] = path.file
+            else:
+                raise ProcessError(
+                    "You must provide a data source (opendap/netcdf). "
+                    f"Inputs provided: {request.inputs}"
+                )
         return filepaths
 
     def _handler(self, request, response):
