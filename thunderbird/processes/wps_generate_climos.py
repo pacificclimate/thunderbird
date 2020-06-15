@@ -167,8 +167,7 @@ class GenerateClimos(Process):
 
     def get_identifier(self, operation):
         """Use operation in filename to indicate that it is an output file"""
-        suffixes = {"mean": "Mean", "std": "SD"}
-        suffix = suffixes[operation]
+        suffix = {"mean": "Mean", "std": "SD"}[operation]
         return "Clim" + suffix
 
     def format_climo(self, climo):
