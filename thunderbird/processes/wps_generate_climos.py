@@ -13,6 +13,11 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from nchelpers import CFDataset
 from dp.generate_climos import create_climo_files
+from thunderbird.utils import (
+    is_opendap_url,
+    collect_output_files,
+    build_meta_link,
+)
 
 # Library imports
 import logging
@@ -31,25 +36,17 @@ class GenerateClimos(Process):
         self.resolutions = [
             "yearly",
             "seasonal",
-            "monthy",
+            "monthly",
         ]
 
         inputs = [
             ComplexInput(
-                "opendap",
-                "Daily NetCDF Dataset",
-                abstract="Path to OPEnDAP resource",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[FORMATS.DODS],
-            ),
-            ComplexInput(
                 "netcdf",
                 "Daily NetCDF Dataset",
                 abstract="NetCDF file",
-                min_occurs=0,
+                min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.NETCDF],
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "operation",
@@ -168,21 +165,11 @@ class GenerateClimos(Process):
 
         return filename
 
-    def collect_climo_files(self):
-        return [file for file in os.listdir(self.workdir) if file.endswith(".nc")]
-
-    def build_meta_link(self, climo_files):
-        meta_link = MetaLink4(
-            "outputs", "Output of netCDF climo files", workdir=self.workdir
-        )
-
-        for file in climo_files:
-            # Create a MetaFile instance, which instantiates a ComplexOutput object.
-            meta_file = MetaFile(f"{file}", "Climatology", fmt=FORMATS.NETCDF)
-            meta_file.file = os.path.join(self.workdir, file)
-            meta_link.append(meta_file)
-
-        return meta_link.xml
+    def get_identifier(self, operation):
+        """Use operation in filename to indicate that it is an output file"""
+        suffixes = {"mean": "Mean", "std": "SD"}
+        suffix = suffixes[operation]
+        return "Clim" + suffix
 
     def format_climo(self, climo):
         if "all" in climo:
@@ -224,10 +211,11 @@ class GenerateClimos(Process):
         )
 
     def get_filepath(self, request):
-        if "opendap" in request.inputs:
-            return request.inputs["opendap"][0].url
-        elif "netcdf" in request.inputs:
-            return request.inputs["netcdf"][0].file
+        path = request.inputs["netcdf"][0]
+        if is_opendap_url(path.url):
+            return path.url
+        elif path.file.endswith(".nc"):
+            return path.file
         else:
             raise ProcessError(
                 "You must provide a data source (opendap/netcdf). "
@@ -275,10 +263,14 @@ class GenerateClimos(Process):
 
             response.update_status("File Processing Complete", 90)
 
-            climo_files = self.collect_climo_files()
+            climo_files = collect_output_files(
+                self.get_identifier(operation), self.workdir
+            )
 
             response.update_status("Collecting output files", 95)
-            response.outputs["output"].data = self.build_meta_link(climo_files)
+            response.outputs["output"].data = build_meta_link(
+                "climo", "Climatology", climo_files, self.workdir
+            )
 
         response.update_status("Process Complete", 100)
         return response
