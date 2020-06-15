@@ -19,5 +19,7 @@ jobs:
         sudo apt-get install cdo
         python -m pip install --upgrade pip
         pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt -r test_requirements.txt
-    - name: Run Tests
+    - name: Code Quality
+      run: black . --check
+    - name: Run Tests with pytest
       run: pytest -m "not online" tests/ -v

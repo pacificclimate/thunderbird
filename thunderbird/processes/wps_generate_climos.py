@@ -89,7 +89,7 @@ class GenerateClimos(Process):
                 "Split Variables",
                 default=True,
                 abstract="Generate a separate file for each "
-                         "dependent variable in the file",
+                "dependent variable in the file",
                 data_type="boolean",
             ),
             LiteralInput(
@@ -129,9 +129,9 @@ class GenerateClimos(Process):
             version="0.7.0",
             title="Generate Climatological Means",
             abstract="Generate files containing climatological means from "
-                     "input files of daily, monthly, or yearly data that adhere "
-                     "to the PCIC metadata standard (and consequently to "
-                     "CMIP5 and CF standards).",
+            "input files of daily, monthly, or yearly data that adhere "
+            "to the PCIC metadata standard (and consequently to "
+            "CMIP5 and CF standards).",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),

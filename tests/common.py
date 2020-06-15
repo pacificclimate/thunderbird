@@ -7,13 +7,17 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-test_files = ["file:///{}".format(pkg_resources.resource_filename(__name__, "data/"+test_file)) 
-                for test_file in pkg_resources.resource_listdir(__name__, "data")]
+test_files = [
+    "file:///{}".format(pkg_resources.resource_filename(__name__, "data/" + test_file))
+    for test_file in pkg_resources.resource_listdir(__name__, "data")
+]
 
-yaml_files = [pkg_resources.resource_filename(__name__, "metadata-conversion/"+test_file)
-                for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")]
-yaml_str = [        
-"""
+yaml_files = [
+    pkg_resources.resource_filename(__name__, "metadata-conversion/" + test_file)
+    for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")
+]
+yaml_str = [
+    """
 global:
     history: "today is a nice day"
 """
@@ -43,7 +47,7 @@ TESTDATA = {
     "proxy/thredds/dodsC/datasets/TestData/"
     "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",
-    "test_yaml": yaml_files + yaml_str
+    "test_yaml": yaml_files + yaml_str,
 }
 
 
