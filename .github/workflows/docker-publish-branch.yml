@@ -1,9 +1,6 @@
-name: Docker Branch Publishing
+name: Docker Publishing
 
-on:
-  push:
-    branches:
-      - 'i*'
+on: push
 
 jobs:
   docker-publish-branch:
