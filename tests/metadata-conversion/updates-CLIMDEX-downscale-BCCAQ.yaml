@@ -1,0 +1,31 @@
+global:
+    - project_id: CMIP5
+    - product: CLIMDEX output
+    - input_product: downscaled output
+    - downscaling__method: Bias Correction/Constructed Analogue Quantile Mapping (BCCAQ)
+    - downscaling__method_id: BCCAQ
+    - downscaling__creation_date: <-input_creation_date
+    - downscaling__title: <-input_title
+    - downscaling__GCM__experiment: <-driving_experiment
+    - downscaling__GCM__experiment_id: = normalize_experiment_id(driving_experiment_name)
+    - downscaling__GCM__frequency: <-input_frequency
+    - downscaling__GCM__initialization_method: = parse_ensemble_code(driving_model_ensemble_member)['initialization_method']
+    - downscaling__GCM__institute_id: <-driving_institute_id
+    - downscaling__GCM__institution: <-driving_institution
+    - downscaling__GCM__model_id: <-driving_model_id
+    - downscaling__GCM__physics_version: = parse_ensemble_code(driving_model_ensemble_member)['physics_version']
+    - downscaling__GCM__realization: = parse_ensemble_code(driving_model_ensemble_member)['realization']
+    - downscaling__target__contact: <-target_contact
+    - downscaling__target__dataset: <-target_dataset
+    - downscaling__target__dataset_id: <-target_id
+    - downscaling__target__institute_id: <-target_institute_id
+    - downscaling__target__institution: <-target_institution
+    - downscaling__target__references: <-target_references
+    - downscaling__target__version: <-target_version
+    - downscaling__target__history: <-target_history
+    - ETCCDI_institute_id: <-ETCCDI_institution
+    # Deletes - for later
+    # - driving_model_ensemble_member:
+
+time:
+    - bounds: time_bnds
