@@ -73,9 +73,8 @@ class UpdateMetadata(Process):
             outputs=outputs,
         )
 
-
     def copy_and_get_filepath(self, request):
-        '''
+        """
         This function takes an input "request" and returns a filepath to the input data.
         As the update_metadata simply updates the original file "in place", copying the
         input data is necessary for two reasons.
@@ -83,14 +82,14 @@ class UpdateMetadata(Process):
         1. The original file is maintained without any corruption
         2. Writing back to OPeNDAP file is nearly impossible
 
-        '''
-        if "opendap" in request.inputs: 
+        """
+        if "opendap" in request.inputs:
             url = request.inputs["opendap"][0].url
             input_dataset = xr.open_dataset(url)
 
             filename = url.split("/")[-1]
             original = os.path.join(self.workdir, filename)
-            input_dataset.to_netcdf(original, format = "NETCDF4_CLASSIC")
+            input_dataset.to_netcdf(original, format="NETCDF4_CLASSIC")
 
         elif "netcdf" in request.inputs:
             original = request.inputs["netcdf"][0].file
@@ -103,7 +102,6 @@ class UpdateMetadata(Process):
         copy = original[:-3] + "_copy.nc"
         shutil.copyfile(original, copy)
         return copy
-        
 
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
@@ -120,9 +118,8 @@ class UpdateMetadata(Process):
         else:
             updates_instruction = yaml.safe_load(updates)
 
-        with CFDataset(filepath, mode='r+') as dataset:
+        with CFDataset(filepath, mode="r+") as dataset:
             process_updates(dataset, updates_instruction)
-
 
         response.outputs["output"].file = filepath
 

@@ -8,6 +8,7 @@ from thunderbird.processes.wps_update_metadata import UpdateMetadata
 import owslib.wps
 import os
 
+
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("opendap"), [(TESTDATA["test_opendap"])],
@@ -17,10 +18,7 @@ import os
 )
 def test_wps_update_metadata_opendap(opendap, updates):
     client = client_for(Service(processes=[UpdateMetadata()]))
-    datainputs = (
-        "opendap=@xlink:href={0};"
-        "updates={1};"
-    ).format(opendap, updates)
+    datainputs = ("opendap=@xlink:href={0};" "updates={1};").format(opendap, updates)
 
     resp = client.get(
         service="wps",
@@ -41,10 +39,7 @@ def test_wps_update_metadata_opendap(opendap, updates):
 )
 def test_wps_update_metadata_netcdf(netcdf, updates):
     client = client_for(Service(processes=[UpdateMetadata()]))
-    datainputs = (
-        "netcdf=@xlink:href={0};"
-        "updates={1};"
-    ).format(netcdf, updates)
+    datainputs = ("netcdf=@xlink:href={0};" "updates={1};").format(netcdf, updates)
 
     resp = client.get(
         service="wps",
