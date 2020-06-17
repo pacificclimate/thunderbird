@@ -251,6 +251,7 @@ class GenerateClimos(Process):
             for period in periods:
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
+                    period,
                     self.workdir,
                     input_file,
                     operation,
