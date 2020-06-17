@@ -15,7 +15,7 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
     ("kwargs"),
     [
         (
-           {
+            {
                 "operation": "mean",
                 "climo": "6190",
                 "resolutions": "all",
