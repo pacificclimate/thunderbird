@@ -25,7 +25,7 @@ global:
 
 TESTDATA = {
     "test_local_nc": test_files,
-    "test_opendap": "http://test.opendap.org:80/opendap/netcdf/examples/sresa1b_ncar_ccsm3_0_run1_200001.nc",
+    "test_opendap": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
     "test_local_pr_nc": "file:///{}".format(
         resource_filename("tests", "data/pr_week_test.nc")
     ),
