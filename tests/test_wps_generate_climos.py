@@ -18,7 +18,7 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
             {
                 "operation": "mean",
                 "climo": "6190",
-                "resolutions": "yearly",
+                "resolutions": "all",
                 "convert_longitudes": "True",
                 "split_vars": "True",
                 "split_intervals": "True",
