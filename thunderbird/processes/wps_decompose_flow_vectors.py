@@ -17,6 +17,7 @@ import sys
 
 # Tool imports
 from dp.decompose_flow_vectors import logger, decompose_flow_vectors
+from thunderbird.utils import is_opendap_url
 
 
 LOGGER = logging.getLogger("PYWPS")
@@ -26,20 +27,12 @@ class DecomposeFlowVectors(Process):
     def __init__(self):
         inputs = [
             ComplexInput(
-                "opendap",
-                "source netCDF file",
-                abstract="Path to OPEnDAP resource",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[FORMATS.DODS],
-            ),
-            ComplexInput(
                 "netcdf",
-                "source netCDF file",
-                abstract="Path to NetCDF file",
-                min_occurs=0,
+                "Daily NetCDF Dataset",
+                abstract="NetCDF file",
+                min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.NETCDF],
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "variable",
@@ -74,13 +67,15 @@ class DecomposeFlowVectors(Process):
         )
 
     def get_filepath(self, request):
-        if "opendap" in request.inputs:
-            return request.inputs["opendap"][0].url
-        elif "netcdf" in request.inputs:
-            return request.inputs["netcdf"][0].file
+        path = request.inputs["netcdf"][0]
+        if is_opendap_url(path.url):
+            return path.url
+        elif path.file.endswith(".nc"):
+            return path.file
         else:
             raise ProcessError(
-                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+                "You must provide a data source (opendap/netcdf). "
+                f"Inputs provided: {request.inputs}"
             )
 
     def _handler(self, request, response):
