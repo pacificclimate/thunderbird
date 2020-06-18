@@ -11,29 +11,21 @@ import os
 
 flow_vectos_opendap = "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
 flow_vectors_nc = "file:///{}".format(
-    pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc"))
+    pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc")
+)
+
 
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("opendap"), [flow_vectos_opendap],
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "dest_file": "output.nc",
-                "variable": "Flow_Direction",
-            }
-        ),
-    ],
+    ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
 )
 def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
     client = client_for(Service(processes=[DecomposeFlowVectors()]))
     datainputs = (
-        "opendap=@xlink:href={0};"
-        "dest_file={dest_file};"
-        "variable={variable};"
+        "opendap=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};"
     ).format(opendap, **kwargs)
 
     resp = client.get(
@@ -51,22 +43,12 @@ def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
     ("netcdf"), [flow_vectors_nc],
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "dest_file": "output.nc",
-                "variable": "Flow_Direction",
-            }
-        ),
-    ],
+    ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
 )
 def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
     client = client_for(Service(processes=[DecomposeFlowVectors()]))
     datainputs = (
-        "netcdf=@xlink:href={0};"
-        "dest_file={dest_file};"
-        "variable={variable};"
+        "netcdf=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};"
     ).format(netcdf, **kwargs)
 
     resp = client.get(

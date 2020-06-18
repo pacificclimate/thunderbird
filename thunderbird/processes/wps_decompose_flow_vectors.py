@@ -8,6 +8,7 @@ from pywps import (
     FORMATS,
     Format,
 )
+
 # Library imports
 from netCDF4 import Dataset
 import numpy as np
@@ -39,11 +40,7 @@ class DecomposeFlowVectors(Process):
                 "netCDF variable describing flow direction",
                 data_type="string",
             ),
-            LiteralInput(
-                "dest_file",
-                "destination netCDF file",
-                data_type="string",
-            ),
+            LiteralInput("dest_file", "destination netCDF file", data_type="string",),
         ]
         outputs = [
             ComplexOutput(
@@ -89,23 +86,22 @@ class DecomposeFlowVectors(Process):
 
         if not "lon" in source.dimensions or not "lat" in source.dimensions:
             logger.debug(
-                "{} does not have latitude and longitude dimensions".format(
-                    source_file
-                )
+                "{} does not have latitude and longitude dimensions".format(source_file)
             )
             source.close()
             sys.exit()
 
         if not variable in source.variables:
-            logger.debug(
-                "Variable {} is not found in {}".format(variable, source_file)
-            )
+            logger.debug("Variable {} is not found in {}".format(variable, source_file))
             source.close()
             sys.exit()
 
         flow_variable = source.variables[variable]
 
-        if not "lon" in flow_variable.dimensions or not "lat" in flow_variable.dimensions:
+        if (
+            not "lon" in flow_variable.dimensions
+            or not "lat" in flow_variable.dimensions
+        ):
             logger.debug("Variable {} is not associated with a grid".format(variable))
             source.close()
             sys.exit()
