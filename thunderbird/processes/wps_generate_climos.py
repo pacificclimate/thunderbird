@@ -190,7 +190,7 @@ class GenerateClimos(Process):
         return list(set(resolutions))
 
     def collect_args(self, request):
-        if("climo" in request.inputs):
+        if "climo" in request.inputs:
             climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         else:
             climo = standard_climo_periods().keys()

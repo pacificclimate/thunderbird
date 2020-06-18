@@ -6,6 +6,7 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
+
 def run_wps_generate_climos(netcdf, kwargs):
     client = client_for(Service(processes=[GenerateClimos()]))
     datainputs = (
@@ -27,6 +28,7 @@ def run_wps_generate_climos(netcdf, kwargs):
         datainputs=datainputs,
     )
     assert_response_success(resp)
+
 
 @pytest.mark.online
 @pytest.mark.parametrize(
@@ -62,7 +64,12 @@ def run_wps_generate_climos(netcdf, kwargs):
 def test_wps_gen_climos_opendap(netcdf, kwargs):
     run_wps_generate_climos(netcdf, kwargs)
 
-local_test_data = [nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")]
+
+local_test_data = [
+    nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")
+]
+
+
 @pytest.mark.parametrize(
     ("netcdf"), local_test_data,
 )
@@ -95,6 +102,7 @@ local_test_data = [nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_c
 )
 def test_wps_gen_climos_local_nc(netcdf, kwargs):
     run_wps_generate_climos(netcdf, kwargs)
+
 
 @pytest.mark.parametrize(
     ("resolutions", "expected"),
