@@ -3,21 +3,21 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    LiteralOutput,
     ComplexOutput,
     FORMATS,
-    Format,
 )
 from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink, MetaLink4, MetaFile
-from pywps.inout.literaltypes import AllowedValue
-from pywps.validator.mode import MODE
+from pywps.inout.outputs import MetaLink4, MetaFile
 from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from nchelpers import CFDataset
 from dp.generate_climos import create_climo_files
-import dp
+from thunderbird.utils import (
+    is_opendap_url,
+    collect_output_files,
+    build_meta_link,
+)
 
 # Library imports
 import logging
@@ -36,31 +36,23 @@ class GenerateClimos(Process):
         self.resolutions = [
             "yearly",
             "seasonal",
-            "monthy",
+            "monthly",
         ]
 
         inputs = [
             ComplexInput(
-                "opendap",
-                "Daily NetCDF Dataset",
-                abstract="Path to OPEnDAP resource",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[FORMATS.DODS],
-            ),
-            ComplexInput(
                 "netcdf",
                 "Daily NetCDF Dataset",
                 abstract="NetCDF file",
-                min_occurs=0,
+                min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.NETCDF],
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "operation",
                 "Data Operation",
                 abstract="Operation to perform on the datasets",
-                allowed_values=["mean", "std",],
+                allowed_values=["mean", "std"],
                 data_type="string",
             ),
             LiteralInput(
@@ -93,7 +85,8 @@ class GenerateClimos(Process):
                 "split_vars",
                 "Split Variables",
                 default=True,
-                abstract="Generate a separate file for each dependent variable in the file",
+                abstract="Generate a separate file for each "
+                "dependent variable in the file",
                 data_type="boolean",
             ),
             LiteralInput(
@@ -132,7 +125,10 @@ class GenerateClimos(Process):
             identifier="generate_climos",
             version="0.7.0",
             title="Generate Climatological Means",
-            abstract="Generate files containing climatological means from input files of daily, monthly, or yearly data that adhere to the PCIC metadata standard (and consequently to CMIP5 and CF standards).",
+            abstract="Generate files containing climatological means from "
+            "input files of daily, monthly, or yearly data that adhere "
+            "to the PCIC metadata standard (and consequently to "
+            "CMIP5 and CF standards).",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -155,14 +151,10 @@ class GenerateClimos(Process):
             output.append(f"climo_periods: {periods}")
             for attr in "project institution model emissions run".split():
                 try:
-                    output.append(
-                        f"{attr}: {getattr(input_file.metadata, attr)}"
-                    )
+                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
                 except Exception as e:
                     output.append(f"{attr}: {e.__class__.__name__}: {e}")
-            output.append(
-                f"dependent_varnames: {input_file.dependent_varnames()}"
-            )
+            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
             for attr in "time_resolution is_multi_year_mean".split():
                 output.append(f"{attr}: {getattr(input_file, attr)}")
 
@@ -173,23 +165,10 @@ class GenerateClimos(Process):
 
         return filename
 
-    def collect_climo_files(self):
-        return [
-            file for file in os.listdir(self.workdir) if file.endswith(".nc")
-        ]
-
-    def build_meta_link(self, climo_files):
-        meta_link = MetaLink4(
-            "outputs", "Output of netCDF climo files", workdir=self.workdir
-        )
-
-        for file in climo_files:
-            # Create a MetaFile instance, which instantiates a ComplexOutput object.
-            meta_file = MetaFile(f"{file}", "Climatology", fmt=FORMATS.NETCDF)
-            meta_file.file = os.path.join(self.workdir, file)
-            meta_link.append(meta_file)
-
-        return meta_link.xml
+    def get_identifier(self, operation):
+        """Use operation in filename to indicate that it is an output file"""
+        suffix = {"mean": "Mean", "std": "SD"}[operation]
+        return "Clim" + suffix
 
     def format_climo(self, climo):
         if "all" in climo:
@@ -200,9 +179,7 @@ class GenerateClimos(Process):
             {
                 item
                 for c in climo
-                for item in (
-                    self.climos[c] if c in self.climos.keys() else [c]
-                )
+                for item in (self.climos[c] if c in self.climos.keys() else [c])
             }
         )
 
@@ -213,9 +190,7 @@ class GenerateClimos(Process):
         return list(set(resolutions))
 
     def collect_args(self, request):
-        climo = self.format_climo(
-            [climo.data for climo in request.inputs["climo"]]
-        )
+        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         operation = request.inputs["operation"][0].data
         resolutions = self.format_resolutions(
             [resolution.data for resolution in request.inputs["resolutions"]]
@@ -235,13 +210,15 @@ class GenerateClimos(Process):
         )
 
     def get_filepath(self, request):
-        if "opendap" in request.inputs:
-            return request.inputs["opendap"][0].url
-        elif "netcdf" in request.inputs:
-            return request.inputs["netcdf"][0].file
+        path = request.inputs["netcdf"][0]
+        if is_opendap_url(path.url):
+            return path.url
+        elif path.file.endswith(".nc"):
+            return path.file
         else:
             raise ProcessError(
-                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+                "You must provide a data source (opendap/netcdf). "
+                f"Inputs provided: {request.inputs}"
             )
 
     def _handler(self, request, response):
@@ -261,17 +238,13 @@ class GenerateClimos(Process):
         if dry_run:
             response.update_status("Dry Run", 10)
             del response.outputs["output"]  # remove unnecessary output
-            response.outputs["dry_output"].file = self.dry_run_info(
-                filepath, climo
-            )
+            response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
 
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
             input_file = CFDataset(filepath)
 
-            periods = [
-                period for period in input_file.climo_periods.keys() & climo
-            ]
+            periods = [period for period in input_file.climo_periods.keys() & climo]
 
             response.update_status(f"Processing {filepath}", 10)
 
@@ -289,10 +262,14 @@ class GenerateClimos(Process):
 
             response.update_status("File Processing Complete", 90)
 
-            climo_files = self.collect_climo_files()
+            climo_files = collect_output_files(
+                self.get_identifier(operation), self.workdir
+            )
 
             response.update_status("Collecting output files", 95)
-            response.outputs["output"].data = self.build_meta_link(climo_files)
+            response.outputs["output"].data = build_meta_link(
+                "climo", "Climatology", climo_files, self.workdir
+            )
 
         response.update_status("Process Complete", 100)
         return response

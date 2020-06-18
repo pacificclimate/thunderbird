@@ -1,0 +1,17 @@
+name: Docker Publishing
+
+on: push
+
+jobs:
+  docker-publish-branch:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.pcicdevops_at_dockerhub_username }}
+          password: ${{ secrets.pcicdevops_at_dockerhub_password }}
+          repository: pcic/thunderbird
+          tag_with_ref: true

@@ -5,12 +5,11 @@ from pywps.tests import assert_response_success
 
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_climos import GenerateClimos
-import owslib.wps
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendap"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), [(TESTDATA["test_opendap"])],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -19,7 +18,7 @@ import owslib.wps
             {
                 "operation": "mean",
                 "climo": "6190",
-                "resolutions": "yearly",
+                "resolutions": "all",
                 "convert_longitudes": "True",
                 "split_vars": "True",
                 "split_intervals": "True",
@@ -39,10 +38,10 @@ import owslib.wps
         ),
     ],
 )
-def test_wps_gen_climos_opendap(opendap, kwargs):
+def test_wps_gen_climos_opendap(netcdf, kwargs):
     client = client_for(Service(processes=[GenerateClimos()]))
     datainputs = (
-        "opendap=@xlink:href={0};"
+        "netcdf=@xlink:href={0};"
         "operation={operation};"
         "climo={climo};"
         "resolutions={resolutions};"
@@ -50,7 +49,7 @@ def test_wps_gen_climos_opendap(opendap, kwargs):
         "split_vars={split_vars};"
         "split_intervals={split_intervals};"
         "dry_run={dry_run};"
-    ).format(opendap, **kwargs)
+    ).format(netcdf, **kwargs)
 
     resp = client.get(
         service="wps",
@@ -65,13 +64,13 @@ def test_wps_gen_climos_opendap(opendap, kwargs):
 @pytest.mark.parametrize(
     ("resolutions", "expected"),
     [
-        (["all",], ["yearly", "seasonal", "monthy",]),
-        (["all", "yearly"], ["yearly", "seasonal", "monthy",]),
-        (["yearly",], ["yearly",]),
-        (["monthly", "seasonal"], ["seasonal", "monthly",]),
+        (["all"], ["yearly", "seasonal", "monthly"]),
+        (["all", "yearly"], ["yearly", "seasonal", "monthly"]),
+        (["yearly"], ["yearly"]),
+        (["monthly", "seasonal"], ["seasonal", "monthly"]),
     ],
 )
-def test_format_climo(resolutions, expected):
+def test_format_resolutions(resolutions, expected):
     gc = GenerateClimos()
     output = gc.format_resolutions(resolutions)
     assert len(output) == len(expected)
@@ -82,21 +81,15 @@ def test_format_climo(resolutions, expected):
 @pytest.mark.parametrize(
     ("climo", "expected"),
     [
-        (["all",], ["6190", "7100", "8100", "2020", "2050", "2080",]),
-        (
-            ["all", "historical"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
-        ),
-        (
-            ["all", "futures"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
-        ),
-        (["futures",], ["2020", "2050", "2080",]),
-        (["futures", "6190"], ["2020", "2050", "2080", "6190",]),
-        (["historical", "2050"], ["6190", "7100", "8100", "2050",]),
+        (["all"], ["6190", "7100", "8100", "2020", "2050", "2080"]),
+        (["all", "historical"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
+        (["all", "futures"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
+        (["futures"], ["2020", "2050", "2080"]),
+        (["futures", "6190"], ["2020", "2050", "2080", "6190"]),
+        (["historical", "2050"], ["6190", "7100", "8100", "2050"]),
         (
             ["historical", "futures", "6190", "2080"],
-            ["6190", "7100", "8100", "2020", "2050", "2080",],
+            ["6190", "7100", "8100", "2020", "2050", "2080"],
         ),
     ],
 )
