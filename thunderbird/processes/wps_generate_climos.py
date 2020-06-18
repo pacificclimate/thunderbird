@@ -194,7 +194,6 @@ class GenerateClimos(Process):
             climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
         else:
             climo = standard_climo_periods().keys()
-        print(climo)
         operation = request.inputs["operation"][0].data
         resolutions = self.format_resolutions(
             [resolution.data for resolution in request.inputs["resolutions"]]

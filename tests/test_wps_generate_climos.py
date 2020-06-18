@@ -6,6 +6,27 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
+def run_wps_generate_climos(netcdf, kwargs):
+    client = client_for(Service(processes=[GenerateClimos()]))
+    datainputs = (
+        "netcdf=@xlink:href={0};"
+        "operation={operation};"
+        "climo={climo};"
+        "resolutions={resolutions};"
+        "convert_longitudes={convert_longitudes};"
+        "split_vars={split_vars};"
+        "split_intervals={split_intervals};"
+        "dry_run={dry_run};"
+    ).format(netcdf, **kwargs)
+
+    resp = client.get(
+        service="wps",
+        request="Execute",
+        version="1.0.0",
+        identifier="generate_climos",
+        datainputs=datainputs,
+    )
+    assert_response_success(resp)
 
 @pytest.mark.online
 @pytest.mark.parametrize(
@@ -39,29 +60,11 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
     ],
 )
 def test_wps_gen_climos_opendap(netcdf, kwargs):
-    client = client_for(Service(processes=[GenerateClimos()]))
-    datainputs = (
-        "netcdf=@xlink:href={0};"
-        "operation={operation};"
-        "climo={climo};"
-        "resolutions={resolutions};"
-        "convert_longitudes={convert_longitudes};"
-        "split_vars={split_vars};"
-        "split_intervals={split_intervals};"
-        "dry_run={dry_run};"
-    ).format(netcdf, **kwargs)
+    run_wps_generate_climos(netcdf, kwargs)
 
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="generate_climos",
-        datainputs=datainputs,
-    )
-    assert_response_success(resp)
-
+local_test_data = [nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")]
 @pytest.mark.parametrize(
-    ("netcdf"), (TESTDATA["test_local_nc"]),
+    ("netcdf"), local_test_data,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -91,27 +94,7 @@ def test_wps_gen_climos_opendap(netcdf, kwargs):
     ],
 )
 def test_wps_gen_climos_local_nc(netcdf, kwargs):
-    print(netcdf)
-    client = client_for(Service(processes=[GenerateClimos()]))
-    datainputs = (
-        "netcdf=@xlink:href={0};"
-        "operation={operation};"
-        "climo={climo};"
-        "resolutions={resolutions};"
-        "convert_longitudes={convert_longitudes};"
-        "split_vars={split_vars};"
-        "split_intervals={split_intervals};"
-        "dry_run={dry_run};"
-    ).format(netcdf, **kwargs)
-
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="generate_climos",
-        datainputs=datainputs,
-    )
-    assert_response_success(resp)
+    run_wps_generate_climos(netcdf, kwargs)
 
 @pytest.mark.parametrize(
     ("resolutions", "expected"),
