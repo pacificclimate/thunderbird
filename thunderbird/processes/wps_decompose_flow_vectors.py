@@ -9,37 +9,18 @@ from pywps import (
     Format,
 )
 # Library imports
+from netCDF4 import Dataset
+import numpy as np
 import logging
 import os
-import imp
-
-def load_script(module, script):
-    file_path = "/".join(module.__file__.split("/")[:-1]) + "/" + script
-    return imp.load_source(script, file_path)
+import sys
 
 # Tool imports
-from nchelpers import CFDataset
-import scripts
-dfv = load_script(scripts, "decompose_flow_vectors")
+from dp.decompose_flow_vectors import logger, decompose_flow_vectors
 
 
 LOGGER = logging.getLogger("PYWPS")
 
-
-class arguments:
-    def __init__(self, source_file, variable, dest_file):
-        self.source_file = source_file
-        self.variable = variable
-        self.dest_file = dest_file
-
-class ArgumentParserMocker:
-    def __init__(self):
-        self.prog = 'decompose_flow_vectors'
-        self.usage = None
-        self.description = 'Process an indexed flow direction netCDF into a vectored netCDF suitable for ncWMS display'
-        self.formatter_class= "<class 'argparse.HelpFormatter'>"
-        self.conflict_handler= 'error'
-        self.add_help=True
 
 class DecomposeFlowVectors(Process):
     def __init__(self):
@@ -108,11 +89,43 @@ class DecomposeFlowVectors(Process):
         source_file = self.get_filepath(request)
         variable = request.inputs["variable"][0].data
         dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
-        
-        args = arguments(source_file, variable, dest_file)
-        parser = ArgumentParserMocker()
 
-        dfv.main(args, parser)
+        source = Dataset(source_file, "r", format="NETCDF4")
+
+        if not "lon" in source.dimensions or not "lat" in source.dimensions:
+            logger.debug(
+                "{} does not have latitude and longitude dimensions".format(
+                    source_file
+                )
+            )
+            source.close()
+            sys.exit()
+
+        if not variable in source.variables:
+            logger.debug(
+                "Variable {} is not found in {}".format(variable, source_file)
+            )
+            source.close()
+            sys.exit()
+
+        flow_variable = source.variables[variable]
+
+        if not "lon" in flow_variable.dimensions or not "lat" in flow_variable.dimensions:
+            logger.debug("Variable {} is not associated with a grid".format(variable))
+            source.close()
+            sys.exit()
+
+        if np.ma.max(flow_variable[:]) > 9 or np.ma.min(flow_variable[:]) < 1:
+            logger.debug("Variable {} is not a valid flow routing".format(variable))
+            source.close()
+            sys.exit()
+
+        decompose_flow_vectors(source, dest_file, variable)
+        
+        # args = arguments(source_file, variable, dest_file)
+        # parser = ArgumentParserMocker()
+
+        # dfv.main(args, parser)
 
         response.outputs["output"].file = dest_file
 

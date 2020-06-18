@@ -10,6 +10,7 @@ xpath_ns = get_xpath_ns(VERSION)
 test_files = [
     "file:///{}".format(pkg_resources.resource_filename(__name__, "data/" + test_file))
     for test_file in pkg_resources.resource_listdir(__name__, "data")
+    if test_file.startswith("tiny_")
 ]
 
 yaml_files = [

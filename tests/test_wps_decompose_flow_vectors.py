@@ -6,11 +6,16 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
 import owslib.wps
+import pkg_resources
 import os
+
+flow_vectos_opendap = "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
+flow_vectors_nc = "file:///{}".format(
+    pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc"))
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendap"), [(TESTDATA["test_vector_flow"]["opendap"])],
+    ("opendap"), [flow_vectos_opendap],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -43,7 +48,7 @@ def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), [(TESTDATA["test_vector_flow"]["netcdf"])],
+    ("netcdf"), [flow_vectors_nc],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
