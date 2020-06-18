@@ -116,11 +116,6 @@ class DecomposeFlowVectors(Process):
             sys.exit()
 
         decompose_flow_vectors(source, dest_file, variable)
-        
-        # args = arguments(source_file, variable, dest_file)
-        # parser = ArgumentParserMocker()
-
-        # dfv.main(args, parser)
 
         response.outputs["output"].file = dest_file
 
