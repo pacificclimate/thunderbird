@@ -11,7 +11,7 @@ from pywps.inout.outputs import MetaLink4, MetaFile
 from pywps.app.exceptions import ProcessError
 
 # Tool imports
-from nchelpers import CFDataset
+from nchelpers import CFDataset, standard_climo_periods
 from dp.generate_climos import create_climo_files
 from thunderbird.utils import (
     is_opendap_url,
@@ -59,7 +59,7 @@ class GenerateClimos(Process):
                 "climo",
                 "Climatological Period",
                 abstract="Year ranges",
-                min_occurs=1,
+                min_occurs=0,
                 mode=0,
                 allowed_values=["all"]
                 + [key for key in self.climos.keys()]
@@ -190,7 +190,11 @@ class GenerateClimos(Process):
         return list(set(resolutions))
 
     def collect_args(self, request):
-        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
+        if("climo" in request.inputs):
+            climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
+        else:
+            climo = standard_climo_periods().keys()
+        print(climo)
         operation = request.inputs["operation"][0].data
         resolutions = self.format_resolutions(
             [resolution.data for resolution in request.inputs["resolutions"]]
