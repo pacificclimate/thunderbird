@@ -3,11 +3,13 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
+from netCDF4 import Dataset
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
 import owslib.wps
 import pkg_resources
 import os
+import re
 
 flow_vectors_opendap = "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
 flow_vectors_nc = "file:///{}".format(
@@ -60,3 +62,20 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
     )
 
     assert_response_success(resp)
+
+
+@pytest.mark.parametrize(
+    ("netcdf"), TESTDATA["test_local_nc"],
+)
+def test_input_check(netcdf):
+    source_file = re.sub("file:///", "", netcdf)
+    source = Dataset(source_file, "r", format="NETCDF4")
+
+    dfv = DecomposeFlowVectors()
+    try:
+        dfv.source_check(source)
+        assertion = False
+    except SystemExit:
+        assertion = True
+
+    assert assertion

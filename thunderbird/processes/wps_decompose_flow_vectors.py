@@ -75,24 +75,39 @@ class DecomposeFlowVectors(Process):
                 f"Inputs provided: {request.inputs}"
             )
 
-    def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
-
-        source_file = self.get_filepath(request)
-        variable = request.inputs["variable"][0].data
-        dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
-
-        source = Dataset(source_file, "r", format="NETCDF4")
-
+    def source_check(self, source):
         if not "lon" in source.dimensions or not "lat" in source.dimensions:
             logger.debug(
-                "{} does not have latitude and longitude dimensions".format(source_file)
+                "{} does not have latitude and longitude dimensions".format(
+                    source.filepath()
+                )
             )
             source.close()
             sys.exit()
 
+        valid_variables = []
+        for v in source.variables:
+            variable = source.variables[v]
+            if (
+                hasattr(variable, "dimensions")
+                and "lon" in variable.dimensions
+                and "lat" in variable.dimensions
+            ):
+                if np.ma.max(variable[:]) <= 9 and np.ma.min(variable[:]) >= 1:
+                    valid_variables.append(v)
+
+        if len(valid_variables) == 0:
+            logger.debug(
+                "{} does not have a valid flow variable".format(source.filepath())
+            )
+            source.close()
+            sys.exit()
+
+    def variable_check(self, source, variable):
         if not variable in source.variables:
-            logger.debug("Variable {} is not found in {}".format(variable, source_file))
+            logger.debug(
+                "Variable {} is not found in {}".format(variable, source.filepath())
+            )
             source.close()
             sys.exit()
 
@@ -110,6 +125,17 @@ class DecomposeFlowVectors(Process):
             logger.debug("Variable {} is not a valid flow routing".format(variable))
             source.close()
             sys.exit()
+
+    def _handler(self, request, response):
+        response.update_status("Starting Process", 0)
+
+        source_file = self.get_filepath(request)
+        variable = request.inputs["variable"][0].data
+        dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
+
+        source = Dataset(source_file, "r", format="NETCDF4")
+        self.source_check(source)
+        self.variable_check(source, variable)
 
         decompose_flow_vectors(source, dest_file, variable)
 
