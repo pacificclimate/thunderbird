@@ -6,6 +6,7 @@ from pywps.tests import assert_response_success
 from netCDF4 import Dataset
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
+from pywps.app.exceptions import ProcessError
 import owslib.wps
 import pkg_resources
 import os
@@ -75,7 +76,7 @@ def test_input_check(netcdf):
     try:
         dfv.source_check(source)
         assertion = False
-    except SystemExit:
+    except ProcessError: 
         assertion = True
 
     assert assertion
