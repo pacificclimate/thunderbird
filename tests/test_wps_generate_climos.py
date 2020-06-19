@@ -10,7 +10,6 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
 def run_wps_generate_climos(netcdf, datainputs):
     client = client_for(Service(processes=[GenerateClimos()]))
 
-
     resp = client.get(
         service="wps",
         request="Execute",
@@ -117,26 +116,17 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
 
     run_wps_generate_climos(netcdf, datainputs)
 
+
 @pytest.mark.parametrize(
     ("netcdf"), local_test_data,
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "operation": "mean",
-                "dry_run": "False",
-            }
-        ),
-    ],
+    ("kwargs"), [({"operation": "mean", "dry_run": "False",}),],
 )
 def test_missing_arguments(netcdf, kwargs):
     client = client_for(Service(processes=[GenerateClimos()]))
     datainputs = (
-        "netcdf=@xlink:href={0};"
-        "operation={operation};"
-        "dry_run={dry_run};"
+        "netcdf=@xlink:href={0};" "operation={operation};" "dry_run={dry_run};"
     ).format(netcdf, **kwargs)
 
     run_wps_generate_climos(netcdf, datainputs)
