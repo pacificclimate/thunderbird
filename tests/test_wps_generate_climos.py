@@ -116,7 +116,6 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
 def test_format_resolutions(resolutions, expected):
     gc = GenerateClimos()
     output = gc.format_resolutions(resolutions)
-    print(output)
     assert len(output) == len(expected)
     for resolution in output:
         assert resolution in expected
