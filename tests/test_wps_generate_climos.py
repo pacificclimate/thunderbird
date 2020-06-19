@@ -7,18 +7,9 @@ from .common import client_for, TESTDATA
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 
-def run_wps_generate_climos(netcdf, kwargs):
+def run_wps_generate_climos(netcdf, datainputs):
     client = client_for(Service(processes=[GenerateClimos()]))
-    datainputs = (
-        "netcdf=@xlink:href={0};"
-        "operation={operation};"
-        "climo={climo};"
-        "resolutions={resolutions};"
-        "convert_longitudes={convert_longitudes};"
-        "split_vars={split_vars};"
-        "split_intervals={split_intervals};"
-        "dry_run={dry_run};"
-    ).format(netcdf, **kwargs)
+
 
     resp = client.get(
         service="wps",
@@ -62,7 +53,18 @@ def run_wps_generate_climos(netcdf, kwargs):
     ],
 )
 def test_wps_gen_climos_opendap(netcdf, kwargs):
-    run_wps_generate_climos(netcdf, kwargs)
+    datainputs = (
+        "netcdf=@xlink:href={0};"
+        "operation={operation};"
+        "climo={climo};"
+        "resolutions={resolutions};"
+        "convert_longitudes={convert_longitudes};"
+        "split_vars={split_vars};"
+        "split_intervals={split_intervals};"
+        "dry_run={dry_run};"
+    ).format(netcdf, **kwargs)
+
+    run_wps_generate_climos(netcdf, datainputs)
 
 
 # running generate_climos on climo files is againt the purpose of the program
@@ -99,19 +101,42 @@ local_test_data = [
                 "dry_run": "True",
             }
         ),
-        # missing arguments
+    ],
+)
+def test_wps_gen_climos_local_nc(netcdf, kwargs):
+    datainputs = (
+        "netcdf=@xlink:href={0};"
+        "operation={operation};"
+        "climo={climo};"
+        "resolutions={resolutions};"
+        "convert_longitudes={convert_longitudes};"
+        "split_vars={split_vars};"
+        "split_intervals={split_intervals};"
+        "dry_run={dry_run};"
+    ).format(netcdf, **kwargs)
+
+    run_wps_generate_climos(netcdf, datainputs)
+
+@pytest.mark.parametrize(
+    ("netcdf"), local_test_data,
+)
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
         (
             {
                 "operation": "mean",
-                "climo": None,
-                "resolutions": None,
-                "convert_longitudes": None,
-                "split_vars": None,
-                "split_intervals": None,
-                "dry_run": "True",
+                "dry_run": "False",
             }
         ),
     ],
 )
-def test_wps_gen_climos_local_nc(netcdf, kwargs):
-    run_wps_generate_climos(netcdf, kwargs)
+def test_missing_arguments(netcdf, kwargs):
+    client = client_for(Service(processes=[GenerateClimos()]))
+    datainputs = (
+        "netcdf=@xlink:href={0};"
+        "operation={operation};"
+        "dry_run={dry_run};"
+    ).format(netcdf, **kwargs)
+
+    run_wps_generate_climos(netcdf, datainputs)

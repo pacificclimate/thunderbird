@@ -165,24 +165,6 @@ class GenerateClimos(Process):
         suffix = {"mean": "Mean", "std": "SD"}[operation]
         return "Clim" + suffix
 
-    def format_climo(self, request, climo):
-        if "climo" not in request.inputs:
-            return self.climos
-
-        return list(
-            {
-                item
-                for c in climo
-                for item in (self.climos[c] if c in self.climos.keys() else [c])
-            }
-        )
-
-    def format_resolutions(self, request, resolutions):
-        if "resolutions" not in request.inputs:
-            return self.resolutions
-
-        return list(set(resolutions))
-
     def collect_args(self, request):
         if "climo" in request.inputs:
             climo = list(set([climo.data for climo in request.inputs["climo"]]))
