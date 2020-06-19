@@ -64,7 +64,7 @@ def run_wps_generate_climos(netcdf, kwargs):
 def test_wps_gen_climos_opendap(netcdf, kwargs):
     run_wps_generate_climos(netcdf, kwargs)
 
-
+# running generate_climos on climo files is againt the purpose of the program
 local_test_data = [
     nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")
 ]
