@@ -58,7 +58,7 @@ class GenerateClimos(Process):
                 abstract="Year ranges",
                 min_occurs=0,
                 mode=0,
-                allowed_values= self.climos,
+                allowed_values=self.climos,
                 data_type="string",
             ),
             LiteralInput(
@@ -168,7 +168,7 @@ class GenerateClimos(Process):
     def format_climo(self, request, climo):
         if "climo" not in request.inputs:
             return self.climos
-        
+
         return list(
             {
                 item
@@ -190,7 +190,9 @@ class GenerateClimos(Process):
             climo = self.climos
 
         if "resolutions" in request.input:
-            resolutions = list(set([resolution.data for resolution in request.inputs["resolutions"]]))
+            resolutions = list(
+                set([resolution.data for resolution in request.inputs["resolutions"]])
+            )
         else:
             resolutions = self.resolutions
 
