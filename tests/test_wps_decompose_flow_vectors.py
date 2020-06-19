@@ -76,7 +76,7 @@ def test_input_check(netcdf):
     try:
         dfv.source_check(source)
         assertion = False
-    except ProcessError: 
+    except ProcessError:
         assertion = True
 
     assert assertion

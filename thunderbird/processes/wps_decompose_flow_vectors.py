@@ -85,7 +85,8 @@ class DecomposeFlowVectors(Process):
                     source_file_path
                 )
             )
-            source.close("{} does not have latitude and longitude dimensions".format(
+            source.close(
+                "{} does not have latitude and longitude dimensions".format(
                     source_file_path
                 )
             )
@@ -107,7 +108,9 @@ class DecomposeFlowVectors(Process):
                 "{} does not have a valid flow variable".format(source_file_path)
             )
             source.close()
-            raise ProcessError("{} does not have a valid flow variable".format(source_file_path))
+            raise ProcessError(
+                "{} does not have a valid flow variable".format(source_file_path)
+            )
 
     def variable_check(self, source, variable):
         source_file_path = source.filepath()
@@ -117,7 +120,9 @@ class DecomposeFlowVectors(Process):
                 "Variable {} is not found in {}".format(variable, source_file_path)
             )
             source.close()
-            raise ProcessError("Variable {} is not found in {}".format(variable, source_file_path))
+            raise ProcessError(
+                "Variable {} is not found in {}".format(variable, source_file_path)
+            )
 
         flow_variable = source.variables[variable]
 
@@ -125,14 +130,20 @@ class DecomposeFlowVectors(Process):
             not "lon" in flow_variable.dimensions
             or not "lat" in flow_variable.dimensions
         ):
-            logger.critical("Variable {} is not associated with a grid".format(variable))
+            logger.critical(
+                "Variable {} is not associated with a grid".format(variable)
+            )
             source.close()
-            raise ProcessError("Variable {} is not associated with a grid".format(variable))
+            raise ProcessError(
+                "Variable {} is not associated with a grid".format(variable)
+            )
 
         if np.ma.max(flow_variable[:]) > 9 or np.ma.min(flow_variable[:]) < 1:
             logger.critical("Variable {} is not a valid flow routing".format(variable))
             source.close()
-            raise ProcessError("Variable {} is not associated with a grid".format(variable))
+            raise ProcessError(
+                "Variable {} is not associated with a grid".format(variable)
+            )
 
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
