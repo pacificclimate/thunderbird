@@ -184,12 +184,12 @@ class GenerateClimos(Process):
         return list(set(resolutions))
 
     def collect_args(self, request):
-        if "climo" in request.input:
+        if "climo" in request.inputs:
             climo = list(set([climo.data for climo in request.inputs["climo"]]))
         else:
             climo = self.climos
 
-        if "resolutions" in request.input:
+        if "resolutions" in request.inputs:
             resolutions = list(
                 set([resolution.data for resolution in request.inputs["resolutions"]])
             )
