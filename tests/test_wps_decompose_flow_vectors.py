@@ -68,13 +68,44 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
 @pytest.mark.parametrize(
     ("netcdf"), TESTDATA["test_local_nc"],
 )
-def test_input_check(netcdf):
+def test_source_check(netcdf):
     source_file = re.sub("file:///", "", netcdf)
     source = Dataset(source_file, "r", format="NETCDF4")
 
     dfv = DecomposeFlowVectors()
     try:
         dfv.source_check(source)
+        assertion = False
+    except ProcessError:
+        assertion = True
+
+    assert assertion
+
+
+@pytest.mark.parametrize(
+    ("netcdf"), [(flow_vectors_nc)],
+)
+@pytest.mark.parametrize(
+    ("variable"),
+    [
+        "not a variable",
+        "crs",
+        "lat",
+        "lon",
+        "diffusion",
+        "Flow_Distance",
+        "Basin_ID",
+        "velocity",
+        "flow_direction",
+    ],
+)
+def test_variable_check(netcdf, variable):
+    source_file = re.sub("file:///", "", netcdf)
+    source = Dataset(source_file, "r", format="NETCDF4")
+
+    dfv = DecomposeFlowVectors()
+    try:
+        dfv.variable_check(source, variable)
         assertion = False
     except ProcessError:
         assertion = True
