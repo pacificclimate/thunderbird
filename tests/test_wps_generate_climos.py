@@ -69,7 +69,6 @@ local_test_data = [
     nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")
 ]
 
-
 @pytest.mark.parametrize(
     ("netcdf"), local_test_data,
 )
@@ -98,47 +97,21 @@ local_test_data = [
                 "dry_run": "True",
             }
         ),
+        # missing arguments
+        (
+            {
+                "operation": "mean",
+                "climo": None,
+                "resolutions": None,
+                "convert_longitudes": None,
+                "split_vars": None,
+                "split_intervals": None,
+                "dry_run": "True",
+            }
+        ),
     ],
 )
 def test_wps_gen_climos_local_nc(netcdf, kwargs):
     run_wps_generate_climos(netcdf, kwargs)
 
 
-@pytest.mark.parametrize(
-    ("resolutions", "expected"),
-    [
-        (["all"], ["yearly", "seasonal", "monthly"]),
-        (["all", "yearly"], ["yearly", "seasonal", "monthly"]),
-        (["yearly"], ["yearly"]),
-        (["monthly", "seasonal"], ["seasonal", "monthly"]),
-    ],
-)
-def test_format_resolutions(resolutions, expected):
-    gc = GenerateClimos()
-    output = gc.format_resolutions(resolutions)
-    assert len(output) == len(expected)
-    for resolution in output:
-        assert resolution in expected
-
-
-@pytest.mark.parametrize(
-    ("climo", "expected"),
-    [
-        (["all"], ["6190", "7100", "8100", "2020", "2050", "2080"]),
-        (["all", "historical"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
-        (["all", "futures"], ["6190", "7100", "8100", "2020", "2050", "2080"],),
-        (["futures"], ["2020", "2050", "2080"]),
-        (["futures", "6190"], ["2020", "2050", "2080", "6190"]),
-        (["historical", "2050"], ["6190", "7100", "8100", "2050"]),
-        (
-            ["historical", "futures", "6190", "2080"],
-            ["6190", "7100", "8100", "2020", "2050", "2080"],
-        ),
-    ],
-)
-def test_format_climo(climo, expected):
-    gc = GenerateClimos()
-    output = gc.format_climo(climo)
-    assert len(output) == len(expected)
-    for climo in output:
-        assert climo in expected

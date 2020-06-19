@@ -29,10 +29,7 @@ LOGGER = logging.getLogger("PYWPS")
 
 class GenerateClimos(Process):
     def __init__(self):
-        self.climos = {
-            "historical": ["6190", "7100", "8100"],
-            "futures": ["2020", "2050", "2080"],
-        }
+        self.climos = list(standard_climo_periods().keys())
         self.resolutions = [
             "yearly",
             "seasonal",
@@ -61,15 +58,13 @@ class GenerateClimos(Process):
                 abstract="Year ranges",
                 min_occurs=0,
                 mode=0,
-                allowed_values=["all"]
-                + [key for key in self.climos.keys()]
-                + [item for value in self.climos.values() for item in value],
+                allowed_values= self.climos,
                 data_type="string",
             ),
             LiteralInput(
                 "resolutions",
                 "Temporal Resolutions",
-                min_occurs=1,
+                min_occurs=0,
                 max_occurs=3,
                 allowed_values=["all"] + self.resolutions,
                 data_type="string",
@@ -170,11 +165,10 @@ class GenerateClimos(Process):
         suffix = {"mean": "Mean", "std": "SD"}[operation]
         return "Clim" + suffix
 
-    def format_climo(self, climo):
-        if "all" in climo:
-            return self.climos["historical"] + self.climos["futures"]
-
-        # replace 'historical', 'futures' with values
+    def format_climo(self, request, climo):
+        if "climo" not in request.inputs:
+            return self.climos
+        
         return list(
             {
                 item
@@ -183,21 +177,24 @@ class GenerateClimos(Process):
             }
         )
 
-    def format_resolutions(self, resolutions):
-        if "all" in resolutions:
+    def format_resolutions(self, request, resolutions):
+        if "resolutions" not in request.inputs:
             return self.resolutions
 
         return list(set(resolutions))
 
     def collect_args(self, request):
-        if "climo" in request.inputs:
-            climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
+        if "climo" in request.input:
+            climo = list(set([climo.data for climo in request.inputs["climo"]]))
         else:
-            climo = standard_climo_periods().keys()
+            climo = self.climos
+
+        if "resolutions" in request.input:
+            resolutions = list(set([resolution.data for resolution in request.inputs["resolutions"]]))
+        else:
+            resolutions = self.resolutions
+
         operation = request.inputs["operation"][0].data
-        resolutions = self.format_resolutions(
-            [resolution.data for resolution in request.inputs["resolutions"]]
-        )
         convert_longitudes = request.inputs["convert_longitudes"][0].data
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
