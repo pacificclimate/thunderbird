@@ -12,10 +12,10 @@ from pywps.app.Common import Metadata
 from nchelpers import CFDataset
 from dp.split_merged_climos import split_merged_climos
 from thunderbird.utils import (
+    MAX_OCCURS,
     is_opendap_url,
     collect_output_files,
     build_meta_link,
-    setup_logger,
 )
 
 # Library imports
@@ -42,7 +42,7 @@ class SplitMergedClimos(Process):
                 "NetCDF Datasets",
                 abstract="NetCDF files to process",
                 min_occurs=1,
-                max_occurs=100,
+                max_occurs=MAX_OCCURS,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
@@ -67,7 +67,7 @@ class SplitMergedClimos(Process):
             self._handler,
             identifier="split_merged_climos",
             title="Split Merged Climos",
-            abstract="Create climatologies from CMIP5 data",
+            abstract="Split climo means files into one file per time interval",
             metadata=[
                 Metadata("NetCDF processing"),
                 Metadata("Climate Data Operations"),
@@ -95,6 +95,7 @@ class SplitMergedClimos(Process):
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
         loglevel = request.inputs["loglevel"][0].data
+        logger.setLevel(getattr(logging, loglevel))
         filepaths = self.get_filepaths(request)
         response.update_status("Processing files", 10)
         output_filepaths = []

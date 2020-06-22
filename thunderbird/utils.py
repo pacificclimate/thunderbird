@@ -11,6 +11,8 @@ from nchelpers import CFDataset
 import logging
 import os
 
+MAX_OCCURS = 1000
+
 
 def is_opendap_url(url):  # From Finch bird
     """

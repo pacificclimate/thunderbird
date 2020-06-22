@@ -48,6 +48,12 @@ TESTDATA = {
     "proxy/thredds/dodsC/datasets/TestData/"
     "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",
+    "test_opendap_gcm_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_climos.nc",
+    "test_opendap_gcm_360_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_360_climos.nc",
+    "test_opendap_tasmax_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_downscaled_tasmax_climos.nc",
     "test_yaml": yaml_files + yaml_str,
 }
 
