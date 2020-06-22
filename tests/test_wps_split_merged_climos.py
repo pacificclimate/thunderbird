@@ -6,9 +6,9 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
-gcm_360_climos_local = TESTDATA["test_local_nc"][1]
-gcm_climos_local = TESTDATA["test_local_nc"][2]
-tasmax_climos_local = TESTDATA["test_local_nc"][10]
+gcm_360_climos_local = TESTDATA["test_local_gcm_360_climos_nc"]
+gcm_climos_local = TESTDATA["test_local_gcm_climos_nc"]
+tasmax_climos_local = TESTDATA["test_local_tasmax_climos_nc"]
 gcm_360_climos_opendap = TESTDATA["test_opendap_gcm_360_climos_nc"]
 gcm_climos_opendap = TESTDATA["test_opendap_gcm_climos_nc"]
 tasmax_climos_opendap = TESTDATA["test_opendap_tasmax_climos_nc"]
