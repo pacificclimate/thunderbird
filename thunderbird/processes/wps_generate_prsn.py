@@ -76,7 +76,7 @@ class GeneratePrsn(Process):
             dryrun_input,
         ]
         outputs = [
-            meta4Output,
+            meta4_output,
             dryrun_output,
         ]
 
