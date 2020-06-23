@@ -18,9 +18,9 @@ from thunderbird.utils import (
     setup_logger,
 )
 from thunderbird.wps_io import (
-    loglevel,
+    log_level,
     dryrun_input,
-    meta4Output,
+    meta4_output,
     dryrun_output,
 )
 

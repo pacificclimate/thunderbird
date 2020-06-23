@@ -15,7 +15,7 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
 )
-from thunderbird.wps_io import dryrun_input, meta4Output, dryrun_output
+from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output
 
 # Library imports
 import logging
@@ -92,7 +92,7 @@ class GenerateClimos(Process):
             dryrun_input,
         ]
         outputs = [
-            meta4Output,
+            meta4_output,
             dryrun_output,
         ]
 

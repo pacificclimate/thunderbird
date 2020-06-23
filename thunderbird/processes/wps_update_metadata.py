@@ -11,7 +11,7 @@ from pywps.app.exceptions import ProcessError
 from dp.update_metadata import process_updates
 from nchelpers import CFDataset
 from thunderbird.utils import is_opendap_url
-from thunderbird.wps_io import ncOutput
+from thunderbird.wps_io import nc_output
 
 # Library imports
 import shutil
@@ -41,7 +41,7 @@ class UpdateMetadata(Process):
                 data_type="string",
             ),
         ]
-        outputs = [ncOutput]
+        outputs = [nc_output]
 
         super(UpdateMetadata, self).__init__(
             self._handler,

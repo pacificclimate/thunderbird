@@ -15,7 +15,7 @@ from thunderbird.utils import (
     get_filepaths,
     build_meta_link,
 )
-from thunderbird.wps_io import loglevel, meta4Output
+from thunderbird.wps_io import log_level, meta4_output
 
 # Library import
 import logging
@@ -34,9 +34,9 @@ class SplitMergedClimos(Process):
                 max_occurs=MAX_OCCURS,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            loglevel,
+            log_level,
         ]
-        outputs = [meta4Output]
+        outputs = [meta4_output]
 
         super(SplitMergedClimos, self).__init__(
             self._handler,

@@ -2,7 +2,7 @@ from pywps import LiteralInput, ComplexOutput, FORMATS
 
 import logging
 
-loglevel = LiteralInput(
+log_level = LiteralInput(
     "loglevel",
     "Log Level",
     default="INFO",
@@ -19,7 +19,7 @@ dryrun_input = LiteralInput(
 )
 
 
-meta4Output = ComplexOutput(
+meta4_output = ComplexOutput(
     "output",
     "Output",
     as_reference=True,
@@ -27,7 +27,7 @@ meta4Output = ComplexOutput(
     supported_formats=[FORMATS.META4],
 )
 
-ncOutput = ComplexOutput(
+nc_output = ComplexOutput(
     "output",
     "Output",
     as_reference=True,
