@@ -1,6 +1,7 @@
 from pkg_resources import resource_filename
+from pywps import Service
 from pywps.app.basic import get_xpath_ns
-from pywps.tests import WpsClient, WpsTestResponse
+from pywps.tests import WpsClient, WpsTestResponse, assert_response_success
 
 import pkg_resources
 
@@ -101,3 +102,17 @@ def get_output(doc):
             output[identifier_el.text] = data_el[0].text
 
     return output
+
+
+def run_wps_process(process, params):
+    client = client_for(Service(processes=[process]))
+    datainputs = params
+    resp = client.get(
+        service="wps",
+        request="Execute",
+        version="1.0.0",
+        identifier=process.identifier,
+        datainputs=datainputs,
+    )
+
+    assert_response_success(resp)
