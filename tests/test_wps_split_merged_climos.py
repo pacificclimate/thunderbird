@@ -28,14 +28,14 @@ def check_success(datainputs):
 
 
 def run_single_file(netcdf):
-    datainputs = ("netcdf=@xlink:href={};").format(netcdf)
+    datainputs = f"netcdf=@xlink:href={netcdf};"
     check_success(datainputs)
 
 
-def run_multiple_files(netcdf):
+def run_multiple_files(netcdfs):
     datainputs = ""
-    for i in range(len(netcdf)):
-        datainputs += "netcdf=@xlink:href={};".format(netcdf[i])
+    for netcdf in netcdfs:
+        datainputs += f"netcdf=@xlink:href={netcdf};"
     check_success(datainputs)
 
 
@@ -47,15 +47,15 @@ def test_single_file_local(netcdf):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"),
+    ("netcdfs"),
     [
         (gcm_360_climos_local, gcm_climos_local),
         (gcm_climos_local, tasmax_climos_local),
         (gcm_360_climos_local, gcm_climos_local, tasmax_climos_local),
     ],
 )
-def test_multiple_files_local(netcdf):
-    run_multiple_files(netcdf)
+def test_multiple_files_local(netcdfs):
+    run_multiple_files(netcdfs)
 
 
 @pytest.mark.online
@@ -69,25 +69,25 @@ def test_single_file_opendap(netcdf):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"),
+    ("netcdfs"),
     [
         (gcm_360_climos_opendap, gcm_climos_opendap),
         (gcm_climos_opendap, tasmax_climos_opendap),
         (gcm_360_climos_opendap, gcm_climos_opendap, tasmax_climos_opendap),
     ],
 )
-def test_multiple_files_opendap(netcdf):
-    run_multiple_files(netcdf)
+def test_multiple_files_opendap(netcdfs):
+    run_multiple_files(netcdfs)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"),
+    ("netcdfs"),
     [
         (gcm_360_climos_local, gcm_climos_opendap),
         (gcm_climos_local, tasmax_climos_opendap),
         (gcm_360_climos_opendap, gcm_climos_local, tasmax_climos_local),
     ],
 )
-def test_multiple_files_mixed(netcdf):
-    run_multiple_files(netcdf)
+def test_multiple_files_mixed(netcdfs):
+    run_multiple_files(netcdfs)

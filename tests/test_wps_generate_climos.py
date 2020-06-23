@@ -124,7 +124,6 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
     ("kwargs"), [({"operation": "mean", "dry_run": "False",}),],
 )
 def test_missing_arguments(netcdf, kwargs):
-    client = client_for(Service(processes=[GenerateClimos()]))
     datainputs = (
         "netcdf=@xlink:href={0};" "operation={operation};" "dry_run={dry_run};"
     ).format(netcdf, **kwargs)

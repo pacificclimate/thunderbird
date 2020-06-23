@@ -2,11 +2,10 @@
 from pywps import (
     Process,
     LiteralInput,
-    ComplexInput,
-    ComplexOutput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
@@ -16,6 +15,13 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
     setup_logger,
+)
+from thunderbird.wps_io import (
+    ncInput,
+    loglevel_input,
+    dryrun_input,
+    outFiles,
+    dryrun_output,
 )
 
 # Library imports
@@ -28,29 +34,17 @@ logger = logging.getLogger("PYWPS")
 class GeneratePrsn(Process):
     def __init__(self):
         inputs = [
-            ComplexInput(
+            ncInput(
                 "prec",
                 "Precipitation",
                 abstract="Precipitation file to process",
-                min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            ComplexInput(
-                "tasmin",
-                "Tasmin",
-                abstract="Tasmin file to process",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ncInput(
+                "tasmin", "Tasmin", abstract="Tasmin file to process", max_occurs=1
             ),
-            ComplexInput(
-                "tasmax",
-                "Tasmax",
-                abstract="Tasmax file to process",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ncInput(
+                "tasmax", "Tasmax", abstract="Tasmax file to process", max_occurs=1
             ),
             LiteralInput(
                 "chunk_size",
@@ -66,35 +60,12 @@ class GeneratePrsn(Process):
                 abstract="Optional custom name of output file",
                 data_type="string",
             ),
-            LiteralInput(
-                "loglevel",
-                "Log Level",
-                default="INFO",
-                abstract="Logging level",
-                allowed_values=["INFO", "DEBUG", "WARNING", "ERROR"],
-            ),
-            LiteralInput(
-                "dry_run",
-                "Dry Run",
-                abstract="Checks file to ensure compatible with process",
-                data_type="boolean",
-            ),
+            loglevel_input(),
+            dryrun_input(),
         ]
         outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                abstract="Precipitation as snow file",
-                as_reference=True,
-                supported_formats=[FORMATS.META4],
-            ),
-            ComplexOutput(
-                "dry_output",
-                "Dry Output",
-                as_reference=True,
-                abstract="File information",
-                supported_formats=[FORMATS.TEXT],
-            ),
+            outFiles("Precipitation as snow file", [FORMATS.META4]),
+            dryrun_output(),
         ]
 
         super(GeneratePrsn, self).__init__(
@@ -173,7 +144,10 @@ class GeneratePrsn(Process):
 
             response.update_status("Collecting output file", 95)
             response.outputs["output"].data = build_meta_link(
-                "prsn", "Precipitation as Snow", prsn_file, self.workdir
+                varname="prsn",
+                desc="Precipitation as Snow",
+                outfiles=prsn_file,
+                outdir=self.workdir,
             )
 
         response.update_status("Process complete", 100)
