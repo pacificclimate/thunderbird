@@ -3,25 +3,14 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import client_for, TESTDATA
+from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 import owslib.wps
 import os
 
 
-def run_wps_update_metadata(netcdf, updates):
-    client = client_for(Service(processes=[UpdateMetadata()]))
-    datainputs = ("netcdf=@xlink:href={0};" "updates={1};").format(netcdf, updates)
-
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="update_metadata",
-        datainputs=datainputs,
-    )
-
-    assert_response_success(resp)
+def build_params(netcdf, updates):
+    return ("netcdf=@xlink:href={0};" "updates={1};").format(netcdf, updates)
 
 
 @pytest.mark.online
@@ -32,7 +21,8 @@ def run_wps_update_metadata(netcdf, updates):
     ("updates"), TESTDATA["test_yaml"],
 )
 def test_wps_update_metadata_opendap(netcdf, updates):
-    run_wps_update_metadata(netcdf, updates)
+    params = build_params(netcdf, updates)
+    run_wps_process(UpdateMetadata(), params)
 
 
 @pytest.mark.parametrize(
@@ -42,4 +32,5 @@ def test_wps_update_metadata_opendap(netcdf, updates):
     ("updates"), TESTDATA["test_yaml"],
 )
 def test_wps_update_metadata_netcdf(netcdf, updates):
-    run_wps_update_metadata(netcdf, updates)
+    params = build_params(netcdf, updates)
+    run_wps_process(UpdateMetadata(), params)
