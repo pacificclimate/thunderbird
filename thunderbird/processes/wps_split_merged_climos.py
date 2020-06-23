@@ -1,6 +1,7 @@
 # Processor imports
 from pywps import (
     Process,
+    ComplexInput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
@@ -14,7 +15,7 @@ from thunderbird.utils import (
     get_filepaths,
     build_meta_link,
 )
-from thunderbird.wps_io import ncInput, loglevel_input, outFiles
+from thunderbird.wps_io import loglevel, meta4Output
 
 # Library import
 import logging
@@ -25,17 +26,17 @@ logger = logging.getLogger("PYWPS")
 class SplitMergedClimos(Process):
     def __init__(self):
         inputs = [
-            ncInput(
+            ComplexInput(
                 "netcdf",
                 "NetCDF Datasets",
                 abstract="NetCDF files to process",
+                min_occurs=1,
                 max_occurs=MAX_OCCURS,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            loglevel_input(),
+            loglevel,
         ]
-        outputs = [
-            outFiles("Collection of split climatological files", [FORMATS.META4]),
-        ]
+        outputs = [meta4Output]
 
         super(SplitMergedClimos, self).__init__(
             self._handler,

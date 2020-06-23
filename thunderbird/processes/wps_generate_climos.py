@@ -2,6 +2,7 @@
 from pywps import (
     Process,
     LiteralInput,
+    ComplexInput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
@@ -14,7 +15,7 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
 )
-from thunderbird.wps_io import ncInput, dryrun_input, outFiles, dryrun_output
+from thunderbird.wps_io import dryrun_input, meta4Output, dryrun_output
 
 # Library imports
 import logging
@@ -34,8 +35,13 @@ class GenerateClimos(Process):
         ]
 
         inputs = [
-            ncInput(
-                "netcdf", "Daily NetCDF Dataset", abstract="NetCDF file", max_occurs=1
+            ComplexInput(
+                "netcdf",
+                "Daily NetCDF Dataset",
+                abstract="NetCDF file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "operation",
@@ -83,11 +89,11 @@ class GenerateClimos(Process):
                 abstract="Generate a separate file for each climatological period",
                 data_type="boolean",
             ),
-            dryrun_input(),
+            dryrun_input,
         ]
         outputs = [
-            outFiles("Collection of climatological files", [FORMATS.META4]),
-            dryrun_output(),
+            meta4Output,
+            dryrun_output,
         ]
 
         super(GenerateClimos, self).__init__(

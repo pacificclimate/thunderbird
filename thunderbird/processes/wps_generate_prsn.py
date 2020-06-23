@@ -2,6 +2,7 @@
 from pywps import (
     Process,
     LiteralInput,
+    ComplexInput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
@@ -17,10 +18,9 @@ from thunderbird.utils import (
     setup_logger,
 )
 from thunderbird.wps_io import (
-    ncInput,
-    loglevel_input,
+    loglevel,
     dryrun_input,
-    outFiles,
+    meta4Output,
     dryrun_output,
 )
 
@@ -34,17 +34,29 @@ logger = logging.getLogger("PYWPS")
 class GeneratePrsn(Process):
     def __init__(self):
         inputs = [
-            ncInput(
+            ComplexInput(
                 "prec",
                 "Precipitation",
                 abstract="Precipitation file to process",
+                min_occurs=1,
                 max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            ncInput(
-                "tasmin", "Tasmin", abstract="Tasmin file to process", max_occurs=1
+            ComplexInput(
+                "tasmin",
+                "Tasmin",
+                abstract="Tasmin file to process",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            ncInput(
-                "tasmax", "Tasmax", abstract="Tasmax file to process", max_occurs=1
+            ComplexInput(
+                "tasmax",
+                "Tasmax",
+                abstract="Tasmax file to process",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "chunk_size",
@@ -60,12 +72,12 @@ class GeneratePrsn(Process):
                 abstract="Optional custom name of output file",
                 data_type="string",
             ),
-            loglevel_input(),
-            dryrun_input(),
+            loglevel,
+            dryrun_input,
         ]
         outputs = [
-            outFiles("Precipitation as snow file", [FORMATS.META4]),
-            dryrun_output(),
+            meta4Output,
+            dryrun_output,
         ]
 
         super(GeneratePrsn, self).__init__(

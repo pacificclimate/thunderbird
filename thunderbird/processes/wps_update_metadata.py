@@ -2,6 +2,7 @@
 from pywps import (
     Process,
     LiteralInput,
+    ComplexInput,
     FORMATS,
 )
 from pywps.app.exceptions import ProcessError
@@ -10,7 +11,7 @@ from pywps.app.exceptions import ProcessError
 from dp.update_metadata import process_updates
 from nchelpers import CFDataset
 from thunderbird.utils import is_opendap_url
-from thunderbird.wps_io import ncInput, outFiles
+from thunderbird.wps_io import ncOutput
 
 # Library imports
 import shutil
@@ -23,8 +24,13 @@ class UpdateMetadata(Process):
     def __init__(self):
 
         inputs = [
-            ncInput(
-                "netcdf", "Daily NetCDF Dataset", abstract="NetCDF file", max_occurs=1
+            ComplexInput(
+                "netcdf",
+                "Daily NetCDF Dataset",
+                abstract="NetCDF file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
                 "updates",
@@ -35,9 +41,7 @@ class UpdateMetadata(Process):
                 data_type="string",
             ),
         ]
-        outputs = [
-            outFiles("Updated NetCDF files", [FORMATS.NETCDF]),
-        ]
+        outputs = [ncOutput]
 
         super(UpdateMetadata, self).__init__(
             self._handler,

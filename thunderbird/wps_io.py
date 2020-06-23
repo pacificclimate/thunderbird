@@ -1,53 +1,44 @@
-from pywps import LiteralInput, ComplexInput, ComplexOutput, FORMATS
+from pywps import LiteralInput, ComplexOutput, FORMATS
 
 import logging
 
-
-def ncInput(identifier, title, abstract, max_occurs):
-    return ComplexInput(
-        identifier,
-        title,
-        abstract=abstract,
-        min_occurs=1,
-        max_occurs=max_occurs,
-        supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-    )
+loglevel = LiteralInput(
+    "loglevel",
+    "Log Level",
+    default="INFO",
+    abstract="Logging level",
+    allowed_values=list(logging._levelToName.values()),
+)
 
 
-def loglevel_input():
-    return LiteralInput(
-        "loglevel",
-        "Log Level",
-        default="INFO",
-        abstract="Logging level",
-        allowed_values=list(logging._levelToName.values()),
-    )
+dryrun_input = LiteralInput(
+    "dry_run",
+    "Dry Run",
+    abstract="Checks file to ensure compatible with process",
+    data_type="boolean",
+)
 
 
-def dryrun_input():
-    return LiteralInput(
-        "dry_run",
-        "Dry Run",
-        abstract="Checks file to ensure compatible with process",
-        data_type="boolean",
-    )
+meta4Output = ComplexOutput(
+    "output",
+    "Output",
+    as_reference=True,
+    abstract="Metalink object between output files",
+    supported_formats=[FORMATS.META4],
+)
 
+ncOutput = ComplexOutput(
+    "output",
+    "Output",
+    as_reference=True,
+    abstract="Output Netcdf Files",
+    supported_formats=[FORMATS.NETCDF],
+)
 
-def outFiles(abstract, formats):
-    return ComplexOutput(
-        "output",
-        "Output",
-        abstract=abstract,
-        as_reference=True,
-        supported_formats=formats,
-    )
-
-
-def dryrun_output():
-    return ComplexOutput(
-        "dry_output",
-        "Dry Output",
-        as_reference=True,
-        abstract="File information",
-        supported_formats=[FORMATS.TEXT],
-    )
+dryrun_output = ComplexOutput(
+    "dry_output",
+    "Dry Output",
+    as_reference=True,
+    abstract="File information",
+    supported_formats=[FORMATS.TEXT],
+)
