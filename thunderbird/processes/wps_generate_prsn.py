@@ -72,7 +72,7 @@ class GeneratePrsn(Process):
                 abstract="Optional custom name of output file",
                 data_type="string",
             ),
-            loglevel,
+            log_level,
             dryrun_input,
         ]
         outputs = [
