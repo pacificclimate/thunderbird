@@ -7,7 +7,7 @@ from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 
-def parameters(netcdf, kwargs):
+def build_params(netcdf, kwargs):
     return (
         "netcdf=@xlink:href={0};"
         "operation={operation};"
@@ -52,7 +52,7 @@ def parameters(netcdf, kwargs):
     ],
 )
 def test_wps_gen_climos_opendap(netcdf, kwargs):
-    params = parameters(netcdf, kwargs)
+    params = build_params(netcdf, kwargs)
     run_wps_process(GenerateClimos(), params)
 
 
@@ -93,7 +93,7 @@ local_test_data = [
     ],
 )
 def test_wps_gen_climos_local_nc(netcdf, kwargs):
-    params = parameters(netcdf, kwargs)
+    params = build_params(netcdf, kwargs)
     run_wps_process(GenerateClimos(), params)
 
 

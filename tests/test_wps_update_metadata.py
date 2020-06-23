@@ -9,7 +9,7 @@ import owslib.wps
 import os
 
 
-def parameters(netcdf, updates):
+def build_params(netcdf, updates):
     return ("netcdf=@xlink:href={0};" "updates={1};").format(netcdf, updates)
 
 
@@ -21,7 +21,7 @@ def parameters(netcdf, updates):
     ("updates"), TESTDATA["test_yaml"],
 )
 def test_wps_update_metadata_opendap(netcdf, updates):
-    params = parameters(netcdf, updates)
+    params = build_params(netcdf, updates)
     run_wps_process(UpdateMetadata(), params)
 
 
@@ -32,5 +32,5 @@ def test_wps_update_metadata_opendap(netcdf, updates):
     ("updates"), TESTDATA["test_yaml"],
 )
 def test_wps_update_metadata_netcdf(netcdf, updates):
-    params = parameters(netcdf, updates)
+    params = build_params(netcdf, updates)
     run_wps_process(UpdateMetadata(), params)

@@ -7,7 +7,7 @@ from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 
-def parameters(kwargs):
+def build_params(kwargs):
     if (
         "chunk_size" in kwargs.keys() and "output_file" in kwargs.keys()
     ):  # Not using default values
@@ -42,7 +42,7 @@ def parameters(kwargs):
     ],
 )
 def test_default_local(kwargs):
-    params = parameters(kwargs)
+    params = build_params(kwargs)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -62,7 +62,7 @@ def test_default_local(kwargs):
     ],
 )
 def test_run_local(kwargs):
-    params = parameters(kwargs)
+    params = build_params(kwargs)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -81,7 +81,7 @@ def test_run_local(kwargs):
     ],
 )
 def test_default_opendap(kwargs):
-    params = parameters(kwargs)
+    params = build_params(kwargs)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -102,7 +102,7 @@ def test_default_opendap(kwargs):
     ],
 )
 def test_run_opendap(kwargs):
-    params = parameters(kwargs)
+    params = build_params(kwargs)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -133,5 +133,5 @@ def test_run_opendap(kwargs):
     ],
 )
 def test_run_mixed(kwargs):
-    params = parameters(kwargs)
+    params = build_params(kwargs)
     run_wps_process(GeneratePrsn(), params)
