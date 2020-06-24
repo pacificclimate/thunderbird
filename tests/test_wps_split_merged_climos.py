@@ -6,25 +6,17 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
-test_gcm_360_climos = TESTDATA["test_local_nc"][1]
-test_gcm_climos = TESTDATA["test_local_nc"][3]
-test_tasmax_climos = TESTDATA["test_local_nc"][12]
-test_hydromodel_gcm_climos = TESTDATA["test_local_nc"][14]
+gcm_360_climos_local = TESTDATA["test_local_gcm_360_climos_nc"]
+gcm_climos_local = TESTDATA["test_local_gcm_climos_nc"]
+tasmax_climos_local = TESTDATA["test_local_tasmax_climos_nc"]
+gcm_360_climos_opendap = TESTDATA["test_opendap_gcm_360_climos_nc"]
+gcm_climos_opendap = TESTDATA["test_opendap_gcm_climos_nc"]
+tasmax_climos_opendap = TESTDATA["test_opendap_tasmax_climos_nc"]
+
+client = client_for(Service(processes=[SplitMergedClimos()]))
 
 
-@pytest.mark.parametrize(
-    ("netcdf"),
-    [
-        (test_gcm_360_climos),
-        (test_gcm_climos),
-        (test_tasmax_climos),
-        (test_hydromodel_gcm_climos),
-    ],
-)
-def test_single_file_local(netcdf):
-    client = client_for(Service(processes=[SplitMergedClimos()]))
-    datainputs = ("netcdf=@xlink:href={};").format(netcdf)
-
+def check_success(datainputs):
     resp = client.get(
         service="wps",
         request="Execute",
@@ -33,3 +25,69 @@ def test_single_file_local(netcdf):
         datainputs=datainputs,
     )
     assert_response_success(resp)
+
+
+def run_single_file(netcdf):
+    datainputs = f"netcdf=@xlink:href={netcdf};"
+    check_success(datainputs)
+
+
+def run_multiple_files(netcdfs):
+    datainputs = ""
+    for netcdf in netcdfs:
+        datainputs += f"netcdf=@xlink:href={netcdf};"
+    check_success(datainputs)
+
+
+@pytest.mark.parametrize(
+    ("netcdf"), [(gcm_360_climos_local), (gcm_climos_local), (tasmax_climos_local),],
+)
+def test_single_file_local(netcdf):
+    run_single_file(netcdf)
+
+
+@pytest.mark.parametrize(
+    ("netcdfs"),
+    [
+        (gcm_360_climos_local, gcm_climos_local),
+        (gcm_climos_local, tasmax_climos_local),
+        (gcm_360_climos_local, gcm_climos_local, tasmax_climos_local),
+    ],
+)
+def test_multiple_files_local(netcdfs):
+    run_multiple_files(netcdfs)
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("netcdf"),
+    [(gcm_360_climos_opendap), (gcm_climos_opendap), (tasmax_climos_opendap),],
+)
+def test_single_file_opendap(netcdf):
+    run_single_file(netcdf)
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("netcdfs"),
+    [
+        (gcm_360_climos_opendap, gcm_climos_opendap),
+        (gcm_climos_opendap, tasmax_climos_opendap),
+        (gcm_360_climos_opendap, gcm_climos_opendap, tasmax_climos_opendap),
+    ],
+)
+def test_multiple_files_opendap(netcdfs):
+    run_multiple_files(netcdfs)
+
+
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("netcdfs"),
+    [
+        (gcm_360_climos_local, gcm_climos_opendap),
+        (gcm_climos_local, tasmax_climos_opendap),
+        (gcm_360_climos_opendap, gcm_climos_local, tasmax_climos_local),
+    ],
+)
+def test_multiple_files_mixed(netcdfs):
+    run_multiple_files(netcdfs)

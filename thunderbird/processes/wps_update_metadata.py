@@ -3,25 +3,21 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    ComplexOutput,
     FORMATS,
-    Format,
 )
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
-from dp.update_metadata import process_updates, logger
+from dp.update_metadata import process_updates
 from nchelpers import CFDataset
 from thunderbird.utils import is_opendap_url
+from thunderbird.wps_io import nc_output
 
 # Library imports
 import shutil
-import logging
 import os
-import netCDF4 as nc
 import yaml
 import xarray as xr
-
-LOGGER = logging.getLogger("PYWPS")
 
 
 class UpdateMetadata(Process):
@@ -45,15 +41,7 @@ class UpdateMetadata(Process):
                 data_type="string",
             ),
         ]
-        outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                abstract="Updated NetCDF files",
-                as_reference=True,
-                supported_formats=[FORMATS.NETCDF],
-            ),
-        ]
+        outputs = [nc_output]
 
         super(UpdateMetadata, self).__init__(
             self._handler,
