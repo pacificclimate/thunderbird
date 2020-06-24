@@ -3,21 +3,19 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    ComplexOutput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink4, MetaFile
-from pywps.app.exceptions import ProcessError
 
 # Tool imports
-from nchelpers import CFDataset
+from nchelpers import CFDataset, standard_climo_periods
 from dp.generate_climos import create_climo_files
 from thunderbird.utils import (
-    is_opendap_url,
+    get_filepaths,
     collect_output_files,
     build_meta_link,
 )
+from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output
 
 # Library imports
 import logging
@@ -29,10 +27,7 @@ LOGGER = logging.getLogger("PYWPS")
 
 class GenerateClimos(Process):
     def __init__(self):
-        self.climos = {
-            "historical": ["6190", "7100", "8100"],
-            "futures": ["2020", "2050", "2080"],
-        }
+        self.climos = list(standard_climo_periods().keys())
         self.resolutions = [
             "yearly",
             "seasonal",
@@ -59,17 +54,15 @@ class GenerateClimos(Process):
                 "climo",
                 "Climatological Period",
                 abstract="Year ranges",
-                min_occurs=1,
+                min_occurs=0,
                 mode=0,
-                allowed_values=["all"]
-                + [key for key in self.climos.keys()]
-                + [item for value in self.climos.values() for item in value],
+                allowed_values=self.climos,
                 data_type="string",
             ),
             LiteralInput(
                 "resolutions",
                 "Temporal Resolutions",
-                min_occurs=1,
+                min_occurs=0,
                 max_occurs=3,
                 allowed_values=["all"] + self.resolutions,
                 data_type="string",
@@ -96,28 +89,11 @@ class GenerateClimos(Process):
                 abstract="Generate a separate file for each climatological period",
                 data_type="boolean",
             ),
-            LiteralInput(
-                "dry_run",
-                "Dry Run",
-                abstract="Checks file to ensure compatible with process",
-                data_type="boolean",
-            ),
+            dryrun_input,
         ]
         outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                abstract="Collection of climatoligical files",
-                as_reference=True,
-                supported_formats=[FORMATS.META4],
-            ),
-            ComplexOutput(
-                "dry_output",
-                "Dry Output",
-                as_reference=True,
-                abstract="File information",
-                supported_formats=[FORMATS.TEXT],
-            ),
+            meta4_output,
+            dryrun_output,
         ]
 
         super(GenerateClimos, self).__init__(
@@ -170,31 +146,20 @@ class GenerateClimos(Process):
         suffix = {"mean": "Mean", "std": "SD"}[operation]
         return "Clim" + suffix
 
-    def format_climo(self, climo):
-        if "all" in climo:
-            return self.climos["historical"] + self.climos["futures"]
-
-        # replace 'historical', 'futures' with values
-        return list(
-            {
-                item
-                for c in climo
-                for item in (self.climos[c] if c in self.climos.keys() else [c])
-            }
-        )
-
-    def format_resolutions(self, resolutions):
-        if "all" in resolutions:
-            return self.resolutions
-
-        return list(set(resolutions))
-
     def collect_args(self, request):
-        climo = self.format_climo([climo.data for climo in request.inputs["climo"]])
+        if "climo" in request.inputs:
+            climo = list(set([climo.data for climo in request.inputs["climo"]]))
+        else:
+            climo = self.climos
+
+        if "resolutions" in request.inputs:
+            resolutions = list(
+                set([resolution.data for resolution in request.inputs["resolutions"]])
+            )
+        else:
+            resolutions = self.resolutions
+
         operation = request.inputs["operation"][0].data
-        resolutions = self.format_resolutions(
-            [resolution.data for resolution in request.inputs["resolutions"]]
-        )
         convert_longitudes = request.inputs["convert_longitudes"][0].data
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
@@ -209,18 +174,6 @@ class GenerateClimos(Process):
             operation,
         )
 
-    def get_filepath(self, request):
-        path = request.inputs["netcdf"][0]
-        if is_opendap_url(path.url):
-            return path.url
-        elif path.file.endswith(".nc"):
-            return path.file
-        else:
-            raise ProcessError(
-                "You must provide a data source (opendap/netcdf). "
-                f"Inputs provided: {request.inputs}"
-            )
-
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
@@ -233,7 +186,7 @@ class GenerateClimos(Process):
             dry_run,
             operation,
         ) = self.collect_args(request)
-        filepath = self.get_filepath(request)
+        filepath = get_filepaths(request)[0]
 
         if dry_run:
             response.update_status("Dry Run", 10)
@@ -251,6 +204,7 @@ class GenerateClimos(Process):
             for period in periods:
                 t_range = input_file.climo_periods[period]
                 create_climo_files(
+                    period,
                     self.workdir,
                     input_file,
                     operation,
@@ -268,7 +222,10 @@ class GenerateClimos(Process):
 
             response.update_status("Collecting output files", 95)
             response.outputs["output"].data = build_meta_link(
-                "climo", "Climatology", climo_files, self.workdir
+                varname="climo",
+                desc="Climatology",
+                outfiles=climo_files,
+                outdir=self.workdir,
             )
 
         response.update_status("Process Complete", 100)

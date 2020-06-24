@@ -1,6 +1,7 @@
 from pkg_resources import resource_filename
+from pywps import Service
 from pywps.app.basic import get_xpath_ns
-from pywps.tests import WpsClient, WpsTestResponse
+from pywps.tests import WpsClient, WpsTestResponse, assert_response_success
 
 import pkg_resources
 
@@ -36,6 +37,15 @@ TESTDATA = {
     "test_local_tasmax_nc": "file:///{}".format(
         resource_filename("tests", "data/tasmax_week_test.nc")
     ),
+    "test_local_gcm_climos_nc": "file:///{}".format(
+        resource_filename("tests", "data/tiny_gcm_climos.nc")
+    ),
+    "test_local_gcm_360_climos_nc": "file:///{}".format(
+        resource_filename("tests", "data/tiny_gcm_360_climos.nc")
+    ),
+    "test_local_tasmax_climos_nc": "file:///{}".format(
+        resource_filename("tests", "data/tiny_downscaled_tasmax_climos.nc")
+    ),
     "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
     "proxy/thredds/dodsC/datasets/TestData/"
     "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
@@ -48,6 +58,12 @@ TESTDATA = {
     "proxy/thredds/dodsC/datasets/TestData/"
     "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",
+    "test_opendap_gcm_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_climos.nc",
+    "test_opendap_gcm_360_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_360_climos.nc",
+    "test_opendap_tasmax_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
+    "proxy/thredds/dodsC/datasets/TestData/tiny_downscaled_tasmax_climos.nc",
     "test_yaml": yaml_files + yaml_str,
 }
 
@@ -86,3 +102,17 @@ def get_output(doc):
             output[identifier_el.text] = data_el[0].text
 
     return output
+
+
+def run_wps_process(process, params):
+    client = client_for(Service(processes=[process]))
+    datainputs = params
+    resp = client.get(
+        service="wps",
+        request="Execute",
+        version="1.0.0",
+        identifier=process.identifier,
+        datainputs=datainputs,
+    )
+
+    assert_response_success(resp)

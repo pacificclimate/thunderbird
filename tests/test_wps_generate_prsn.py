@@ -3,17 +3,15 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import client_for, TESTDATA
+from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 
-def run_wps_process(kwargs):
-    """Run generate_prsn process using data inputs given by kwargs"""
-    client = client_for(Service(processes=[GeneratePrsn()]))
+def build_params(kwargs):
     if (
         "chunk_size" in kwargs.keys() and "output_file" in kwargs.keys()
     ):  # Not using default values
-        datainputs = (
+        return (
             "prec=@xlink:href={prec};"
             "tasmin=@xlink:href={tasmin};"
             "tasmax=@xlink:href={tasmax};"
@@ -22,20 +20,12 @@ def run_wps_process(kwargs):
             "output_file={output_file};"
         ).format(**kwargs)
     else:
-        datainputs = (
+        return (
             "prec=@xlink:href={prec};"
             "tasmin=@xlink:href={tasmin};"
             "tasmax=@xlink:href={tasmax};"
             "dry_run={dry_run};"
         ).format(**kwargs)
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="generate_prsn",
-        datainputs=datainputs,
-    )
-    assert_response_success(resp)
 
 
 @pytest.mark.parametrize(
@@ -52,7 +42,8 @@ def run_wps_process(kwargs):
     ],
 )
 def test_default_local(kwargs):
-    run_wps_process(kwargs)
+    params = build_params(kwargs)
+    run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.parametrize(
@@ -71,7 +62,8 @@ def test_default_local(kwargs):
     ],
 )
 def test_run_local(kwargs):
-    run_wps_process(kwargs)
+    params = build_params(kwargs)
+    run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.online
@@ -89,7 +81,8 @@ def test_run_local(kwargs):
     ],
 )
 def test_default_opendap(kwargs):
-    run_wps_process(kwargs)
+    params = build_params(kwargs)
+    run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.online
@@ -109,7 +102,8 @@ def test_default_opendap(kwargs):
     ],
 )
 def test_run_opendap(kwargs):
-    run_wps_process(kwargs)
+    params = build_params(kwargs)
+    run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.online
@@ -139,4 +133,5 @@ def test_run_opendap(kwargs):
     ],
 )
 def test_run_mixed(kwargs):
-    run_wps_process(kwargs)
+    params = build_params(kwargs)
+    run_wps_process(GeneratePrsn(), params)
