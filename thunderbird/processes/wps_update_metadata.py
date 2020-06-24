@@ -21,7 +21,7 @@ import netCDF4 as nc
 import yaml
 import xarray as xr
 
-LOGGER = logging.getLogger("PYWPS")
+logger = logging.getLogger("PYWPS")
 
 
 class UpdateMetadata(Process):

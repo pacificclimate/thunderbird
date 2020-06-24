@@ -3,7 +3,7 @@ from pywps.app.Common import Metadata
 
 import logging
 
-LOGGER = logging.getLogger("PYWPS")
+logger = logging.getLogger("PYWPS")
 
 
 class SayHello(Process):
@@ -53,7 +53,7 @@ class SayHello(Process):
 
     @staticmethod
     def _handler(request, response):
-        LOGGER.info("say hello")
+        logger.info("say hello")
         response.outputs["output"].data = "Hello " + request.inputs["name"][0].data
         response.outputs["output"].uom = UOM("unity")
         return response

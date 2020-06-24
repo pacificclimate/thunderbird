@@ -17,6 +17,7 @@ from thunderbird.utils import (
     is_opendap_url,
     collect_output_files,
     build_meta_link,
+    log_handler
 )
 
 # Library imports
@@ -24,7 +25,7 @@ import logging
 import os
 
 
-LOGGER = logging.getLogger("PYWPS")
+logger = logging.getLogger("PYWPS")
 
 
 class GenerateClimos(Process):
@@ -35,6 +36,15 @@ class GenerateClimos(Process):
             "seasonal",
             "monthly",
         ]
+        self.status_percentage_steps = {
+            "start": 0,
+            "dry_run": 5,
+            "process": 10,
+            "collect_files": 90,
+            "build_output": 95,
+            "complete": 100,
+
+        }
 
         inputs = [
             ComplexInput(
@@ -206,7 +216,7 @@ class GenerateClimos(Process):
             )
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
+        log_handler(self, response, "Starting Process", process_step="start")
 
         (
             climo,
@@ -220,7 +230,7 @@ class GenerateClimos(Process):
         filepath = self.get_filepath(request)
 
         if dry_run:
-            response.update_status("Dry Run", 10)
+            log_handler(self, response, "Dry Run", process_step="dry_run")
             del response.outputs["output"]  # remove unnecessary output
             response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
 
@@ -230,7 +240,7 @@ class GenerateClimos(Process):
 
             periods = [period for period in input_file.climo_periods.keys() & climo]
 
-            response.update_status(f"Processing {filepath}", 10)
+            log_handler(self, response, f"Processing {filepath} into climatologies", process_step="process")
 
             for period in periods:
                 t_range = input_file.climo_periods[period]
@@ -245,16 +255,16 @@ class GenerateClimos(Process):
                     output_resolutions=resolutions,
                 )
 
-            response.update_status("File Processing Complete", 90)
+            log_handler(self, response, "Collecting climo files", process_step="collect_files")
 
             climo_files = collect_output_files(
                 self.get_identifier(operation), self.workdir
             )
 
-            response.update_status("Collecting output files", 95)
+            log_handler(self, response, "Building final output", process_step="build_output")
             response.outputs["output"].data = build_meta_link(
                 "climo", "Climatology", climo_files, self.workdir
             )
 
-        response.update_status("Process Complete", 100)
+        log_handler(self, response, "Process Complete", process_step="complete")
         return response
