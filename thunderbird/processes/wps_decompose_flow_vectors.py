@@ -17,7 +17,7 @@ import os
 import sys
 
 # Tool imports
-from dp.decompose_flow_vectors import logger, decompose_flow_vectors
+from dp.decompose_flow_vectors import logger, decompose_flow_vectors, source_check, variable_check
 from pywps.app.exceptions import ProcessError
 from thunderbird.utils import is_opendap_url
 
@@ -76,75 +76,6 @@ class DecomposeFlowVectors(Process):
                 f"Inputs provided: {request.inputs}"
             )
 
-    def source_check(self, source):
-        source_file_path = source.filepath()
-
-        if not "lon" in source.dimensions or not "lat" in source.dimensions:
-            logger.critical(
-                "{} does not have latitude and longitude dimensions".format(
-                    source_file_path
-                )
-            )
-            source.close(
-                "{} does not have latitude and longitude dimensions".format(
-                    source_file_path
-                )
-            )
-            raise ProcessError()
-
-        valid_variables = []
-        for v in source.variables:
-            variable = source.variables[v]
-            if (
-                hasattr(variable, "dimensions")
-                and "lon" in variable.dimensions
-                and "lat" in variable.dimensions
-            ):
-                if np.ma.max(variable[:]) <= 9 and np.ma.min(variable[:]) >= 1:
-                    valid_variables.append(v)
-
-        if len(valid_variables) == 0:
-            logger.critical(
-                "{} does not have a valid flow variable".format(source_file_path)
-            )
-            source.close()
-            raise ProcessError(
-                "{} does not have a valid flow variable".format(source_file_path)
-            )
-
-    def variable_check(self, source, variable):
-        source_file_path = source.filepath()
-
-        if not variable in source.variables:
-            logger.critical(
-                "Variable {} is not found in {}".format(variable, source_file_path)
-            )
-            source.close()
-            raise ProcessError(
-                "Variable {} is not found in {}".format(variable, source_file_path)
-            )
-
-        flow_variable = source.variables[variable]
-
-        if (
-            not "lon" in flow_variable.dimensions
-            or not "lat" in flow_variable.dimensions
-        ):
-            logger.critical(
-                "Variable {} is not associated with a grid".format(variable)
-            )
-            source.close()
-            raise ProcessError(
-                "Variable {} is not associated with a grid".format(variable)
-            )
-
-        if np.ma.max(flow_variable[:]) > 9 or np.ma.min(flow_variable[:]) < 1:
-            logger.critical("Variable {} is not a valid flow routing".format(variable))
-            source.close()
-            raise ProcessError(
-                "Variable {} is not associated with a grid".format(variable)
-            )
-
     def _handler(self, request, response):
         response.update_status("Starting Process", 0)
 
@@ -153,8 +84,11 @@ class DecomposeFlowVectors(Process):
         dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
 
         source = Dataset(source_file, "r", format="NETCDF4")
-        self.source_check(source)
-        self.variable_check(source, variable)
+        try:
+            source_check(source)
+            variable_check(source, variable)
+        except (AttributeError, ValueError) as e:
+            raise ProcessError(e.args[0])
 
         decompose_flow_vectors(source, dest_file, variable)
 

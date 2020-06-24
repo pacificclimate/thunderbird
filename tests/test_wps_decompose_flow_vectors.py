@@ -4,9 +4,8 @@ from pywps import Service
 from pywps.tests import assert_response_success
 
 from netCDF4 import Dataset
-from .common import client_for, TESTDATA
+from .common import client_for, TESTDATA, run_wps_process
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
-from pywps.app.exceptions import ProcessError
 import owslib.wps
 import pkg_resources
 import os
@@ -17,6 +16,8 @@ flow_vectors_nc = "file:///{}".format(
     pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc")
 )
 
+def build_params(netcdf, kwargs):
+    return ("netcdf=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};").format(netcdf, **kwargs)
 
 @pytest.mark.online
 @pytest.mark.parametrize(
@@ -26,20 +27,8 @@ flow_vectors_nc = "file:///{}".format(
     ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
 )
 def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
-    client = client_for(Service(processes=[DecomposeFlowVectors()]))
-    datainputs = (
-        "opendap=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};"
-    ).format(opendap, **kwargs)
-
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="decompose_flow_vectors",
-        datainputs=datainputs,
-    )
-
-    assert_response_success(resp)
+    params = build_params(opendap, kwargs)
+    run_wps_process(DecomposeFlowVectors(), params)
 
 
 @pytest.mark.parametrize(
@@ -49,65 +38,5 @@ def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
     ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
 )
 def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
-    client = client_for(Service(processes=[DecomposeFlowVectors()]))
-    datainputs = (
-        "netcdf=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};"
-    ).format(netcdf, **kwargs)
-
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="decompose_flow_vectors",
-        datainputs=datainputs,
-    )
-
-    assert_response_success(resp)
-
-
-@pytest.mark.parametrize(
-    ("netcdf"), TESTDATA["test_local_nc"],
-)
-def test_source_check(netcdf):
-    source_file = re.sub("file:///", "", netcdf)
-    source = Dataset(source_file, "r", format="NETCDF4")
-
-    dfv = DecomposeFlowVectors()
-    try:
-        dfv.source_check(source)
-        assertion = False
-    except ProcessError:
-        assertion = True
-
-    assert assertion
-
-
-@pytest.mark.parametrize(
-    ("netcdf"), [(flow_vectors_nc)],
-)
-@pytest.mark.parametrize(
-    ("variable"),
-    [
-        "not a variable",
-        "crs",
-        "lat",
-        "lon",
-        "diffusion",
-        "Flow_Distance",
-        "Basin_ID",
-        "velocity",
-        "flow_direction",
-    ],
-)
-def test_variable_check(netcdf, variable):
-    source_file = re.sub("file:///", "", netcdf)
-    source = Dataset(source_file, "r", format="NETCDF4")
-
-    dfv = DecomposeFlowVectors()
-    try:
-        dfv.variable_check(source, variable)
-        assertion = False
-    except ProcessError:
-        assertion = True
-
-    assert assertion
+    params = build_params(netcdf, kwargs)
+    run_wps_process(DecomposeFlowVectors(), params)
