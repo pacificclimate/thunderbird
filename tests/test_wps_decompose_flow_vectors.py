@@ -16,8 +16,12 @@ flow_vectors_nc = "file:///{}".format(
     pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc")
 )
 
+
 def build_params(netcdf, kwargs):
-    return ("netcdf=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};").format(netcdf, **kwargs)
+    return (
+        "netcdf=@xlink:href={0};" "dest_file={dest_file};" "variable={variable};"
+    ).format(netcdf, **kwargs)
+
 
 @pytest.mark.online
 @pytest.mark.parametrize(

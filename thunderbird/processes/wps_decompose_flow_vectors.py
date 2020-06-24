@@ -17,7 +17,12 @@ import os
 import sys
 
 # Tool imports
-from dp.decompose_flow_vectors import logger, decompose_flow_vectors, source_check, variable_check
+from dp.decompose_flow_vectors import (
+    logger,
+    decompose_flow_vectors,
+    source_check,
+    variable_check,
+)
 from pywps.app.exceptions import ProcessError
 from thunderbird.utils import is_opendap_url
 
