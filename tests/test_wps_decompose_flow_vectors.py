@@ -47,6 +47,7 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
     run_wps_process(DecomposeFlowVectors(), params)
 
+
 @pytest.mark.parametrize(
     ("netcdf"), TESTDATA["test_local_nc"],
 )
@@ -58,5 +59,5 @@ def test_source_check(netcdf, kwargs):
 
     with pytest.raises(ProcessError) as exc:
         run_wps_process(DecomposeFlowVectors(), params)
-    
+
     assert exc.value
