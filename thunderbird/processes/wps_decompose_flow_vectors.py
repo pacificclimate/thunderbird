@@ -93,7 +93,7 @@ class DecomposeFlowVectors(Process):
             source_check(source)
             variable_check(source, variable)
         except (AttributeError, ValueError) as e:
-            raise ProcessError(e.args[0])
+            raise ProcessError(f"An error occured during the process: {e}")
 
         decompose_flow_vectors(source, dest_file, variable)
 

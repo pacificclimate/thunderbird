@@ -57,7 +57,29 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
 def test_source_check(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
 
-    with pytest.raises(ProcessError) as exc:
+    with pytest.raises(Exception):
         run_wps_process(DecomposeFlowVectors(), params)
 
-    assert exc.value
+
+@pytest.mark.parametrize(
+    ("netcdf"), [(flow_vectors_nc)],
+)
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
+        ({"dest_file": "output.nc", "variable": "not a variable",}),
+        ({"dest_file": "output.nc", "variable": "crs",}),
+        ({"dest_file": "output.nc", "variable": "lat",}),
+        ({"dest_file": "output.nc", "variable": "lon",}),
+        ({"dest_file": "output.nc", "variable": "diffusion",}),
+        ({"dest_file": "output.nc", "variable": "Flow_Distance",}),
+        ({"dest_file": "output.nc", "variable": "Basin_ID",}),
+        ({"dest_file": "output.nc", "variable": "velocity",}),
+        ({"dest_file": "output.nc", "variable": "flow_direction",}),
+    ],
+)
+def test_variable_check(netcdf, kwargs):
+    params = build_params(netcdf, kwargs)
+
+    with pytest.raises(Exception):
+        run_wps_process(DecomposeFlowVectors(), params)
