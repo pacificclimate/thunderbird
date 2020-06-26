@@ -46,15 +46,15 @@ TESTDATA = {
     "test_local_tasmax_climos_nc": "file:///{}".format(
         resource_filename("tests", "data/tiny_downscaled_tasmax_climos.nc")
     ),
-    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "test_opendap_pr_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
     "proxy/thredds/dodsC/datasets/TestData/"
     "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "test_opendap_tasmin_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
     "proxy/thredds/dodsC/datasets/TestData/"
     "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
+    "test_opendap_tasmax_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
     "proxy/thredds/dodsC/datasets/TestData/"
     "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
     "r1i1p1_19500101-19500107.nc",

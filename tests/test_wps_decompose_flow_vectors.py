@@ -13,7 +13,7 @@ import pkg_resources
 import os
 import re
 
-flow_vectors_opendap = "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
+flow_vectors_opendap = "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/sample_flow_parameters.nc"
 flow_vectors_nc = "file:///{}".format(
     pkg_resources.resource_filename(__name__, "data/sample_flow_parameters.nc")
 )
