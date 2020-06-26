@@ -8,11 +8,15 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-test_files = [
+local_test_files = [
     "file:///{}".format(pkg_resources.resource_filename(__name__, "data/" + test_file))
     for test_file in pkg_resources.resource_listdir(__name__, "data")
-    if test_file.startswith("tiny_")
+    if test_file.endswith(".nc")
 ]
+
+local_pr_files = [f for f in local_test_files if f.endswith("_pr.nc")]
+local_tasmin_files = [f for f in local_test_files if f.endswith("_tasmin.nc")]
+local_tasmax_files = [f for f in local_test_files if f.endswith("_tasmax.nc")]
 
 yaml_files = [
     pkg_resources.resource_filename(__name__, "metadata-conversion/" + test_file)
@@ -25,18 +29,15 @@ global:
 """
 ]
 
+generate_prsn_opendap = [
+    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+]
+
 TESTDATA = {
-    "test_local_nc": test_files,
+    "test_local_nc": local_test_files,
     "test_opendap": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "test_local_pr_nc": "file:///{}".format(
-        resource_filename("tests", "data/pr_week_test.nc")
-    ),
-    "test_local_tasmin_nc": "file:///{}".format(
-        resource_filename("tests", "data/tasmin_week_test.nc")
-    ),
-    "test_local_tasmax_nc": "file:///{}".format(
-        resource_filename("tests", "data/tasmax_week_test.nc")
-    ),
     "test_local_gcm_climos_nc": "file:///{}".format(
         resource_filename("tests", "data/tiny_gcm_climos.nc")
     ),
@@ -46,18 +47,13 @@ TESTDATA = {
     "test_local_tasmax_climos_nc": "file:///{}".format(
         resource_filename("tests", "data/tiny_downscaled_tasmax_climos.nc")
     ),
-    "test_opendap_pr_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmin_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmax_nc": "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
+    "generate_prsn_opendap": {
+        od.split("_")[
+            0
+        ]: "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
+        + od.split("_")[0]
+        for od in generate_prsn_opendap
+    },
     "test_opendap_gcm_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
     "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_climos.nc",
     "test_opendap_gcm_360_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
