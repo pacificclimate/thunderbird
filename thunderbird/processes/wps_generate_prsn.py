@@ -156,7 +156,6 @@ class GeneratePrsn(Process):
 
             response.update_status("Collecting output file", 95)
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
-                
 
         response.update_status("Process complete", 100)
         return response
