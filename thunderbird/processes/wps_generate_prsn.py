@@ -152,7 +152,7 @@ class GeneratePrsn(Process):
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
             response.update_status("File processing complete", 90)
-            prsn_file, = collect_output_files("prsn", self.workdir)
+            (prsn_file,) = collect_output_files("prsn", self.workdir)
 
             response.update_status("Collecting output file", 95)
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
