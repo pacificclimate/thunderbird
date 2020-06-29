@@ -20,7 +20,7 @@ from thunderbird.utils import (
 from thunderbird.wps_io import (
     log_level,
     dryrun_input,
-    meta4_output,
+    nc_output,
     dryrun_output,
 )
 
@@ -76,7 +76,7 @@ class GeneratePrsn(Process):
             dryrun_input,
         ]
         outputs = [
-            meta4_output,
+            nc_output,
             dryrun_output,
         ]
 
@@ -152,15 +152,10 @@ class GeneratePrsn(Process):
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
             response.update_status("File processing complete", 90)
-            prsn_file = collect_output_files("prsn", self.workdir)
+            (prsn_file,) = collect_output_files("prsn", self.workdir)
 
             response.update_status("Collecting output file", 95)
-            response.outputs["output"].data = build_meta_link(
-                varname="prsn",
-                desc="Precipitation as Snow",
-                outfiles=prsn_file,
-                outdir=self.workdir,
-            )
+            response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
         response.update_status("Process complete", 100)
         return response
