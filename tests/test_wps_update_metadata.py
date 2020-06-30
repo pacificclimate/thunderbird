@@ -13,7 +13,7 @@ def build_params(netcdf, updates):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), [(TESTDATA["test_opendap_seasonal"])],
 )
 @pytest.mark.parametrize(
     ("updates"), TESTDATA["test_yaml"],

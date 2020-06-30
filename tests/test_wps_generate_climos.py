@@ -7,9 +7,19 @@ from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 
+def build_netcdf(netcdf):
+    if isinstance(netcdf, str):  # Single input file
+        return f"netcdf=@xlink:href={netcdf};"
+    else:
+        nc_input = ""
+        for nc in netcdf:
+            nc_input += f"netcdf=@xlink:href={nc};"
+        return nc_input
+
+
 def build_params(netcdf, kwargs):
     return (
-        "netcdf=@xlink:href={0};"
+        "{0}"
         "operation={operation};"
         "climo={climo};"
         "resolutions={resolutions};"
@@ -17,12 +27,12 @@ def build_params(netcdf, kwargs):
         "split_vars={split_vars};"
         "split_intervals={split_intervals};"
         "dry_run={dry_run};"
-    ).format(netcdf, **kwargs)
+    ).format(build_netcdf(netcdf), **kwargs)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), [(TESTDATA["test_opendap_seasonal"])],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -51,12 +61,37 @@ def build_params(netcdf, kwargs):
         ),
     ],
 )
-def test_wps_gen_climos_opendap(netcdf, kwargs):
+def test_wps_gen_climos_opendap_single(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
     run_wps_process(GenerateClimos(), params)
 
 
-# running generate_climos on climo files is againt the purpose of the program
+@pytest.mark.online
+@pytest.mark.parametrize(
+    ("netcdf"), [(TESTDATA["test_opendap_seasonal"], TESTDATA["test_opendap_annual"])],
+)
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
+        (
+            {
+                "operation": "mean",
+                "climo": "6190",
+                "resolutions": "all",
+                "convert_longitudes": "True",
+                "split_vars": "True",
+                "split_intervals": "True",
+                "dry_run": "False",
+            }
+        ),
+    ],
+)
+def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
+    params = build_params(netcdf, kwargs)
+    run_wps_process(GenerateClimos(), params)
+
+
+# running generate_climos on climo files is against the purpose of the program
 local_test_data = [
     nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")
 ]
