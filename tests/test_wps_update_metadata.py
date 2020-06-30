@@ -5,8 +5,6 @@ from pywps.tests import assert_response_success
 
 from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
-import owslib.wps
-import os
 
 
 def build_params(netcdf, updates):

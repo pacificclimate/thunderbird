@@ -3,22 +3,20 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    ComplexOutput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
-from pywps.inout.outputs import MetaLink4, MetaFile
-from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from nchelpers import CFDataset, standard_climo_periods
 from dp.generate_climos import create_climo_files
 from thunderbird.utils import (
-    is_opendap_url,
+    get_filepaths,
     collect_output_files,
     build_meta_link,
     log_handler
 )
+from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output
 
 # Library imports
 import logging
@@ -101,28 +99,11 @@ class GenerateClimos(Process):
                 abstract="Generate a separate file for each climatological period",
                 data_type="boolean",
             ),
-            LiteralInput(
-                "dry_run",
-                "Dry Run",
-                abstract="Checks file to ensure compatible with process",
-                data_type="boolean",
-            ),
+            dryrun_input,
         ]
         outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                abstract="Collection of climatoligical files",
-                as_reference=True,
-                supported_formats=[FORMATS.META4],
-            ),
-            ComplexOutput(
-                "dry_output",
-                "Dry Output",
-                as_reference=True,
-                abstract="File information",
-                supported_formats=[FORMATS.TEXT],
-            ),
+            meta4_output,
+            dryrun_output,
         ]
 
         super(GenerateClimos, self).__init__(
@@ -203,18 +184,6 @@ class GenerateClimos(Process):
             operation,
         )
 
-    def get_filepath(self, request):
-        path = request.inputs["netcdf"][0]
-        if is_opendap_url(path.url):
-            return path.url
-        elif path.file.endswith(".nc"):
-            return path.file
-        else:
-            raise ProcessError(
-                "You must provide a data source (opendap/netcdf). "
-                f"Inputs provided: {request.inputs}"
-            )
-
     def _handler(self, request, response):
         log_handler(self, response, "Starting Process", process_step="start")
 
@@ -227,7 +196,7 @@ class GenerateClimos(Process):
             dry_run,
             operation,
         ) = self.collect_args(request)
-        filepath = self.get_filepath(request)
+        filepath = get_filepaths(request)[0]
 
         if dry_run:
             log_handler(self, response, "Dry Run", process_step="dry_run")
@@ -263,7 +232,10 @@ class GenerateClimos(Process):
 
             log_handler(self, response, "Building final output", process_step="build_output")
             response.outputs["output"].data = build_meta_link(
-                "climo", "Climatology", climo_files, self.workdir
+                varname="climo",
+                desc="Climatology",
+                outfiles=climo_files,
+                outdir=self.workdir,
             )
 
         log_handler(self, response, "Process Complete", process_step="complete")

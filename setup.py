@@ -48,7 +48,7 @@ setup(
     packages=find_packages(),
     package_data={
         "thunderbird": ["tests/data/*.nc", "tests/metadata-conversion/*.yaml"],
-        "tests": ["data/*.nc"],
+        "tests": ["data/*.nc", "metadata-conversion/*.yaml"],
     },
     include_package_data=True,
     install_requires=reqs,

@@ -3,6 +3,7 @@ from pywps import FORMATS
 from requests import head
 from requests.exceptions import ConnectionError, MissingSchema, InvalidSchema
 from pywps.inout.outputs import MetaLink4, MetaFile
+from pywps.app.exceptions import ProcessError
 
 # Tool import
 from nchelpers import CFDataset
@@ -10,6 +11,8 @@ from nchelpers import CFDataset
 # Library imports
 import logging
 import os
+
+MAX_OCCURS = 1000
 
 
 logger = logging.getLogger("PYWPS")
@@ -38,6 +41,21 @@ def is_opendap_url(url):  # From Finch bird
         except OSError:
             return False
         return dataset.disk_format in ("DAP2", "DAP4")
+
+
+def get_filepaths(request):
+    filepaths = []
+    for path in request.inputs["netcdf"]:
+        if is_opendap_url(path.url):
+            filepaths.append(path.url)
+        elif path.file.endswith(".nc"):
+            filepaths.append(path.file)
+        else:
+            raise ProcessError(
+                "You must provide a data source (opendap/netcdf). "
+                f"Inputs provided: {request.inputs}"
+            )
+    return filepaths
 
 
 def collect_output_files(varname, outdir=os.getcwd()):

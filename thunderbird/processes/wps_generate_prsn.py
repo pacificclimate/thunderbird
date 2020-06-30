@@ -3,10 +3,10 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    ComplexOutput,
     FORMATS,
 )
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
@@ -16,6 +16,12 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
     setup_logger,
+)
+from thunderbird.wps_io import (
+    log_level,
+    dryrun_input,
+    nc_output,
+    dryrun_output,
 )
 
 # Library imports
@@ -66,35 +72,12 @@ class GeneratePrsn(Process):
                 abstract="Optional custom name of output file",
                 data_type="string",
             ),
-            LiteralInput(
-                "loglevel",
-                "Log Level",
-                default="INFO",
-                abstract="Logging level",
-                allowed_values=["INFO", "DEBUG", "WARNING", "ERROR"],
-            ),
-            LiteralInput(
-                "dry_run",
-                "Dry Run",
-                abstract="Checks file to ensure compatible with process",
-                data_type="boolean",
-            ),
+            log_level,
+            dryrun_input,
         ]
         outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                abstract="Precipitation as snow file",
-                as_reference=True,
-                supported_formats=[FORMATS.META4],
-            ),
-            ComplexOutput(
-                "dry_output",
-                "Dry Output",
-                as_reference=True,
-                abstract="File information",
-                supported_formats=[FORMATS.TEXT],
-            ),
+            nc_output,
+            dryrun_output,
         ]
 
         super(GeneratePrsn, self).__init__(
@@ -169,12 +152,10 @@ class GeneratePrsn(Process):
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
             response.update_status("File processing complete", 90)
-            prsn_file = collect_output_files("prsn", self.workdir)
+            (prsn_file,) = collect_output_files("prsn", self.workdir)
 
             response.update_status("Collecting output file", 95)
-            response.outputs["output"].data = build_meta_link(
-                "prsn", "Precipitation as Snow", prsn_file, self.workdir
-            )
+            response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
         response.update_status("Process complete", 100)
         return response
