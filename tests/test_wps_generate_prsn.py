@@ -21,13 +21,16 @@ netcdf_sets = [
     and re.sub("pr", "", pr) == re.sub("tasmax", "", tasmax)
 ]
 
-opendap_sets = [
-    (
-        TESTDATA["generate_prsn_opendap"]["pr"],
-        TESTDATA["generate_prsn_opendap"]["tasmin"],
-        TESTDATA["generate_prsn_opendap"]["tasmax"],
-    )
-]
+opendap_sets = ["", "", ""]
+for od in TESTDATA["test_opendaps"]:
+    if od.startswith("pr"):
+        opendap_sets[0] = od
+    elif od.startswith("tasmin"):
+        opendap_sets[1] = od
+    elif od.startswith("tasmax"):
+        opendap_sets[2] = od
+
+opendap_sets = [tuple(opendap_sets)]
 
 
 def mix_sets(sets1, sets2):

@@ -1,10 +1,13 @@
 import pytest
+import re
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
 from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
+
+tiny_nc = [nc for nc in TESTDATA["test_local_nc"] if re.search("\w*/tiny_\w+.nc$", nc)]
 
 
 def build_params(netcdf, updates):
@@ -13,7 +16,7 @@ def build_params(netcdf, updates):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), TESTDATA["test_opendaps"],
 )
 @pytest.mark.parametrize(
     ("updates"), TESTDATA["test_yaml"],
@@ -24,7 +27,7 @@ def test_wps_update_metadata_opendap(netcdf, updates):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), TESTDATA["test_local_nc"],
+    ("netcdf"), tiny_nc,
 )
 @pytest.mark.parametrize(
     ("updates"), TESTDATA["test_yaml"],

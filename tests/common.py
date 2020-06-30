@@ -18,6 +18,23 @@ local_pr_files = [f for f in local_test_files if f.endswith("_pr.nc")]
 local_tasmin_files = [f for f in local_test_files if f.endswith("_tasmin.nc")]
 local_tasmax_files = [f for f in local_test_files if f.endswith("_tasmax.nc")]
 
+split_merged_climos_opedap = [
+    "tiny_gcm_climos.nc",
+    "tiny_gcm_360_climos.nc",
+    "tiny_downscaled_tasmax_climos.nc",
+]
+
+opendaps = [
+    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+    "tiny_gcm_climos.nc",
+    "tiny_gcm_360_climos.nc",
+    "tiny_downscaled_tasmax_climos.nc",
+    "gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+    "fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+]
+
 yaml_files = [
     pkg_resources.resource_filename(__name__, "metadata-conversion/" + test_file)
     for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")
@@ -29,37 +46,13 @@ global:
 """
 ]
 
-generate_prsn_opendap = [
-    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-]
-
 TESTDATA = {
     "test_local_nc": local_test_files,
-    "test_opendap": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "test_local_gcm_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_gcm_climos.nc")
-    ),
-    "test_local_gcm_360_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_gcm_360_climos.nc")
-    ),
-    "test_local_tasmax_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_downscaled_tasmax_climos.nc")
-    ),
-    "generate_prsn_opendap": {
-        od.split("_")[
-            0
-        ]: "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
-        + od.split("_")[0]
-        for od in generate_prsn_opendap
-    },
-    "test_opendap_gcm_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_climos.nc",
-    "test_opendap_gcm_360_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_360_climos.nc",
-    "test_opendap_tasmax_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_downscaled_tasmax_climos.nc",
+    "test_opendaps": [
+        "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
+        + od
+        for od in opendaps
+    ],
     "test_yaml": yaml_files + yaml_str,
 }
 

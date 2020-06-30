@@ -31,7 +31,7 @@ nc_output = ComplexOutput(
     "output",
     "Output",
     as_reference=True,
-    abstract="Output Netcdf Files",
+    abstract="Output Netcdf File",
     supported_formats=[FORMATS.NETCDF],
 )
 
@@ -41,4 +41,12 @@ dryrun_output = ComplexOutput(
     as_reference=True,
     abstract="File information",
     supported_formats=[FORMATS.TEXT],
+)
+
+meta4_dryrun_output = ComplexOutput(
+    "dry_output",
+    "Dry Output",
+    as_reference=True,
+    abstract="Metalink object between dry output files",
+    supported_formats=[FORMATS.META4],
 )

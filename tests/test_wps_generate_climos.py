@@ -1,10 +1,19 @@
 import pytest
+import re
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
 from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_climos import GenerateClimos
+
+# running generate_climos on climo files is againt the purpose of the program
+local_test_data = [
+    nc
+    for nc in TESTDATA["test_local_nc"]
+    if not nc.endswith("_climos.nc") and re.search("\w*/tiny_\w+.nc$", nc)
+]
+opendap_data = [od for od in TESTDATA["test_opendaps"] if not od.endswith("_climos.nc")]
 
 
 def build_params(netcdf, kwargs):
@@ -22,7 +31,7 @@ def build_params(netcdf, kwargs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), [(TESTDATA["test_opendap"])],
+    ("netcdf"), opendap_data,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -54,12 +63,6 @@ def build_params(netcdf, kwargs):
 def test_wps_gen_climos_opendap(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
     run_wps_process(GenerateClimos(), params)
-
-
-# running generate_climos on climo files is againt the purpose of the program
-local_test_data = [
-    nc for nc in TESTDATA["test_local_nc"] if not nc.endswith("_climos.nc")
-]
 
 
 @pytest.mark.parametrize(
