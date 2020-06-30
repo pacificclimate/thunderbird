@@ -14,6 +14,7 @@ from thunderbird.utils import (
     MAX_OCCURS,
     get_filepaths,
     build_meta_link,
+    log_handler
 )
 from thunderbird.wps_io import log_level, meta4_output
 
@@ -25,6 +26,12 @@ logger = logging.getLogger("PYWPS")
 
 class SplitMergedClimos(Process):
     def __init__(self):
+        self.status_percentage_steps = {
+            "start": 0,
+            "process": 10,
+            "build_output": 95,
+            "complete": 100,
+        }
         inputs = [
             ComplexInput(
                 "netcdf",
@@ -54,11 +61,12 @@ class SplitMergedClimos(Process):
         )
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
         loglevel = request.inputs["loglevel"][0].data
         logger.setLevel(getattr(logging, loglevel))
+        log_handler(self, response, "Starting Process", process_step="start")
+
         filepaths = get_filepaths(request)
-        response.update_status("Processing files", 10)
+        log_handler(self, response, f"Spliting climo files: {filepaths}", process_step="process")
         output_filepaths = []
         for path in filepaths:
             logger.info("")
@@ -73,7 +81,7 @@ class SplitMergedClimos(Process):
             else:
                 output_filepaths.extend(split_merged_climos(input_file, self.workdir))
 
-        response.update_status("File processing complete", 90)
+        log_handler(self, response, "Building final output", process_step="build_output")
         response.outputs["output"].data = build_meta_link(
             varname="split_climo",
             desc="Split climatologies",
@@ -81,5 +89,5 @@ class SplitMergedClimos(Process):
             outdir=self.workdir,
         )
 
-        response.update_status("Process complete", 100)
+        log_handler(self, response, "Process Complete", process_step="complete")
         return response

@@ -14,7 +14,7 @@ from thunderbird.utils import (
     get_filepaths,
     collect_output_files,
     build_meta_link,
-    log_handler
+    log_handler,
 )
 from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output
 

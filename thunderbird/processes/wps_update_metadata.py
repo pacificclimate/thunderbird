@@ -10,7 +10,7 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from dp.update_metadata import process_updates
 from nchelpers import CFDataset
-from thunderbird.utils import is_opendap_url
+from thunderbird.utils import is_opendap_url, log_handler
 from thunderbird.wps_io import nc_output
 
 # Library imports
@@ -19,12 +19,16 @@ import os
 import yaml
 import xarray as xr
 
-logger = logging.getLogger("PYWPS")
 
 
 class UpdateMetadata(Process):
     def __init__(self):
-
+        self.status_percentage_steps = {
+            "start": 0,
+            "process": 10,
+            "build_output": 95,
+            "complete": 100,
+        }
         inputs = [
             ComplexInput(
                 "netcdf",
@@ -88,11 +92,9 @@ class UpdateMetadata(Process):
         return copy
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
+        log_handler(self, response, "Starting Process", process_step="start")
 
         filepath = self.copy_and_get_filepath(request)
-        response.update_status(f"Processing {filepath}", 10)
-
         updates = request.inputs["updates"][0].data
 
         # determines if the input `updates` is a file or a string
@@ -103,9 +105,11 @@ class UpdateMetadata(Process):
             updates_instruction = yaml.safe_load(updates)
 
         with CFDataset(filepath, mode="r+") as dataset:
+            log_handler(self, response, f"Updating {filepath} metadata", process_step="process")
             process_updates(dataset, updates_instruction)
 
+        log_handler(self, response, "Building final output", process_step="build_output")
         response.outputs["output"].file = filepath
 
-        response.update_status("Process Complete", 100)
+        log_handler(self, response, "Process Complete", process_step="complete")
         return response

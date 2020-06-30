@@ -16,6 +16,7 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
     setup_logger,
+    log_handler,
 )
 from thunderbird.wps_io import (
     log_level,
@@ -33,6 +34,15 @@ logger = logging.getLogger("PYWPS")
 
 class GeneratePrsn(Process):
     def __init__(self):
+        self.status_percentage_steps = {
+            "start": 0,
+            "dry_run": 5,
+            "process": 10,
+            "collect_files": 90,
+            "build_output": 95,
+            "complete": 100,
+
+        }
         inputs = [
             ComplexInput(
                 "prec",
@@ -132,14 +142,14 @@ class GeneratePrsn(Process):
         return filepaths
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
+        log_handler(self, response, "Starting Process", process_step="start")
 
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         filepaths = self.get_filepaths(request)
         setup_logger(logger, loglevel)
 
         if dry_run:
-            response.update_status("Dry Run", 10)
+            log_handler(self, response, "Dry Run", process_step="dry_run")
             del response.outputs["output"]  # remove unnecessary output
             dry_output_path = os.path.join(self.workdir, "dry.txt")
             dry_run_info(filepaths, dry_output_path)
@@ -148,14 +158,14 @@ class GeneratePrsn(Process):
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
 
-            response.update_status("Processing files", 10)
+            log_handler(self, response, f"Processing {filepaths} into snowfall fluxes", process_step="process")
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
-            response.update_status("File processing complete", 90)
+            log_handler(self, response, "Collecting snowfall files", process_step="collect_files")
             (prsn_file,) = collect_output_files("prsn", self.workdir)
 
-            response.update_status("Collecting output file", 95)
+            log_handler(self, response, "Building final output", process_step="build_output")
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
-        response.update_status("Process complete", 100)
+        log_handler(self, response, "Process Complete", process_step="complete")
         return response
