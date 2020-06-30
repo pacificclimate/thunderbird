@@ -20,7 +20,6 @@ import yaml
 import xarray as xr
 
 
-
 class UpdateMetadata(Process):
     def __init__(self):
         self.status_percentage_steps = {
@@ -105,10 +104,14 @@ class UpdateMetadata(Process):
             updates_instruction = yaml.safe_load(updates)
 
         with CFDataset(filepath, mode="r+") as dataset:
-            log_handler(self, response, f"Updating {filepath} metadata", process_step="process")
+            log_handler(
+                self, response, f"Updating {filepath} metadata", process_step="process"
+            )
             process_updates(dataset, updates_instruction)
 
-        log_handler(self, response, "Building final output", process_step="build_output")
+        log_handler(
+            self, response, "Building final output", process_step="build_output"
+        )
         response.outputs["output"].file = filepath
 
         log_handler(self, response, "Process Complete", process_step="complete")

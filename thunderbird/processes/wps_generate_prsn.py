@@ -41,7 +41,6 @@ class GeneratePrsn(Process):
             "collect_files": 90,
             "build_output": 95,
             "complete": 100,
-
         }
         inputs = [
             ComplexInput(
@@ -158,13 +157,25 @@ class GeneratePrsn(Process):
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
 
-            log_handler(self, response, f"Processing {filepaths} into snowfall fluxes", process_step="process")
+            log_handler(
+                self,
+                response,
+                f"Processing {filepaths} into snowfall fluxes",
+                process_step="process",
+            )
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
-            log_handler(self, response, "Collecting snowfall files", process_step="collect_files")
+            log_handler(
+                self,
+                response,
+                "Collecting snowfall files",
+                process_step="collect_files",
+            )
             (prsn_file,) = collect_output_files("prsn", self.workdir)
 
-            log_handler(self, response, "Building final output", process_step="build_output")
+            log_handler(
+                self, response, "Building final output", process_step="build_output"
+            )
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
         log_handler(self, response, "Process Complete", process_step="complete")

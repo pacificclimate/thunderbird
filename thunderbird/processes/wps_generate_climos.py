@@ -41,7 +41,6 @@ class GenerateClimos(Process):
             "collect_files": 90,
             "build_output": 95,
             "complete": 100,
-
         }
 
         inputs = [
@@ -209,7 +208,12 @@ class GenerateClimos(Process):
 
             periods = [period for period in input_file.climo_periods.keys() & climo]
 
-            log_handler(self, response, f"Processing {filepath} into climatologies", process_step="process")
+            log_handler(
+                self,
+                response,
+                f"Processing {filepath} into climatologies",
+                process_step="process",
+            )
 
             for period in periods:
                 t_range = input_file.climo_periods[period]
@@ -224,13 +228,17 @@ class GenerateClimos(Process):
                     output_resolutions=resolutions,
                 )
 
-            log_handler(self, response, "Collecting climo files", process_step="collect_files")
+            log_handler(
+                self, response, "Collecting climo files", process_step="collect_files"
+            )
 
             climo_files = collect_output_files(
                 self.get_identifier(operation), self.workdir
             )
 
-            log_handler(self, response, "Building final output", process_step="build_output")
+            log_handler(
+                self, response, "Building final output", process_step="build_output"
+            )
             response.outputs["output"].data = build_meta_link(
                 varname="climo",
                 desc="Climatology",

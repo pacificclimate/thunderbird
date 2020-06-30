@@ -97,17 +97,29 @@ class DecomposeFlowVectors(Process):
 
         source = Dataset(source_file, "r", format="NETCDF4")
 
-        log_handler(self, response, f"Checking {source_file} and {variable}", process_step="input_check")
+        log_handler(
+            self,
+            response,
+            f"Checking {source_file} and {variable}",
+            process_step="input_check",
+        )
         try:
             source_check(source)
             variable_check(source, variable)
         except (AttributeError, ValueError) as e:
             raise ProcessError(f"An error occured during the process: {e}")
 
-        log_handler(self, response, "Decomposing flow direction vectors into grids", process_step="process")
+        log_handler(
+            self,
+            response,
+            "Decomposing flow direction vectors into grids",
+            process_step="process",
+        )
         decompose_flow_vectors(source, dest_file, variable)
 
-        log_handler(self, response, "Building final output", process_step="build_output")
+        log_handler(
+            self, response, "Building final output", process_step="build_output"
+        )
         response.outputs["output"].file = dest_file
 
         log_handler(self, response, "Process Complete", process_step="complete")
