@@ -16,8 +16,6 @@ from thunderbird.wps_io import log_level, meta4_output
 # Library import
 import logging
 
-logger = logging.getLogger("PYWPS")
-
 
 class SplitMergedClimos(Process):
     def __init__(self):
@@ -56,8 +54,6 @@ class SplitMergedClimos(Process):
         )
 
     def _handler(self, request, response):
-        loglevel = request.inputs["loglevel"][0].data
-        logger.setLevel(getattr(logging, loglevel))
         log_handler(self, response, "Starting Process", process_step="start")
 
         filepaths = get_filepaths(request)
@@ -66,12 +62,9 @@ class SplitMergedClimos(Process):
         )
         output_filepaths = []
         for path in filepaths:
-            logger.info("")
-            logger.info(f"Processing: {path}")
             try:
                 input_file = CFDataset(path)
-            except Exception as e:
-                logger.error(f"{e.__class__.__name__}: {e}")
+            except Exception:
                 raise ProcessError(
                     f"The input file {path} could not be converted to a netcdf dataset"
                 )

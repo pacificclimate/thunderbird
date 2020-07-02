@@ -15,7 +15,6 @@ from thunderbird.utils import (
     is_opendap_url,
     collect_output_files,
     build_meta_link,
-    setup_logger,
     log_handler,
 )
 from thunderbird.wps_io import (
@@ -28,8 +27,6 @@ from thunderbird.wps_io import (
 # Library imports
 import logging
 import os
-
-logger = logging.getLogger("PYWPS")
 
 
 class GeneratePrsn(Process):
@@ -145,7 +142,6 @@ class GeneratePrsn(Process):
 
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         filepaths = self.get_filepaths(request)
-        setup_logger(logger, loglevel)
 
         if dry_run:
             log_handler(self, response, "Dry Run", process_step="dry_run")

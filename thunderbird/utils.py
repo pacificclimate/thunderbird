@@ -11,12 +11,21 @@ from nchelpers import CFDataset
 # Library imports
 import logging
 import os
+import time
 
 MAX_OCCURS = 1000
 
 
 pywps_logger = logging.getLogger("PYWPS")
 stderr_logger = logging.getLogger(__name__)
+
+formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
+)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+stderr_logger.addHandler(handler)
+stderr_logger.setLevel(stderr_logger.level)
 
 
 def is_opendap_url(url):  # From Finch bird
@@ -96,16 +105,6 @@ def build_meta_link(varname, desc, outfiles, outdir=os.getcwd()):
         meta_link.append(meta_file)
 
     return meta_link.xml
-
-
-def setup_logger(logger, level):
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
-    )
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(level)
 
 
 def log_handler(process, response, message, process_step=None):

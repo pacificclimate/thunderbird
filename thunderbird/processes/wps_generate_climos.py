@@ -23,9 +23,6 @@ import logging
 import os
 
 
-logger = logging.getLogger("PYWPS")
-
-
 class GenerateClimos(Process):
     def __init__(self):
         self.climos = list(standard_climo_periods().keys())
