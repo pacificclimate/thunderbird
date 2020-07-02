@@ -13,10 +13,11 @@ local_test_data = [
     for nc in TESTDATA["test_local_nc"]
     if re.search("\S*/tiny_\S+.nc$", nc) and not nc.endswith("_climos.nc")
 ]
+# NetCDFs with flow_vectors not adequate for generate_climos
 opendap_data = [
     od
     for od in TESTDATA["test_opendaps"]
-    if re.search("\S*/tiny_\S+.nc$", od) and not od.endswith("_climos.nc")
+    if not (od.endswith("_climos.nc") or od.endswith("sample_flow_parameters.nc"))
 ]
 
 
