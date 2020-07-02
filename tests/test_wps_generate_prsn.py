@@ -21,25 +21,16 @@ netcdf_sets = [
     and re.sub("pr", "", pr) == re.sub("tasmax", "", tasmax)
 ]
 
-opendap_sets = ["", "", ""]
+opendap_set = ["", "", ""]
 for od in TESTDATA["test_opendaps"]:
-    if od.startswith("pr"):
-        opendap_sets[0] = od
-    elif od.startswith("tasmin"):
-        opendap_sets[1] = od
-    elif od.startswith("tasmax"):
-        opendap_sets[2] = od
+    if re.search("\S*/pr_\S+.nc$", od):
+        opendap_set[0] = od
+    elif re.search("\S*/tasmin_\S+.nc$", od):
+        opendap_set[1] = od
+    elif re.search("\S*/tasmax_\S+.nc$", od):
+        opendap_set[2] = od
 
-opendap_sets = [tuple(opendap_sets)]
-
-
-def mix_sets(sets1, sets2):
-    mixed_sets = []
-    for set1 in sets1:
-        for set2 in sets2:
-            mixed_sets.append((set1[0], set2[1], set2[1]))
-            mixed_sets.append((set2[0], set1[1], set1[1]))
-    return mix_sets
+opendap_set = [tuple(opendap_set)]
 
 
 def build_params(netcdfs, kwargs):
@@ -70,7 +61,6 @@ def build_params(netcdfs, kwargs):
     ("kwargs"), [({"dry_run": "False",}),],
 )
 def test_default_local(netcdfs, kwargs):
-    print(netcdfs)
     params = build_params(netcdfs, kwargs)
     run_wps_process(GeneratePrsn(), params)
 
@@ -89,7 +79,7 @@ def test_run_local(netcdfs, kwargs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendaps"), opendap_sets,
+    ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
     ("kwargs"), [({"dry_run": "False",}),],
@@ -101,7 +91,7 @@ def test_default_opendap(opendaps, kwargs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendaps"), opendap_sets,
+    ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -122,10 +112,11 @@ def test_run_opendap(opendaps, kwargs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdfs"), netcdf_sets,
+    ("netcdfs"),
+    [nc_set for nc_set in netcdf_sets if not re.search("\S*/tiny_\S+.nc$", nc_set[0])],
 )
 @pytest.mark.parametrize(
-    ("opendaps"), opendap_sets,
+    ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -147,5 +138,10 @@ def test_run_opendap(opendaps, kwargs):
     ],
 )
 def test_run_mixed(netcdfs, opendaps, kwargs):
-    params = build_params(mix_sets(netcdf_sets, opendap_sets), kwargs)
-    run_wps_process(GeneratePrsn(), params)
+    mixed1 = (netcdfs[0], opendaps[1], opendaps[2])
+    mixed2 = (opendaps[0], netcdfs[1], netcdfs[2])
+    params1 = build_params(mixed1, kwargs)
+    params2 = build_params(mixed2, kwargs)
+
+    run_wps_process(GeneratePrsn(), params1)
+    run_wps_process(GeneratePrsn(), params2)

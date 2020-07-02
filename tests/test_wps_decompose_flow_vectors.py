@@ -18,7 +18,7 @@ flow_vectors_nc = [
     nc for nc in TESTDATA["test_local_nc"] if nc.endswith("sample_flow_parameters.nc")
 ]
 non_flow_vectors_nc = [
-    nc for nc in TESTDATA["test_local_nc"] if re.search("\w*/tiny_\w+.nc$", nc)
+    nc for nc in TESTDATA["test_local_nc"] if re.search("\S*/tiny_\S+.nc$", nc)
 ]
 
 

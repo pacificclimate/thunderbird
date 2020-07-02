@@ -1,4 +1,4 @@
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename, resource_listdir
 from pywps import Service
 from pywps.app.basic import get_xpath_ns
 from pywps.tests import WpsClient, WpsTestResponse, assert_response_success
@@ -8,20 +8,10 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-local_test_files = [
-    "file:///{}".format(pkg_resources.resource_filename(__name__, "data/" + test_file))
-    for test_file in pkg_resources.resource_listdir(__name__, "data")
+local_netcdfs = [
+    "file:///{}".format(resource_filename(__name__, "data/" + test_file))
+    for test_file in resource_listdir(__name__, "data")
     if test_file.endswith(".nc")
-]
-
-local_pr_files = [f for f in local_test_files if f.endswith("_pr.nc")]
-local_tasmin_files = [f for f in local_test_files if f.endswith("_tasmin.nc")]
-local_tasmax_files = [f for f in local_test_files if f.endswith("_tasmax.nc")]
-
-split_merged_climos_opedap = [
-    "tiny_gcm_climos.nc",
-    "tiny_gcm_360_climos.nc",
-    "tiny_downscaled_tasmax_climos.nc",
 ]
 
 opendaps = [
@@ -36,8 +26,8 @@ opendaps = [
 ]
 
 yaml_files = [
-    pkg_resources.resource_filename(__name__, "metadata-conversion/" + test_file)
-    for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")
+    resource_filename(__name__, "metadata-conversion/" + test_file)
+    for test_file in resource_listdir(__name__, "metadata-conversion")
 ]
 yaml_str = [
     """
@@ -47,13 +37,13 @@ global:
 ]
 
 TESTDATA = {
-    "test_local_nc": local_test_files,
+    "test_local_nc": local_netcdfs,
     "test_opendaps": [
         "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
         + od
         for od in opendaps
     ],
-    "test_yaml": yaml_files + yaml_str,
+    "test_yamls": yaml_files + yaml_str,
 }
 
 

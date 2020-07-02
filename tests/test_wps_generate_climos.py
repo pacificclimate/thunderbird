@@ -11,7 +11,7 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
 local_test_data = [
     nc
     for nc in TESTDATA["test_local_nc"]
-    if not nc.endswith("_climos.nc") and re.search("\w*/tiny_\w+.nc$", nc)
+    if re.search("\S*/tiny_\S+.nc$", nc) and not nc.endswith("_climos.nc")
 ]
 opendap_data = [od for od in TESTDATA["test_opendaps"] if not od.endswith("_climos.nc")]
 

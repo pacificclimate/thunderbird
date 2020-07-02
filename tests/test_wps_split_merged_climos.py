@@ -1,5 +1,4 @@
 import pytest
-import re
 
 from pywps import Service
 from pywps.tests import assert_response_success
