@@ -40,7 +40,7 @@ global:
 TESTDATA = {
     "test_local_nc": local_netcdfs,
     "test_opendaps": [
-        "http://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
+        "https://docker-dev03.pcic.uvic.ca:8083/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
         + od
         for od in opendaps
     ],
