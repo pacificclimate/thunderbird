@@ -13,7 +13,11 @@ local_test_data = [
     for nc in TESTDATA["test_local_nc"]
     if re.search("\S*/tiny_\S+.nc$", nc) and not nc.endswith("_climos.nc")
 ]
-opendap_data = [od for od in TESTDATA["test_opendaps"] if not od.endswith("_climos.nc")]
+opendap_data = [
+    od
+    for od in TESTDATA["test_opendaps"]
+    if re.search("\S*/tiny_\S+.nc$", od) and not od.endswith("_climos.nc")
+]
 
 
 def build_params(netcdf, kwargs):
