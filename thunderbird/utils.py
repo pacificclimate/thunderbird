@@ -15,7 +15,8 @@ import os
 MAX_OCCURS = 1000
 
 
-logger = logging.getLogger("PYWPS")
+pywps_logger = logging.getLogger("PYWPS")
+stderr_logger = logging.getLogger(__name__)
 
 
 def is_opendap_url(url):  # From Finch bird
@@ -114,5 +115,6 @@ def log_handler(process, response, message, process_step=None):
         status_percentage = response.status_percentage
 
     # Log to all sources
-    logger.info(message)
+    pywps_logger.info(message)
+    stderr_logger.critical(message)
     response.update_status(message, status_percentage=status_percentage)
