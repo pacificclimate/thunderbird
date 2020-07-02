@@ -6,6 +6,7 @@ from pywps.tests import assert_response_success
 from .common import client_for, TESTDATA
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
+# limiting test_data to climo files
 split_merged_climos_local = [
     nc for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
 ]

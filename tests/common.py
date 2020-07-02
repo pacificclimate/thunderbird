@@ -23,6 +23,7 @@ opendaps = [
     "tiny_downscaled_tasmax_climos.nc",
     "gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
     "fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+    "sample_flow_parameters.nc",
 ]
 
 yaml_files = [

@@ -8,10 +8,12 @@ from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 local_test_files = TESTDATA["test_local_nc"]
+# pr, tasmin and tasmax files to make vaild sets of test_data
 local_pr_files = [f for f in local_test_files if "pr" in f]
 local_tasmin_files = [f for f in local_test_files if "tasmin" in f]
 local_tasmax_files = [f for f in local_test_files if "tasmax" in f]
 
+# creating sets of test_data with the matching files
 netcdf_sets = [
     (pr, tasmin, tasmax)
     for pr in local_pr_files
@@ -111,6 +113,7 @@ def test_run_opendap(opendaps, kwargs):
 
 
 @pytest.mark.online
+# exclude tiny_datasets to mix within "day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc" datasets
 @pytest.mark.parametrize(
     ("netcdfs"),
     [nc_set for nc_set in netcdf_sets if not re.search("\S*/tiny_\S+.nc$", nc_set[0])],

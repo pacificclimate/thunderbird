@@ -7,7 +7,7 @@ from pywps.tests import assert_response_success
 from .common import TESTDATA, run_wps_process
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
-# running generate_climos on climo files is againt the purpose of the program
+# limiting test_data to non-climo tiny datasets
 local_test_data = [
     nc
     for nc in TESTDATA["test_local_nc"]
