@@ -103,11 +103,12 @@ class GeneratePrsn(Process):
         )
 
     def setup_logger(self, level):
-        formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s',
-                                    '%Y-%m-%d %H:%M:%S')
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
+        )
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
-        logger = logging.getLogger('dp.generate_prsn')
+        logger = logging.getLogger("dp.generate_prsn")
         logger.addHandler(handler)
         logger.setLevel(level)
 
