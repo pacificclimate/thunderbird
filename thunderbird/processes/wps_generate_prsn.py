@@ -102,6 +102,15 @@ class GeneratePrsn(Process):
             status_supported=True,
         )
 
+    def setup_logger(self, level):
+        formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s',
+                                    '%Y-%m-%d %H:%M:%S')
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        logger = logging.getLogger('dp.generate_prsn')
+        logger.addHandler(handler)
+        logger.setLevel(level)
+
     def collect_args(self, request):
         chunk_size = request.inputs["chunk_size"][0].data
         loglevel = request.inputs["loglevel"][0].data
@@ -110,6 +119,7 @@ class GeneratePrsn(Process):
         if output_file == "None":
             output_file = None
             # generate_prsn_file uses NoneType to indicate no custom output file name
+        self.setup_logger(loglevel)
         return (
             chunk_size,
             loglevel,
