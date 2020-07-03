@@ -9,7 +9,7 @@ VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
 local_netcdfs = [
-    "file:///{}".format(resource_filename(__name__, "data/" + test_file))
+    test_file
     for test_file in resource_listdir(__name__, "data")
     if test_file.endswith(".nc")
 ]
@@ -26,25 +26,16 @@ opendaps = [
     "sample_flow_parameters.nc",
 ]
 
-yaml_files = [
-    resource_filename(__name__, "metadata-conversion/" + test_file)
-    for test_file in resource_listdir(__name__, "metadata-conversion")
-]
-yaml_str = [
-    """
-global:
-    history: "today is a nice day"
-"""
-]
-
 TESTDATA = {
-    "test_local_nc": local_netcdfs,
+    "test_local_nc": [
+        "file:///{}".format(resource_filename(__name__, "data/" + nc))
+        for nc in local_netcdfs
+    ],
     "test_opendaps": [
         "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
         + od
         for od in opendaps
     ],
-    "test_yamls": yaml_files + yaml_str,
 }
 
 
