@@ -7,27 +7,40 @@ from .common import client_for, TESTDATA
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
 # limiting test_data to climo files
-split_merged_climos_local = [
+climo_local_files = [
     nc for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
 ]
-split_merged_climos_opendap = [
-    od for od in TESTDATA["test_opendaps"] if od.endswith("_climos.nc")
+climo_opendaps = [
+    opendap for opendap in TESTDATA["test_opendaps"] if opendap.endswith("_climos.nc")
 ]
 
 client = client_for(Service(processes=[SplitMergedClimos()]))
 
 
 def build_netcdf_sets(climo_files):
+    """
+    This function takes a list of climo_files and returns a list of
+    combinations of climo_files. The purpose of this it is to make
+    test cases for wps_split_merged_climos to handle multiple inputs.
+    For example if [climo1, climo2, climo3] is given as an input, it
+    returns the following output: 
+    [
+        (climo1, climo2),
+        (climo1, climo3),
+        (climo2, climo3),
+        (climo1, climo2, climo3) <--- This is the worst case scenarioW
+    ]
+    """
     netcdf_sets = []
 
-    i = 0
-    while i < len(climo_files):
-        j = i + 1
-        while j < len(climo_files):
-            netcdf_sets.append((climo_files[i], climo_files[j]))
-            j += 1
-        i += 1
+    for first_idx, first_component in enumerate(climo_files):
+        second_idx = first_idx + 1
+        while second_idx < len(climo_files):
+            second_component = climo_files[second_idx]
+            netcdf_sets.append((first_component, second_component))
+            second_idx += 1
 
+    netcdf_sets.append(tuple(climo_files))
     return netcdf_sets
 
 
@@ -55,14 +68,14 @@ def run_multiple_files(netcdfs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), split_merged_climos_local,
+    "netcdf", climo_local_files,
 )
 def test_single_file_local(netcdf):
     run_single_file(netcdf)
 
 
 @pytest.mark.parametrize(
-    ("netcdfs"), build_netcdf_sets(split_merged_climos_local),
+    "netcdfs", build_netcdf_sets(climo_local_files),
 )
 def test_multiple_files_local(netcdfs):
     run_multiple_files(netcdfs)
@@ -70,22 +83,21 @@ def test_multiple_files_local(netcdfs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), split_merged_climos_opendap,
+    "netcdf", climo_opendaps,
 )
 def test_single_file_opendap(netcdf):
     run_single_file(netcdf)
 
 
 @pytest.mark.online
-@pytest.mark.parametrize(("netcdfs"), build_netcdf_sets(split_merged_climos_opendap))
+@pytest.mark.parametrize(("netcdfs"), build_netcdf_sets(climo_opendaps))
 def test_multiple_files_opendap(netcdfs):
     run_multiple_files(netcdfs)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdfs"),
-    build_netcdf_sets(split_merged_climos_local + split_merged_climos_opendap),
+    ("netcdfs"), build_netcdf_sets(climo_local_files + climo_opendaps),
 )
 def test_multiple_files_mixed(netcdfs):
     run_multiple_files(netcdfs)
