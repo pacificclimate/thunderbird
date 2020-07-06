@@ -16,9 +16,11 @@ local_test_data = [
 # NetCDFs with flow_vectors not adequate for generate_climos
 # refer to https://github.com/pacificclimate/climate-explorer-data-prep#generate_climos-generate-climatological-means
 opendap_data = [
-    od
-    for od in TESTDATA["test_opendaps"]
-    if not (od.endswith("_climos.nc") or od.endswith("sample_flow_parameters.nc"))
+    opendap
+    for opendap in TESTDATA["test_opendaps"]
+    if not (
+        opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc")
+    )
 ]
 
 
