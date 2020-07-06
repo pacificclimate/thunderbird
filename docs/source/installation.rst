@@ -24,6 +24,12 @@ Create Python environment named `thunderbird`:
    $ python3 -m venv thunderbird
    $ source thunderbird/bin/activate
 
+Install requirements:
+
+.. code-block:: console
+
+  (thunderbird)$ pip install -r requirements.txt
+
 Install thunderbird app:
 
 .. code-block:: console
