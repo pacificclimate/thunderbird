@@ -7,6 +7,7 @@ Changes
 * Add split_merged_climos process
 * Update demo notebooks
 * Add decompose_flow_vectors process
+* Update ce-dataprep to 0.8.3
 
 0.5.1 (2020-06-23)
 ==================
