@@ -1,137 +1,122 @@
 import pytest
+import re
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process
+from .common import TESTDATA, run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
+local_nc_inputs = {
+    nc.split("_")[0]: local_path(nc)
+    for nc in TESTDATA["test_local_nc"]
+    if nc.startswith("pr_") or nc.startswith("tasmin_") or nc.startswith("tasmax_")
+}
 
-def build_params(kwargs):
-    if (
-        "chunk_size" in kwargs.keys() and "output_file" in kwargs.keys()
-    ):  # Not using default values
-        return (
-            "prec=@xlink:href={prec};"
-            "tasmin=@xlink:href={tasmin};"
-            "tasmax=@xlink:href={tasmax};"
-            "chunk_size={chunk_size};"
-            "dry_run={dry_run};"
-            "output_file={output_file};"
-        ).format(**kwargs)
-    else:
-        return (
-            "prec=@xlink:href={prec};"
-            "tasmin=@xlink:href={tasmin};"
-            "tasmax=@xlink:href={tasmax};"
-            "dry_run={dry_run};"
-        ).format(**kwargs)
+local_tiny_nc_inputs = {
+    re.sub(".nc", "", nc.split("_")[-1]): local_path(nc)
+    for nc in TESTDATA["test_local_nc"]
+    if nc.startswith("tiny_daily")
+}
+
+opendap_inputs = {
+    opendap.split("_")[0]: opendap_path(opendap)
+    for opendap in TESTDATA["test_opendaps"]
+    if opendap.startswith("pr_")
+    or opendap.startswith("tasmin_")
+    or opendap.startswith("tasmax_")
+}
+
+
+def build_params(netcdfs, dry_run, chunk_size=None, output_file=None):
+    output = (
+        f"prec=@xlink:href={netcdfs['pr']};"
+        f"tasmin=@xlink:href={netcdfs['tasmin']};"
+        f"tasmax=@xlink:href={netcdfs['tasmax']};"
+        f"dry_run={dry_run};"
+    )
+
+    if chunk_size and output_file:
+        output += f"chunk_size={chunk_size};" f"output_file={output_file};"
+
+    return output
 
 
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "prec": TESTDATA["test_local_pr_nc"],
-                "tasmin": TESTDATA["test_local_tasmin_nc"],
-                "tasmax": TESTDATA["test_local_tasmax_nc"],
-                "dry_run": "False",
-            }
-        ),
-    ],
+    ("netcdfs"), [local_nc_inputs, local_tiny_nc_inputs,],
 )
-def test_default_local(kwargs):
-    params = build_params(kwargs)
+@pytest.mark.parametrize(
+    ("dry_run"), [("False")],
+)
+def test_default_local(netcdfs, dry_run):
+    params = build_params(netcdfs, dry_run)
     run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "prec": TESTDATA["test_local_pr_nc"],
-                "tasmin": TESTDATA["test_local_tasmin_nc"],
-                "tasmax": TESTDATA["test_local_tasmax_nc"],
-                "chunk_size": "50",
-                "dry_run": "True",
-                "output_file": "prsn_test_local.nc",
-            }
-        ),
-    ],
+    ("netcdfs"), [local_nc_inputs, local_tiny_nc_inputs,],
 )
-def test_run_local(kwargs):
-    params = build_params(kwargs)
-    run_wps_process(GeneratePrsn(), params)
-
-
-@pytest.mark.online
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "prec": TESTDATA["test_opendap_pr_nc"],
-                "tasmin": TESTDATA["test_opendap_tasmin_nc"],
-                "tasmax": TESTDATA["test_opendap_tasmax_nc"],
-                "dry_run": "False",
-            }
-        ),
-    ],
+    ("chunk_size", "dry_run", "output_file"), [("50", "True", "prsn_test_local.nc"),],
 )
-def test_default_opendap(kwargs):
-    params = build_params(kwargs)
+def test_run_local(netcdfs, chunk_size, dry_run, output_file):
+    params = build_params(netcdfs, dry_run, chunk_size, output_file)
     run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "prec": TESTDATA["test_opendap_pr_nc"],
-                "tasmin": TESTDATA["test_opendap_tasmin_nc"],
-                "tasmax": TESTDATA["test_opendap_tasmax_nc"],
-                "chunk_size": "50",
-                "dry_run": "False",
-                "output_file": "prsn_test_opendap.nc",
-            }
-        ),
-    ],
+    ("opendaps"), [opendap_inputs],
 )
-def test_run_opendap(kwargs):
-    params = build_params(kwargs)
+@pytest.mark.parametrize(
+    ("dry_run"), [("False")],
+)
+def test_default_opendap(opendaps, dry_run):
+    params = build_params(opendaps, dry_run)
     run_wps_process(GeneratePrsn(), params)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("kwargs"),
+    ("opendaps"), [opendap_inputs],
+)
+@pytest.mark.parametrize(
+    ("chunk_size", "dry_run", "output_file"),
+    [("50", "False", "prsn_test_opendap.nc"),],
+)
+def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
+    params = build_params(opendaps, dry_run, chunk_size, output_file)
+    run_wps_process(GeneratePrsn(), params)
+
+
+@pytest.mark.online
+# exclude tiny_datasets to mix within "day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc" datasets
+@pytest.mark.parametrize(
+    ("netcdfs"),
     [
         (
             {
-                "prec": TESTDATA["test_local_pr_nc"],
-                "tasmin": TESTDATA["test_opendap_tasmin_nc"],
-                "tasmax": TESTDATA["test_opendap_tasmax_nc"],
-                "chunk_size": "100",
-                "dry_run": "True",
-                "output_file": "prsn_test_mixed1.nc",
+                "pr": local_nc_inputs["pr"],
+                "tasmin": opendap_inputs["tasmin"],
+                "tasmax": opendap_inputs["tasmax"],
             }
         ),
         (
             {
-                "prec": TESTDATA["test_opendap_pr_nc"],
-                "tasmin": TESTDATA["test_local_tasmin_nc"],
-                "tasmax": TESTDATA["test_local_tasmax_nc"],
-                "chunk_size": "100",
-                "dry_run": "False",
-                "output_file": "prsn_test_mixed2.nc",
+                "pr": opendap_inputs["pr"],
+                "tasmin": local_nc_inputs["tasmin"],
+                "tasmax": local_nc_inputs["tasmax"],
             }
         ),
     ],
 )
-def test_run_mixed(kwargs):
-    params = build_params(kwargs)
+@pytest.mark.parametrize(
+    ("chunk_size", "dry_run", "output_file"),
+    [
+        ("100", "True", "prsn_test_mixed1.nc",),
+        ("100", "False", "prsn_test_mixed2.nc",),
+    ],
+)
+def test_run_mixed(netcdfs, chunk_size, dry_run, output_file):
+    params = build_params(netcdfs, dry_run, chunk_size, output_file)
     run_wps_process(GeneratePrsn(), params)

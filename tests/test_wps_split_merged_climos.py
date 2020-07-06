@@ -3,15 +3,18 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import client_for, TESTDATA
+from .common import client_for, TESTDATA, local_path, opendap_path
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
-gcm_360_climos_local = TESTDATA["test_local_gcm_360_climos_nc"]
-gcm_climos_local = TESTDATA["test_local_gcm_climos_nc"]
-tasmax_climos_local = TESTDATA["test_local_tasmax_climos_nc"]
-gcm_360_climos_opendap = TESTDATA["test_opendap_gcm_360_climos_nc"]
-gcm_climos_opendap = TESTDATA["test_opendap_gcm_climos_nc"]
-tasmax_climos_opendap = TESTDATA["test_opendap_tasmax_climos_nc"]
+# limiting test_data to climo files
+climo_local_files = [
+    local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
+]
+climo_opendaps = [
+    opendap_path(opendap)
+    for opendap in TESTDATA["test_opendaps"]
+    if opendap.endswith("_climos.nc")
+]
 
 client = client_for(Service(processes=[SplitMergedClimos()]))
 
@@ -40,18 +43,17 @@ def run_multiple_files(netcdfs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), [(gcm_360_climos_local), (gcm_climos_local), (tasmax_climos_local),],
+    "netcdf", climo_local_files,
 )
 def test_single_file_local(netcdf):
     run_single_file(netcdf)
 
 
 @pytest.mark.parametrize(
-    ("netcdfs"),
+    "netcdfs",
     [
-        (gcm_360_climos_local, gcm_climos_local),
-        (gcm_climos_local, tasmax_climos_local),
-        (gcm_360_climos_local, gcm_climos_local, tasmax_climos_local),
+        (climo_local_files[0], climo_local_files[1]),
+        (climo_local_files[0], climo_local_files[1], climo_local_files[2]),
     ],
 )
 def test_multiple_files_local(netcdfs):
@@ -60,8 +62,7 @@ def test_multiple_files_local(netcdfs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"),
-    [(gcm_360_climos_opendap), (gcm_climos_opendap), (tasmax_climos_opendap),],
+    "netcdf", climo_opendaps,
 )
 def test_single_file_opendap(netcdf):
     run_single_file(netcdf)
@@ -69,11 +70,10 @@ def test_single_file_opendap(netcdf):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdfs"),
+    "netcdfs",
     [
-        (gcm_360_climos_opendap, gcm_climos_opendap),
-        (gcm_climos_opendap, tasmax_climos_opendap),
-        (gcm_360_climos_opendap, gcm_climos_opendap, tasmax_climos_opendap),
+        (climo_opendaps[0], climo_opendaps[1]),
+        (climo_opendaps[0], climo_opendaps[1], climo_opendaps[2]),
     ],
 )
 def test_multiple_files_opendap(netcdfs):
@@ -84,9 +84,8 @@ def test_multiple_files_opendap(netcdfs):
 @pytest.mark.parametrize(
     ("netcdfs"),
     [
-        (gcm_360_climos_local, gcm_climos_opendap),
-        (gcm_climos_local, tasmax_climos_opendap),
-        (gcm_360_climos_opendap, gcm_climos_local, tasmax_climos_local),
+        (climo_local_files[0], climo_opendaps[1]),
+        (climo_opendaps[0], climo_local_files[1], climo_opendaps[2]),
     ],
 )
 def test_multiple_files_mixed(netcdfs):

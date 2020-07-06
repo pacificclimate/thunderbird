@@ -1,4 +1,4 @@
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename, resource_listdir
 from pywps import Service
 from pywps.app.basic import get_xpath_ns
 from pywps.tests import WpsClient, WpsTestResponse, assert_response_success
@@ -8,66 +8,24 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-test_files = [
-    "file:///{}".format(pkg_resources.resource_filename(__name__, "data/" + test_file))
-    for test_file in pkg_resources.resource_listdir(__name__, "data")
-    if test_file.startswith("tiny_")
-]
-
-yaml_files = [
-    pkg_resources.resource_filename(__name__, "metadata-conversion/" + test_file)
-    for test_file in pkg_resources.resource_listdir(__name__, "metadata-conversion")
-]
-yaml_str = [
-    """
-global:
-    history: "today is a nice day"
-"""
-]
 
 TESTDATA = {
-    "test_local_nc": test_files,
-    "test_opendap_seasonal": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "test_opendap_annual": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "test_local_pr_nc": "file:///{}".format(
-        resource_filename("tests", "data/pr_week_test.nc")
-    ),
-    "test_local_tasmin_nc": "file:///{}".format(
-        resource_filename("tests", "data/tasmin_week_test.nc")
-    ),
-    "test_local_tasmax_nc": "file:///{}".format(
-        resource_filename("tests", "data/tasmax_week_test.nc")
-    ),
-    "test_local_gcm_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_gcm_climos.nc")
-    ),
-    "test_local_gcm_360_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_gcm_360_climos.nc")
-    ),
-    "test_local_tasmax_climos_nc": "file:///{}".format(
-        resource_filename("tests", "data/tiny_downscaled_tasmax_climos.nc")
-    ),
-    "test_opendap_pr_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmin_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
-    "test_opendap_tasmax_nc": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/"
-    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_"
-    "r1i1p1_19500101-19500107.nc",
-    "test_opendap_gcm_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_climos.nc",
-    "test_opendap_gcm_360_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_gcm_360_climos.nc",
-    "test_opendap_tasmax_climos_nc": "http://docker-dev03.pcic.uvic.ca/twitcher/ows/"
-    "proxy/thredds/dodsC/datasets/TestData/tiny_downscaled_tasmax_climos.nc",
-    "test_yaml": yaml_files + yaml_str,
+    "test_local_nc": [
+        test_file
+        for test_file in resource_listdir(__name__, "data")
+        if test_file.endswith(".nc")
+    ],
+    "test_opendaps": [
+        "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tiny_gcm_climos.nc",
+        "tiny_gcm_360_climos.nc",
+        "tiny_downscaled_tasmax_climos.nc",
+        "gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+        "fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+        "sample_flow_parameters.nc",
+    ],
 }
 
 
@@ -77,6 +35,14 @@ class WpsTestClient(WpsClient):
         for key, value in kwargs.items():
             query += "{0}={1}&".format(key, value)
         return super(WpsTestClient, self).get(query)
+
+
+def local_path(nc_file):
+    return f"file:///{resource_filename(__name__, 'data/' + nc_file)}"
+
+
+def opendap_path(nc_file):
+    return f"https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/{nc_file}"
 
 
 def client_for(service):
