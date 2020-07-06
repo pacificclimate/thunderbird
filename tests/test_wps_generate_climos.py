@@ -83,7 +83,7 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
 
 
 @pytest.mark.online
-@pytest.mark.parametrize( # fdd_seasonal and gdd_annual data respectively
+@pytest.mark.parametrize(  # fdd_seasonal and gdd_annual data respectively
     ("netcdf"), [(opendap_data[3], opendap_data[4])],
 )
 @pytest.mark.parametrize(
