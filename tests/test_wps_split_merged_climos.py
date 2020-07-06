@@ -19,33 +19,6 @@ climo_opendaps = [
 client = client_for(Service(processes=[SplitMergedClimos()]))
 
 
-def build_netcdf_combinations(climo_files):
-    """
-    This function takes a list of climo_files and returns a list of
-    combinations of climo_files. The purpose of this it is to make
-    test cases for wps_split_merged_climos to handle multiple inputs.
-    For example if [climo1, climo2, climo3] is given as an input, it
-    returns the following output: 
-    [
-        (climo1, climo2),
-        (climo1, climo3),
-        (climo2, climo3),
-        (climo1, climo2, climo3) <--- This is the worst case scenario
-    ]
-    """
-    netcdf_sets = []
-
-    for first_idx, first_component in enumerate(climo_files):
-        second_idx = first_idx + 1
-        while second_idx < len(climo_files):
-            second_component = climo_files[second_idx]
-            netcdf_sets.append((first_component, second_component))
-            second_idx += 1
-
-    netcdf_sets.append(tuple(climo_files))
-    return netcdf_sets
-
-
 def check_success(datainputs):
     resp = client.get(
         service="wps",
@@ -77,7 +50,11 @@ def test_single_file_local(netcdf):
 
 
 @pytest.mark.parametrize(
-    "netcdfs", build_netcdf_combinations(climo_local_files),
+    "netcdfs",
+    [
+        (climo_local_files[0], climo_local_files[1]),
+        (climo_local_files[0], climo_local_files[1], climo_local_files[2]),
+    ],
 )
 def test_multiple_files_local(netcdfs):
     run_multiple_files(netcdfs)
@@ -92,14 +69,24 @@ def test_single_file_opendap(netcdf):
 
 
 @pytest.mark.online
-@pytest.mark.parametrize(("netcdfs"), build_netcdf_combinations(climo_opendaps))
+@pytest.mark.parametrize(
+    "netcdfs",
+    [
+        (climo_opendaps[0], climo_opendaps[1]),
+        (climo_opendaps[0], climo_opendaps[1], climo_opendaps[2]),
+    ],
+)
 def test_multiple_files_opendap(netcdfs):
     run_multiple_files(netcdfs)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdfs"), build_netcdf_combinations(climo_local_files + climo_opendaps),
+    ("netcdfs"),
+    [
+        (climo_local_files[0], climo_opendaps[1]),
+        (climo_opendaps[0], climo_local_files[1], climo_opendaps[2]),
+    ],
 )
 def test_multiple_files_mixed(netcdfs):
     run_multiple_files(netcdfs)
