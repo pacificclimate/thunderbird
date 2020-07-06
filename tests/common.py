@@ -8,31 +8,23 @@ import pkg_resources
 VERSION = "1.0.0"
 xpath_ns = get_xpath_ns(VERSION)
 
-local_netcdfs = [
-    test_file
-    for test_file in resource_listdir(__name__, "data")
-    if test_file.endswith(".nc")
-]
-
-opendaps = [
-    "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
-    "tiny_gcm_climos.nc",
-    "tiny_gcm_360_climos.nc",
-    "tiny_downscaled_tasmax_climos.nc",
-    "gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
-    "sample_flow_parameters.nc",
-]
 
 TESTDATA = {
     "test_local_nc": [
-        f"file:///{resource_filename(__name__, 'data/' + nc)}" for nc in local_netcdfs
+        test_file
+        for test_file in resource_listdir(__name__, "data")
+        if test_file.endswith(".nc")
     ],
     "test_opendaps": [
-        f"https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/{opendap}"
-        for opendap in opendaps
+        "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tiny_gcm_climos.nc",
+        "tiny_gcm_360_climos.nc",
+        "tiny_downscaled_tasmax_climos.nc",
+        "gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+        "fdd_seasonal_CanESM2_rcp85_r1i1p1_1951-2100.nc",
+        "sample_flow_parameters.nc",
     ],
 }
 
@@ -43,6 +35,14 @@ class WpsTestClient(WpsClient):
         for key, value in kwargs.items():
             query += "{0}={1}&".format(key, value)
         return super(WpsTestClient, self).get(query)
+
+
+def local_path(nc_file):
+    return f"file:///{resource_filename(__name__, 'data/' + nc_file)}"
+
+
+def opendap_path(nc_file):
+    return f"https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/{nc_file}"
 
 
 def client_for(service):
