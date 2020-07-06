@@ -1,22 +1,21 @@
 import pytest
-import re
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process
+from .common import TESTDATA, run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 # limiting test_data to non-climo tiny datasets
 local_test_data = [
-    nc
+    local_path(nc)
     for nc in TESTDATA["test_local_nc"]
-    if re.search("\S*/tiny_\S+.nc$", nc) and not nc.endswith("_climos.nc")
+    if nc.startswith("tiny_") and not nc.endswith("_climos.nc")
 ]
 # NetCDFs with flow_vectors not adequate for generate_climos
 # refer to https://github.com/pacificclimate/climate-explorer-data-prep#generate_climos-generate-climatological-means
 opendap_data = [
-    opendap
+    opendap_path(opendap)
     for opendap in TESTDATA["test_opendaps"]
     if not (
         opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc")

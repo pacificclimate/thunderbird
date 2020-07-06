@@ -4,27 +4,28 @@ from pywps import Service
 from pywps.tests import assert_response_success
 
 from netCDF4 import Dataset
-from .common import client_for, TESTDATA, run_wps_process
+from .common import client_for, TESTDATA, run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
 from pywps.app.exceptions import ProcessError
 
 import owslib.wps
 import pkg_resources
 import os
-import re
 
 # limiting test_data to "sample_flow_parameters.nc"
 flow_vectors_opendap = [
-    opendap
+    opendap_path(opendap)
     for opendap in TESTDATA["test_opendaps"]
     if opendap.endswith("sample_flow_parameters.nc")
 ]
 flow_vectors_nc = [
-    nc for nc in TESTDATA["test_local_nc"] if nc.endswith("sample_flow_parameters.nc")
+    local_path(nc)
+    for nc in TESTDATA["test_local_nc"]
+    if nc.endswith("sample_flow_parameters.nc")
 ]
 # tiny_datasets do not have flow vectors
 non_flow_vectors_nc = [
-    nc for nc in TESTDATA["test_local_nc"] if re.search("\S*/tiny_\S+.nc$", nc)
+    local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.startswith("tiny_")
 ]
 
 

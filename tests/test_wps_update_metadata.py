@@ -1,21 +1,20 @@
 import pytest
-import re
 from pkg_resources import resource_filename, resource_listdir
 
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process
+from .common import TESTDATA, run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 
 # limiting the test data to tiny_datasets
 local_data = [
-    nc for nc in TESTDATA["test_local_nc"] if re.search("\S*/tiny_\S+.nc$", nc)
+    local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.startswith("tiny_")
 ]
 opendap_data = [
-    opendap
-    for opendap in TESTDATA["test_local_nc"]
-    if re.search("\S*/tiny_\S+.nc$", opendap)
+    opendap_path(opendap)
+    for opendap in TESTDATA["test_opendaps"]
+    if opendap.startswith("tiny_")
 ]
 
 # updates yaml files

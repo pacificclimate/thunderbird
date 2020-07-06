@@ -3,15 +3,17 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import client_for, TESTDATA
+from .common import client_for, TESTDATA, local_path, opendap_path
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
 # limiting test_data to climo files
 climo_local_files = [
-    nc for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
+    local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
 ]
 climo_opendaps = [
-    opendap for opendap in TESTDATA["test_opendaps"] if opendap.endswith("_climos.nc")
+    opendap_path(opendap)
+    for opendap in TESTDATA["test_opendaps"]
+    if opendap.endswith("_climos.nc")
 ]
 
 client = client_for(Service(processes=[SplitMergedClimos()]))
