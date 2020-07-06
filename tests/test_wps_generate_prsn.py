@@ -35,35 +35,29 @@ for od in TESTDATA["test_opendaps"]:
 opendap_set = [tuple(opendap_set)]
 
 
-def build_params(netcdfs, kwargs):
-    # Not using default values
-    if "chunk_size" in kwargs.keys() and "output_file" in kwargs.keys():
-        return (
-            "prec=@xlink:href={0};"
-            "tasmin=@xlink:href={1};"
-            "tasmax=@xlink:href={2};"
-            "dry_run={dry_run};"
-            "chunk_size={chunk_size};"
-            "output_file={output_file};"
-        ).format(netcdfs[0], netcdfs[1], netcdfs[2], **kwargs)
-    # Using default values
-    else:
-        return (
-            "prec=@xlink:href={0};"
-            "tasmin=@xlink:href={1};"
-            "tasmax=@xlink:href={2};"
-            "dry_run={dry_run};"
-        ).format(netcdfs[0], netcdfs[1], netcdfs[2], **kwargs)
+def build_params(netcdfs, dry_run, chunk_size=None, output_file=None):
+    prec, tasmin, tasmax = netcdfs
+    output = (
+        f"prec=@xlink:href={prec};"
+        f"tasmin=@xlink:href={tasmin};"
+        f"tasmax=@xlink:href={tasmax};"
+        f"dry_run={dry_run};"
+    )
+
+    if chunk_size and output_file:
+        output += f"chunk_size={chunk_size};" f"output_file={output_file};"
+
+    return output
 
 
 @pytest.mark.parametrize(
     ("netcdfs"), netcdf_sets,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"dry_run": "False",}),],
+    ("dry_run"), [("False")],
 )
-def test_default_local(netcdfs, kwargs):
-    params = build_params(netcdfs, kwargs)
+def test_default_local(netcdfs, dry_run):
+    params = build_params(netcdfs, dry_run)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -71,11 +65,10 @@ def test_default_local(netcdfs, kwargs):
     ("netcdfs"), netcdf_sets,
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [({"chunk_size": "50", "dry_run": "True", "output_file": "prsn_test_local.nc",}),],
+    ("chunk_size", "dry_run", "output_file"), [("50", "True", "prsn_test_local.nc"),],
 )
-def test_run_local(netcdfs, kwargs):
-    params = build_params(netcdfs, kwargs)
+def test_run_local(netcdfs, chunk_size, dry_run, output_file):
+    params = build_params(netcdfs, dry_run, chunk_size, output_file)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -84,10 +77,10 @@ def test_run_local(netcdfs, kwargs):
     ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"dry_run": "False",}),],
+    ("dry_run"), [("False")],
 )
-def test_default_opendap(opendaps, kwargs):
-    params = build_params(opendaps, kwargs)
+def test_default_opendap(opendaps, dry_run):
+    params = build_params(opendaps, dry_run)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -96,19 +89,11 @@ def test_default_opendap(opendaps, kwargs):
     ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "chunk_size": "50",
-                "dry_run": "False",
-                "output_file": "prsn_test_opendap.nc",
-            }
-        ),
-    ],
+    ("chunk_size", "dry_run", "output_file"),
+    [("50", "False", "prsn_test_opendap.nc"),],
 )
-def test_run_opendap(opendaps, kwargs):
-    params = build_params(opendaps, kwargs)
+def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
+    params = build_params(opendaps, dry_run, chunk_size, output_file)
     run_wps_process(GeneratePrsn(), params)
 
 
@@ -122,29 +107,17 @@ def test_run_opendap(opendaps, kwargs):
     ("opendaps"), opendap_set,
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
+    ("chunk_size", "dry_run", "output_file"),
     [
-        (
-            {
-                "chunk_size": "100",
-                "dry_run": "True",
-                "output_file": "prsn_test_mixed1.nc",
-            }
-        ),
-        (
-            {
-                "chunk_size": "100",
-                "dry_run": "False",
-                "output_file": "prsn_test_mixed2.nc",
-            }
-        ),
+        ("100", "True", "prsn_test_mixed1.nc",),
+        ("100", "False", "prsn_test_mixed2.nc",),
     ],
 )
-def test_run_mixed(netcdfs, opendaps, kwargs):
+def test_run_mixed(netcdfs, opendaps, chunk_size, dry_run, output_file):
     mixed1 = (netcdfs[0], opendaps[1], opendaps[2])
     mixed2 = (opendaps[0], netcdfs[1], netcdfs[2])
-    params1 = build_params(mixed1, kwargs)
-    params2 = build_params(mixed2, kwargs)
+    params1 = build_params(mixed1, dry_run, chunk_size, output_file)
+    params2 = build_params(mixed2, dry_run, chunk_size, output_file)
 
     run_wps_process(GeneratePrsn(), params1)
     run_wps_process(GeneratePrsn(), params2)
