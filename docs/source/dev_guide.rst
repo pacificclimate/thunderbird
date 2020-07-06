@@ -35,11 +35,11 @@ First activate the ``thunderbird`` Python environment and install ``pytest``.
 
 .. code-block:: console
 
-   $ python3 -m venv thunderbird
-   $ source thunderbird/bin/activate
-   (thunderbird)$ pip install -r requirements_dev.txt  # if not already installed
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+   (venv)$ pip install -r requirements_dev.txt  # if not already installed
    OR
-   (thunderbird)$ make develop
+   (venv)$ make develop
 
 Run quick tests (skip slow and online):
 

@@ -17,24 +17,24 @@ Check out code from the thunderbird GitHub repo and start the installation:
    $ git clone https://github.com/pacificclimate/thunderbird.git
    $ cd thunderbird
 
-Create Python environment named `thunderbird`:
+Create Python environment named `venv`:
 
 .. code-block:: console
 
-   $ python3 -m venv thunderbird
-   $ source thunderbird/bin/activate
+   $ python3 -m venv venv
+   $ source venv/bin/activate
 
 Install requirements:
 
 .. code-block:: console
 
-  (thunderbird)$ pip install -r requirements.txt
+  (venv)$ pip install -r requirements.txt
 
 Install thunderbird app:
 
 .. code-block:: console
 
-  (thunderbird)$ pip install -e .
+  (venv)$ pip install -e .
   OR
   make install
 
@@ -53,12 +53,12 @@ After successful installation you can start the service using the ``thunderbird`
 
 .. code-block:: console
 
-   $ thunderbird --help # show help
-   $ thunderbird start  # start service with default configuration
+   (venv)$ thunderbird --help # show help
+   (venv)$ thunderbird start  # start service with default configuration
 
    OR
 
-   $ thunderbird start --daemon # start service as daemon
+   (venv)$ thunderbird start --daemon # start service as daemon
    loading configuration
    forked process id: 42
 
