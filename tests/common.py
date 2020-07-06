@@ -28,13 +28,11 @@ opendaps = [
 
 TESTDATA = {
     "test_local_nc": [
-        "file:///{}".format(resource_filename(__name__, "data/" + nc))
-        for nc in local_netcdfs
+        f"file:///{resource_filename(__name__, 'data/' + nc)}" for nc in local_netcdfs
     ],
     "test_opendaps": [
-        "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/"
-        + od
-        for od in opendaps
+        f"https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/TestData/{opendap}"
+        for opendap in opendaps
     ],
 }
 
