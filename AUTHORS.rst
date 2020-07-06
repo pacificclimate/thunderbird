@@ -10,4 +10,6 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Sangwon Lim <sangwonl@uvic.ca>
+* Long Vu
+* Eric Yvorchuk <eyvorchuk@uvic.ca>
