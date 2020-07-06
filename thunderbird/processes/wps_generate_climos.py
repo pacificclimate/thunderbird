@@ -196,9 +196,7 @@ class GenerateClimos(Process):
         if dry_run:
             response.update_status("Dry Run", 10)
             del response.outputs["output"]  # remove unnecessary output
-            dry_files = []
-            for filepath in filepaths:
-                dry_files.append(self.dry_run_info(filepath, climo))
+            dry_files = [self.dry_run_info(filepath, climo) for filepath in filepaths]
 
             response.outputs["dry_output"].data = build_meta_link(
                 varname="dry_run",
