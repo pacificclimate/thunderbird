@@ -13,7 +13,9 @@ local_data = [
     nc for nc in TESTDATA["test_local_nc"] if re.search("\S*/tiny_\S+.nc$", nc)
 ]
 opendap_data = [
-    od for od in TESTDATA["test_local_nc"] if re.search("\S*/tiny_\S+.nc$", od)
+    opendap
+    for opendap in TESTDATA["test_local_nc"]
+    if re.search("\S*/tiny_\S+.nc$", opendap)
 ]
 
 # updates yaml files
@@ -42,8 +44,7 @@ def build_params(netcdf, updates):
     ("updates"), updates_yaml,
 )
 def test_wps_update_metadata_opendap_yaml(netcdf, updates):
-    params = build_params(netcdf, updates)
-    run_wps_process(UpdateMetadata(), params)
+    run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
 
 
 @pytest.mark.online
@@ -54,8 +55,7 @@ def test_wps_update_metadata_opendap_yaml(netcdf, updates):
     ("updates"), updates_str,
 )
 def test_wps_update_metadata_opendap_str(netcdf, updates):
-    params = build_params(netcdf, updates)
-    run_wps_process(UpdateMetadata(), params)
+    run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
 
 
 @pytest.mark.parametrize(
@@ -65,8 +65,7 @@ def test_wps_update_metadata_opendap_str(netcdf, updates):
     ("updates"), updates_yaml,
 )
 def test_wps_update_metadata_netcdf_yaml(netcdf, updates):
-    params = build_params(netcdf, updates)
-    run_wps_process(UpdateMetadata(), params)
+    run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
 
 
 @pytest.mark.parametrize(
@@ -76,5 +75,4 @@ def test_wps_update_metadata_netcdf_yaml(netcdf, updates):
     ("updates"), updates_str,
 )
 def test_wps_update_metadata_netcdf_str(netcdf, updates):
-    params = build_params(netcdf, updates)
-    run_wps_process(UpdateMetadata(), params)
+    run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
