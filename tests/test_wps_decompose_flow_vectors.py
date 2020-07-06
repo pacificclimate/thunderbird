@@ -15,7 +15,9 @@ import re
 
 # limiting test_data to "sample_flow_parameters.nc"
 flow_vectors_opendap = [
-    od for od in TESTDATA["test_opendaps"] if od.endswith("sample_flow_parameters.nc")
+    opendap
+    for opendap in TESTDATA["test_opendaps"]
+    if opendap.endswith("sample_flow_parameters.nc")
 ]
 flow_vectors_nc = [
     nc for nc in TESTDATA["test_local_nc"] if nc.endswith("sample_flow_parameters.nc")
