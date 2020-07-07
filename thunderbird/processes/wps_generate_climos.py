@@ -11,12 +11,18 @@ from pywps.app.Common import Metadata
 from nchelpers import CFDataset, standard_climo_periods
 from dp.generate_climos import create_climo_files
 from thunderbird.utils import (
+    MAX_OCCURS,
     get_filepaths,
     collect_output_files,
     build_meta_link,
     log_handler,
 )
-from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output, log_level
+from thunderbird.wps_io import (
+    dryrun_input,
+    meta4_output,
+    meta4_dryrun_output,
+    log_level,
+)
 
 # Library imports
 import logging
@@ -46,7 +52,7 @@ class GenerateClimos(Process):
                 "Daily NetCDF Dataset",
                 abstract="NetCDF file",
                 min_occurs=1,
-                max_occurs=1,
+                max_occurs=MAX_OCCURS,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
@@ -100,7 +106,7 @@ class GenerateClimos(Process):
         ]
         outputs = [
             meta4_output,
-            dryrun_output,
+            meta4_dryrun_output,
         ]
 
         super(GenerateClimos, self).__init__(
@@ -141,7 +147,11 @@ class GenerateClimos(Process):
             for attr in "time_resolution is_multi_year_mean".split():
                 output.append(f"{attr}: {getattr(input_file, attr)}")
 
-        filename = os.path.join(self.workdir, "dry.txt")
+        filename = os.path.basename(filepath).split(".")[
+            0
+        ]  # Uniquely identify each dry run file
+        filename += "_dry.txt"
+        filename = os.path.join(self.workdir, filename)
         with open(filename, "w") as f:
             for line in output:
                 f.write(f"{line}\n")
@@ -194,42 +204,53 @@ class GenerateClimos(Process):
             operation,
             loglevel,
         ) = self.collect_args(request)
+
         log_handler(
             self, response, "Starting Process", process_step="start", level=loglevel
         )
-        filepath = get_filepaths(request)[0]
+
+        filepaths = get_filepaths(request)
 
         if dry_run:
             log_handler(self, response, "Dry Run", process_step="dry_run")
             del response.outputs["output"]  # remove unnecessary output
-            response.outputs["dry_output"].file = self.dry_run_info(filepath, climo)
+            dry_files = [self.dry_run_info(filepath, climo) for filepath in filepaths]
+
+            response.outputs["dry_output"].data = build_meta_link(
+                varname="dry_run",
+                desc="Dry Run",
+                outfiles=dry_files,
+                format_name="text",
+                fmt=FORMATS.TEXT,
+            )
 
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
-            input_file = CFDataset(filepath)
+            response.update_status("Processing filepaths", 10)
+            for filepath in filepaths:
+                input_file = CFDataset(filepath)
 
-            periods = [period for period in input_file.climo_periods.keys() & climo]
+                periods = [period for period in input_file.climo_periods.keys() & climo]
 
-            log_handler(
-                self,
-                response,
-                f"Processing {filepath} into climatologies",
-                process_step="process",
-                level=loglevel,
-            )
-
-            for period in periods:
-                t_range = input_file.climo_periods[period]
-                create_climo_files(
-                    period,
-                    self.workdir,
-                    input_file,
-                    operation,
-                    *t_range,
-                    convert_longitudes=convert_longitudes,
-                    split_vars=split_vars,
-                    output_resolutions=resolutions,
+                log_handler(
+                    self,
+                    response,
+                    f"Processing {filepath} into climatologies",
+                    process_step="process",
+                    level=loglevel,
                 )
+                for period in periods:
+                    t_range = input_file.climo_periods[period]
+                    create_climo_files(
+                        period,
+                        self.workdir,
+                        input_file,
+                        operation,
+                        *t_range,
+                        convert_longitudes=convert_longitudes,
+                        split_vars=split_vars,
+                        output_resolutions=resolutions,
+                    )
 
             log_handler(
                 self,
