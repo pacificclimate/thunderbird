@@ -1,6 +1,16 @@
-pytest
-flake8
-pytest-flake8
+# test requirements
+pytest==5.4.2
+black==19.10b0
+pytest-black==0.3.9
+
+# notebook requirements
+jupyterlab
+ipywidgets
+nodejs
+birdhouse-birdy
+beautifulsoup4
+
+# ci requirements
 sphinx>=1.7
 bump2version
 twine

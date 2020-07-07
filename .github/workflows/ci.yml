@@ -14,11 +14,14 @@ jobs:
       with:
         python-version: 3.6
     - name: Install dependencies
+      env:
+        PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
       run: |
         sudo apt-get update
         sudo apt-get install cdo
         python -m pip install --upgrade pip
-        pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt -r test_requirements.txt
+        pip install -r requirements.txt
+        pip install -e .[dev]
     - name: Code Quality
       run: black . --check
     - name: Run Tests with pytest

@@ -7,13 +7,6 @@ Installation
     :local:
     :depth: 1
 
-Install from Conda
-------------------
-
-.. warning::
-
-   TODO: Prepare Conda package.
-
 Install from GitHub
 -------------------
 
@@ -24,18 +17,24 @@ Check out code from the thunderbird GitHub repo and start the installation:
    $ git clone https://github.com/pacificclimate/thunderbird.git
    $ cd thunderbird
 
-Create Conda environment named `thunderbird`:
+Create Python environment named `venv`:
 
 .. code-block:: console
 
-   $ conda env create -f environment.yml
-   $ source activate thunderbird
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+
+Install requirements:
+
+.. code-block:: console
+
+  (venv)$ pip install -r requirements.txt
 
 Install thunderbird app:
 
 .. code-block:: console
 
-  $ pip install -e .
+  (venv)$ pip install -e .
   OR
   make install
 
@@ -54,12 +53,12 @@ After successful installation you can start the service using the ``thunderbird`
 
 .. code-block:: console
 
-   $ thunderbird --help # show help
-   $ thunderbird start  # start service with default configuration
+   (venv)$ thunderbird --help # show help
+   (venv)$ thunderbird start  # start service with default configuration
 
    OR
 
-   $ thunderbird start --daemon # start service as daemon
+   (venv)$ thunderbird start --daemon # start service as daemon
    loading configuration
    forked process id: 42
 
@@ -94,15 +93,17 @@ You can also use the ``Makefile`` to start and stop the service:
   $ tail -f pywps.log
   $ make stop
 
-
 Run thunderbird as Docker container
 -----------------------------------
 
 You can also run thunderbird as a Docker container.
 
-.. warning::
+.. code-block:: console
 
-  TODO: Describe Docker container support.
+  $ docker-compose build
+  $ docker-compose up
+
+thunderbird will be available on port 8099.
 
 Use Ansible to deploy thunderbird on your System
 ------------------------------------------------
