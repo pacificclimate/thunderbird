@@ -24,6 +24,7 @@ from dp.decompose_flow_vectors import (
 )
 from pywps.app.exceptions import ProcessError
 from thunderbird.utils import is_opendap_url, log_handler
+from thunderbird.wps_io import log_level
 
 
 class DecomposeFlowVectors(Process):
@@ -50,6 +51,7 @@ class DecomposeFlowVectors(Process):
                 data_type="string",
             ),
             LiteralInput("dest_file", "destination netCDF file", data_type="string",),
+            log_level,
         ]
         outputs = [
             ComplexOutput(
@@ -85,7 +87,10 @@ class DecomposeFlowVectors(Process):
             )
 
     def _handler(self, request, response):
-        log_handler(self, response, "Starting Process", process_step="start")
+        loglevel = request.inputs["loglevel"][0].data
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
 
         source_file = self.get_filepath(request)
         variable = request.inputs["variable"][0].data
@@ -98,6 +103,7 @@ class DecomposeFlowVectors(Process):
             response,
             f"Checking {source_file} and {variable}",
             process_step="input_check",
+            level=loglevel,
         )
         try:
             source_check(source)
@@ -110,14 +116,21 @@ class DecomposeFlowVectors(Process):
             response,
             "Decomposing flow direction vectors into grids",
             process_step="process",
+            level=loglevel,
         )
         decompose_flow_vectors(source, dest_file, variable)
 
         log_handler(
-            self, response, "Building final output", process_step="build_output"
+            self,
+            response,
+            "Building final output",
+            process_step="build_output",
+            level=loglevel,
         )
         response.outputs["output"].file = dest_file
 
-        log_handler(self, response, "Process Complete", process_step="complete")
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         response.update_status("Process Complete", 100)
         return response
