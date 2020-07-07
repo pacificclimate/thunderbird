@@ -54,7 +54,10 @@ class SplitMergedClimos(Process):
         )
 
     def _handler(self, request, response):
-        log_handler(self, response, "Starting Process", process_step="start")
+        loglevel = request.inputs["loglevel"][0].data
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
 
         filepaths = get_filepaths(request)
         log_handler(
@@ -72,7 +75,11 @@ class SplitMergedClimos(Process):
                 output_filepaths.extend(split_merged_climos(input_file, self.workdir))
 
         log_handler(
-            self, response, "Building final output", process_step="build_output"
+            self,
+            response,
+            "Building final output",
+            process_step="build_output",
+            level=loglevel,
         )
         response.outputs["output"].data = build_meta_link(
             varname="split_climo",
@@ -81,5 +88,7 @@ class SplitMergedClimos(Process):
             outdir=self.workdir,
         )
 
-        log_handler(self, response, "Process Complete", process_step="complete")
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         return response
