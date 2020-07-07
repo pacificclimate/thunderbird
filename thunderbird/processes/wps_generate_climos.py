@@ -15,15 +15,18 @@ from thunderbird.utils import (
     get_filepaths,
     collect_output_files,
     build_meta_link,
+    log_handler,
 )
-from thunderbird.wps_io import dryrun_input, meta4_output, meta4_dryrun_output
+from thunderbird.wps_io import (
+    dryrun_input,
+    meta4_output,
+    meta4_dryrun_output,
+    log_level,
+)
 
 # Library imports
 import logging
 import os
-
-
-LOGGER = logging.getLogger("PYWPS")
 
 
 class GenerateClimos(Process):
@@ -34,6 +37,14 @@ class GenerateClimos(Process):
             "seasonal",
             "monthly",
         ]
+        self.status_percentage_steps = {
+            "start": 0,
+            "dry_run": 5,
+            "process": 10,
+            "collect_files": 90,
+            "build_output": 95,
+            "complete": 100,
+        }
 
         inputs = [
             ComplexInput(
@@ -91,6 +102,7 @@ class GenerateClimos(Process):
                 data_type="boolean",
             ),
             dryrun_input,
+            log_level,
         ]
         outputs = [
             meta4_output,
@@ -169,6 +181,7 @@ class GenerateClimos(Process):
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
         dry_run = request.inputs["dry_run"][0].data
+        loglevel = request.inputs["loglevel"][0].data
         return (
             climo,
             resolutions,
@@ -177,11 +190,10 @@ class GenerateClimos(Process):
             split_intervals,
             dry_run,
             operation,
+            loglevel,
         )
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
-
         (
             climo,
             resolutions,
@@ -190,11 +202,17 @@ class GenerateClimos(Process):
             split_intervals,
             dry_run,
             operation,
+            loglevel,
         ) = self.collect_args(request)
+
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
+
         filepaths = get_filepaths(request)
 
         if dry_run:
-            response.update_status("Dry Run", 10)
+            log_handler(self, response, "Dry Run", process_step="dry_run")
             del response.outputs["output"]  # remove unnecessary output
             dry_files = [self.dry_run_info(filepath, climo) for filepath in filepaths]
 
@@ -214,6 +232,13 @@ class GenerateClimos(Process):
 
                 periods = [period for period in input_file.climo_periods.keys() & climo]
 
+                log_handler(
+                    self,
+                    response,
+                    f"Processing {filepath} into climatologies",
+                    process_step="process",
+                    level=loglevel,
+                )
                 for period in periods:
                     t_range = input_file.climo_periods[period]
                     create_climo_files(
@@ -227,13 +252,25 @@ class GenerateClimos(Process):
                         output_resolutions=resolutions,
                     )
 
-            response.update_status("File Processing Complete", 90)
+            log_handler(
+                self,
+                response,
+                "Collecting climo files",
+                process_step="collect_files",
+                level=loglevel,
+            )
 
             climo_files = collect_output_files(
                 self.get_identifier(operation), self.workdir
             )
 
-            response.update_status("Collecting output files", 95)
+            log_handler(
+                self,
+                response,
+                "Building final output",
+                process_step="build_output",
+                level=loglevel,
+            )
             response.outputs["output"].data = build_meta_link(
                 varname="climo",
                 desc="Climatology",
@@ -241,5 +278,7 @@ class GenerateClimos(Process):
                 outdir=self.workdir,
             )
 
-        response.update_status("Process Complete", 100)
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         return response

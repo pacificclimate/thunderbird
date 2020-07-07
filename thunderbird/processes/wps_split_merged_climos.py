@@ -10,21 +10,21 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from nchelpers import CFDataset
 from dp.split_merged_climos import split_merged_climos
-from thunderbird.utils import (
-    MAX_OCCURS,
-    get_filepaths,
-    build_meta_link,
-)
+from thunderbird.utils import MAX_OCCURS, get_filepaths, build_meta_link, log_handler
 from thunderbird.wps_io import log_level, meta4_output
 
 # Library import
 import logging
 
-logger = logging.getLogger("PYWPS")
-
 
 class SplitMergedClimos(Process):
     def __init__(self):
+        self.status_percentage_steps = {
+            "start": 0,
+            "process": 10,
+            "build_output": 95,
+            "complete": 100,
+        }
         inputs = [
             ComplexInput(
                 "netcdf",
@@ -54,26 +54,37 @@ class SplitMergedClimos(Process):
         )
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
         loglevel = request.inputs["loglevel"][0].data
-        logger.setLevel(getattr(logging, loglevel))
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
+
         filepaths = get_filepaths(request)
-        response.update_status("Processing files", 10)
+        log_handler(
+            self,
+            response,
+            f"Spliting climo files: {filepaths}",
+            process_step="process",
+            level=loglevel,
+        )
         output_filepaths = []
         for path in filepaths:
-            logger.info("")
-            logger.info(f"Processing: {path}")
             try:
                 input_file = CFDataset(path)
-            except Exception as e:
-                logger.error(f"{e.__class__.__name__}: {e}")
+            except Exception:
                 raise ProcessError(
                     f"The input file {path} could not be converted to a netcdf dataset"
                 )
             else:
                 output_filepaths.extend(split_merged_climos(input_file, self.workdir))
 
-        response.update_status("File processing complete", 90)
+        log_handler(
+            self,
+            response,
+            "Building final output",
+            process_step="build_output",
+            level=loglevel,
+        )
         response.outputs["output"].data = build_meta_link(
             varname="split_climo",
             desc="Split climatologies",
@@ -81,5 +92,7 @@ class SplitMergedClimos(Process):
             outdir=self.workdir,
         )
 
-        response.update_status("Process complete", 100)
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         return response

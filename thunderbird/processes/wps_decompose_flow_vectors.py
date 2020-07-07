@@ -18,20 +18,24 @@ import sys
 
 # Tool imports
 from dp.decompose_flow_vectors import (
-    logger,
     decompose_flow_vectors,
     source_check,
     variable_check,
 )
 from pywps.app.exceptions import ProcessError
-from thunderbird.utils import is_opendap_url
-
-
-LOGGER = logging.getLogger("PYWPS")
+from thunderbird.utils import is_opendap_url, log_handler
+from thunderbird.wps_io import log_level
 
 
 class DecomposeFlowVectors(Process):
     def __init__(self):
+        self.status_percentage_steps = {
+            "start": 0,
+            "input_check": 5,
+            "process": 10,
+            "build_output": 95,
+            "complete": 100,
+        }
         inputs = [
             ComplexInput(
                 "netcdf",
@@ -47,6 +51,7 @@ class DecomposeFlowVectors(Process):
                 data_type="string",
             ),
             LiteralInput("dest_file", "destination netCDF file", data_type="string",),
+            log_level,
         ]
         outputs = [
             ComplexOutput(
@@ -82,22 +87,50 @@ class DecomposeFlowVectors(Process):
             )
 
     def _handler(self, request, response):
-        response.update_status("Starting Process", 0)
+        loglevel = request.inputs["loglevel"][0].data
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
 
         source_file = self.get_filepath(request)
         variable = request.inputs["variable"][0].data
         dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
 
         source = Dataset(source_file, "r", format="NETCDF4")
+
+        log_handler(
+            self,
+            response,
+            f"Checking {source_file} and {variable}",
+            process_step="input_check",
+            level=loglevel,
+        )
         try:
             source_check(source)
             variable_check(source, variable)
         except (AttributeError, ValueError) as e:
             raise ProcessError(f"An error occured during the process: {e}")
 
+        log_handler(
+            self,
+            response,
+            "Decomposing flow direction vectors into grids",
+            process_step="process",
+            level=loglevel,
+        )
         decompose_flow_vectors(source, dest_file, variable)
 
+        log_handler(
+            self,
+            response,
+            "Building final output",
+            process_step="build_output",
+            level=loglevel,
+        )
         response.outputs["output"].file = dest_file
 
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         response.update_status("Process Complete", 100)
         return response
