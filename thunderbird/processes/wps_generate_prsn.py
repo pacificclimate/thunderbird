@@ -102,16 +102,6 @@ class GeneratePrsn(Process):
             status_supported=True,
         )
 
-    def setup_logger(self, level):
-        formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s: %(message)s", "%Y-%m-%d %H:%M:%S"
-        )
-        handler = logging.StreamHandler()
-        handler.setFormatter(formatter)
-        logger = logging.getLogger("dp.generate_prsn")
-        logger.addHandler(handler)
-        logger.setLevel(level)
-
     def collect_args(self, request):
         chunk_size = request.inputs["chunk_size"][0].data
         loglevel = request.inputs["loglevel"][0].data
@@ -120,7 +110,6 @@ class GeneratePrsn(Process):
         if output_file == "None":
             output_file = None
             # generate_prsn_file uses NoneType to indicate no custom output file name
-        self.setup_logger(loglevel)
         return (
             chunk_size,
             loglevel,
@@ -149,13 +138,17 @@ class GeneratePrsn(Process):
         return filepaths
 
     def _handler(self, request, response):
-        log_handler(self, response, "Starting Process", process_step="start")
-
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
+
         filepaths = self.get_filepaths(request)
 
         if dry_run:
-            log_handler(self, response, "Dry Run", process_step="dry_run")
+            log_handler(
+                self, response, "Dry Run", process_step="dry_run", level=loglevel
+            )
             del response.outputs["output"]  # remove unnecessary output
             dry_output_path = os.path.join(self.workdir, "dry.txt")
             dry_run_info(filepaths, dry_output_path)
@@ -169,6 +162,7 @@ class GeneratePrsn(Process):
                 response,
                 f"Processing {filepaths} into snowfall fluxes",
                 process_step="process",
+                level=loglevel,
             )
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
@@ -177,13 +171,20 @@ class GeneratePrsn(Process):
                 response,
                 "Collecting snowfall files",
                 process_step="collect_files",
+                level=loglevel,
             )
             (prsn_file,) = collect_output_files("prsn", self.workdir)
 
             log_handler(
-                self, response, "Building final output", process_step="build_output"
+                self,
+                response,
+                "Building final output",
+                process_step="build_output",
+                level=loglevel,
             )
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
-        log_handler(self, response, "Process Complete", process_step="complete")
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel,
+        )
         return response
