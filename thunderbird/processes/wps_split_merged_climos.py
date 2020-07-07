@@ -61,7 +61,11 @@ class SplitMergedClimos(Process):
 
         filepaths = get_filepaths(request)
         log_handler(
-            self, response, f"Spliting climo files: {filepaths}", process_step="process"
+            self,
+            response,
+            f"Spliting climo files: {filepaths}",
+            process_step="process",
+            level=loglevel,
         )
         output_filepaths = []
         for path in filepaths:

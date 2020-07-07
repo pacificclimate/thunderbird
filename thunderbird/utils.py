@@ -11,7 +11,6 @@ from nchelpers import CFDataset
 # Library imports
 import logging
 import os
-import time
 
 MAX_OCCURS = 1000
 
