@@ -45,15 +45,19 @@ def build_resolutions(resolutions):
 
 def build_params(netcdf, kwargs):
     return (
-        "{0}"
-        "{1}"
+        "{nc_input}"
+        "{res_input}"
         "operation={operation};"
         "climo={climo};"
         "convert_longitudes={convert_longitudes};"
         "split_vars={split_vars};"
         "split_intervals={split_intervals};"
         "dry_run={dry_run};"
-    ).format(build_netcdf(netcdf), build_resolutions(kwargs["resolutions"]), **kwargs)
+    ).format(
+        nc_input=build_netcdf(netcdf),
+        res_input=build_resolutions(kwargs["resolutions"]),
+        **kwargs,
+    )
 
 
 @pytest.mark.online
