@@ -16,7 +16,7 @@ from thunderbird.utils import (
     build_meta_link,
     log_handler,
 )
-from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output
+from thunderbird.wps_io import dryrun_input, meta4_output, dryrun_output, log_level
 
 # Library imports
 import logging
@@ -96,6 +96,7 @@ class GenerateClimos(Process):
                 data_type="boolean",
             ),
             dryrun_input,
+            log_level,
         ]
         outputs = [
             meta4_output,
@@ -170,6 +171,7 @@ class GenerateClimos(Process):
         split_vars = request.inputs["split_vars"][0].data
         split_intervals = request.inputs["split_intervals"][0].data
         dry_run = request.inputs["dry_run"][0].data
+        loglevel = request.inputs["loglevel"][0].data
         return (
             climo,
             resolutions,
@@ -178,11 +180,10 @@ class GenerateClimos(Process):
             split_intervals,
             dry_run,
             operation,
+            loglevel,
         )
 
     def _handler(self, request, response):
-        log_handler(self, response, "Starting Process", process_step="start")
-
         (
             climo,
             resolutions,
@@ -191,7 +192,11 @@ class GenerateClimos(Process):
             split_intervals,
             dry_run,
             operation,
+            loglevel,
         ) = self.collect_args(request)
+        log_handler(
+            self, response, "Starting Process", process_step="start", level=loglevel
+        )
         filepath = get_filepaths(request)[0]
 
         if dry_run:
@@ -210,6 +215,7 @@ class GenerateClimos(Process):
                 response,
                 f"Processing {filepath} into climatologies",
                 process_step="process",
+                level=loglevel,
             )
 
             for period in periods:
@@ -226,7 +232,11 @@ class GenerateClimos(Process):
                 )
 
             log_handler(
-                self, response, "Collecting climo files", process_step="collect_files"
+                self,
+                response,
+                "Collecting climo files",
+                process_step="collect_files",
+                level=loglevel,
             )
 
             climo_files = collect_output_files(
@@ -234,7 +244,11 @@ class GenerateClimos(Process):
             )
 
             log_handler(
-                self, response, "Building final output", process_step="build_output"
+                self,
+                response,
+                "Building final output",
+                process_step="build_output",
+                level=loglevel,
             )
             response.outputs["output"].data = build_meta_link(
                 varname="climo",
@@ -243,5 +257,7 @@ class GenerateClimos(Process):
                 outdir=self.workdir,
             )
 
-        log_handler(self, response, "Process Complete", process_step="complete")
+        log_handler(
+            self, response, "Process Complete", process_step="complete", level=loglevel
+        )
         return response
