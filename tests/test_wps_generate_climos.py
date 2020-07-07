@@ -33,17 +33,27 @@ def build_netcdf(netcdf):
         return nc_input
 
 
+def build_resolutions(resolutions):
+    if isinstance(resolutions, str):  # Single resolution
+        return f"resolutions={resolutions};"
+    else:
+        res_input = ""
+        for res in resolutions:
+            res_input += f"resolutions={res};"
+        return res_input
+
+
 def build_params(netcdf, kwargs):
     return (
         "{0}"
+        "{1}"
         "operation={operation};"
         "climo={climo};"
-        "resolutions={resolutions};"
         "convert_longitudes={convert_longitudes};"
         "split_vars={split_vars};"
         "split_intervals={split_intervals};"
         "dry_run={dry_run};"
-    ).format(build_netcdf(netcdf), **kwargs)
+    ).format(build_netcdf(netcdf), build_resolutions(kwargs["resolutions"]), **kwargs)
 
 
 @pytest.mark.online
@@ -57,7 +67,7 @@ def build_params(netcdf, kwargs):
             {
                 "operation": "mean",
                 "climo": "6190",
-                "resolutions": "all",
+                "resolutions": ["seasonal", "yearly"],
                 "convert_longitudes": "True",
                 "split_vars": "True",
                 "split_intervals": "True",
@@ -68,7 +78,7 @@ def build_params(netcdf, kwargs):
             {
                 "operation": "std",
                 "climo": "7100",
-                "resolutions": "monthly",
+                "resolutions": "all",
                 "convert_longitudes": "False",
                 "split_vars": "False",
                 "split_intervals": "False",
@@ -91,9 +101,9 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
     [
         (
             {
-                "operation": "mean",
+                "operation": "std",
                 "climo": "6190",
-                "resolutions": "all",
+                "resolutions": ["seasonal", "yearly"],
                 "convert_longitudes": "True",
                 "split_vars": "True",
                 "split_intervals": "True",
@@ -117,7 +127,7 @@ def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
             {
                 "operation": "mean",
                 "climo": "6190",
-                "resolutions": "all",
+                "resolutions": ["monthly", "seasonal", "yearly"],
                 "convert_longitudes": "True",
                 "split_vars": "True",
                 "split_intervals": "True",
