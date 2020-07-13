@@ -1,0 +1,37 @@
+name: Python CI
+
+on: push
+
+jobs:
+  test:
+
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      env:
+        PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
+      run: |
+        sudo apt-get update
+        sudo apt-get install cdo
+        pip install -U pip pytest
+        pip install -r requirements.txt
+        pip install -e .[dev]
+    - name: Test with pytest (full)
+      if: github.ref == 'refs/heads/master'
+      run: |
+        py.test -m "not online" -v
+    - name: Test with pytest (fast)
+      if: github.ref != 'refs/heads/master'
+      run: |
+        py.test -m "not online and not slow" -v
+    - name: Code Quality
+      run: black . --check

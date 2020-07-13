@@ -60,6 +60,7 @@ def build_params(netcdf, kwargs):
     )
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("netcdf"), opendap_data,
@@ -96,6 +97,7 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
     run_wps_process(GenerateClimos(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(  # fdd_seasonal and gdd_annual data respectively
     ("netcdf"), [(opendap_data[3], opendap_data[4])],
@@ -121,6 +123,7 @@ def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
     run_wps_process(GenerateClimos(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     ("netcdf"), local_test_data,
 )
@@ -156,6 +159,7 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
     run_wps_process(GenerateClimos(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     ("netcdf"), local_test_data,
 )
