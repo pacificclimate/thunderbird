@@ -35,6 +35,7 @@ def build_params(netcdf, kwargs):
     ).format(netcdf, **kwargs)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("opendap"), flow_vectors_opendap,

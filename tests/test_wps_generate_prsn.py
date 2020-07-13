@@ -64,6 +64,7 @@ def test_run_local(netcdfs, chunk_size, dry_run, output_file):
     run_wps_process(GeneratePrsn(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("opendaps"), [opendap_inputs],
@@ -76,6 +77,7 @@ def test_default_opendap(opendaps, dry_run):
     run_wps_process(GeneratePrsn(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("opendaps"), [opendap_inputs],
@@ -89,6 +91,7 @@ def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
     run_wps_process(GeneratePrsn(), params)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 # exclude tiny_datasets to mix within "day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc" datasets
 @pytest.mark.parametrize(

@@ -68,6 +68,7 @@ def test_single_file_opendap(netcdf):
     run_single_file(netcdf)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     "netcdfs",
@@ -80,6 +81,7 @@ def test_multiple_files_opendap(netcdfs):
     run_multiple_files(netcdfs)
 
 
+@pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
     ("netcdfs"),
