@@ -19,5 +19,5 @@ jobs:
         with:
           username: ${{ secrets.pcicdevops_at_dockerhub_username }}
           password: ${{ secrets.pcicdevops_at_dockerhub_password }}
-          repository: pcic/climate-explorer-backend
+          repository: pcic/thunderbird
           tag_with_ref: true
