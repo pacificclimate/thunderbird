@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 
 MAINTAINER https://github.com/pacificclimate/thunderbird
-LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.1.0"
+LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.6.0"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
