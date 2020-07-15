@@ -2,7 +2,7 @@ version: '3'
 services:
   wps:
     build: .
-    image: pacificclimate/thunderbird
+    image: pcic/thunderbird
     ports:
       - "8099:5001"
 
