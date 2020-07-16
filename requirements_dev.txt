@@ -1,16 +1,19 @@
-# test requirements
-pytest==5.4.2
-black==19.10b0
-pytest-black==0.3.9
-
-# notebook requirements
-jupyterlab
-ipywidgets
-nodejs
-birdhouse-birdy
-beautifulsoup4
-
-# ci requirements
+pytest
+flake8
+pytest-flake8
+ipython
+pytest-notebook
+nbsphinx
+nbval
+nbconvert
 sphinx>=1.7
-bump2version
+bumpversion
 twine
+cruft
+# Changing dependencies above this comment will create merge conflicts when updating the cookiecutter template with cruft. Add extra requirements below this line.
+black==19.10b0
+jupyterlab==2.1.5
+ipywidgets==7.5.1
+nodejs==0.1.1
+birdhouse-birdy==0.6.9
+beautifulsoup4==4.9.1
