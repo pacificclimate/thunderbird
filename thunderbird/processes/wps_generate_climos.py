@@ -9,7 +9,7 @@ from pywps.app.Common import Metadata
 
 # Tool imports
 from nchelpers import CFDataset, standard_climo_periods
-from dp.generate_climos import create_climo_files
+from dp.generate_climos import create_climo_files, dry_run_handler
 from thunderbird.utils import (
     MAX_OCCURS,
     get_filepaths,
@@ -26,6 +26,7 @@ from thunderbird.wps_io import (
 
 # Library imports
 import logging
+import sys
 import os
 
 
@@ -129,32 +130,16 @@ class GenerateClimos(Process):
         )
 
     def dry_run_info(self, filepath, climo):
-        output = ["Dry Run"]
-        output.append(f"File: {filepath}")
-        try:
-            input_file = CFDataset(filepath)
-        except Exception as e:
-            output.append(f"{e.__class__.__name__}: {e}")
-        else:
-            periods = input_file.climo_periods.keys() & climo
-            output.append(f"climo_periods: {periods}")
-            for attr in "project institution model emissions run".split():
-                try:
-                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
-                except Exception as e:
-                    output.append(f"{attr}: {e.__class__.__name__}: {e}")
-            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
-            for attr in "time_resolution is_multi_year_mean".split():
-                output.append(f"{attr}: {getattr(input_file, attr)}")
-
         filename = os.path.basename(filepath).split(".")[
             0
         ]  # Uniquely identify each dry run file
         filename += "_dry.txt"
         filename = os.path.join(self.workdir, filename)
         with open(filename, "w") as f:
-            for line in output:
-                f.write(f"{line}\n")
+            f.write("Dry Run\n")
+            logging.basicConfig(filename=filename, level=logging.INFO)
+            dry_run_handler(filepath, climo)
+            logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
         return filename
 
