@@ -22,10 +22,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /code
 
-COPY requirements.txt requirements_dev.txt ./
+COPY requirements.txt ./
 
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt -r requirements_dev.txt && \
+    pip install -r requirements.txt && \
     pip install gunicorn
 
 COPY . .
