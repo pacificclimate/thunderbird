@@ -9,7 +9,7 @@ from pywps.app.Common import Metadata
 
 # Tool imports
 from nchelpers import CFDataset, standard_climo_periods
-from dp.generate_climos import create_climo_files, dry_run_handler
+from dp.generate_climos import generate_climos, dry_run_handler
 from thunderbird.utils import (
     MAX_OCCURS,
     get_filepaths,
@@ -213,10 +213,6 @@ class GenerateClimos(Process):
             del response.outputs["dry_output"]  # remove unnecessary output
             response.update_status("Processing filepaths", 10)
             for filepath in filepaths:
-                input_file = CFDataset(filepath)
-
-                periods = [period for period in input_file.climo_periods.keys() & climo]
-
                 log_handler(
                     self,
                     response,
@@ -224,18 +220,17 @@ class GenerateClimos(Process):
                     process_step="process",
                     level=loglevel,
                 )
-                for period in periods:
-                    t_range = input_file.climo_periods[period]
-                    create_climo_files(
-                        period,
-                        self.workdir,
-                        input_file,
-                        operation,
-                        *t_range,
-                        convert_longitudes=convert_longitudes,
-                        split_vars=split_vars,
-                        output_resolutions=resolutions,
-                    )
+
+                generate_climos(
+                    filepath,
+                    self.workdir,
+                    operation,
+                    climo,
+                    convert_longitudes=convert_longitudes,
+                    split_vars=split_vars,
+                    split_intervals=split_intervals,
+                    resolutions=resolutions,
+                )
 
             log_handler(
                 self,
