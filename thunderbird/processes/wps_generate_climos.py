@@ -26,7 +26,6 @@ from thunderbird.wps_io import (
 
 # Library imports
 import logging
-import sys
 import os
 
 
