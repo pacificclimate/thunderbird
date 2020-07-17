@@ -139,7 +139,8 @@ class GenerateClimos(Process):
             f.write("Dry Run\n")
             logging.basicConfig(filename=filename, level=logging.INFO)
             dry_run_handler(filepath, climo)
-            logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+            for handler in logging.root.handlers[:]:
+                logging.root.removeHandler(handler)
 
         return filename
 
