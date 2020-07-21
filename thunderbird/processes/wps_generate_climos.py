@@ -129,6 +129,13 @@ class GenerateClimos(Process):
         )
 
     def dry_run_info(self, filepath, climo):
+        '''
+        This function creates an output file with "_dry.txt" at the end.
+        logging.basicConfig() is used to redirect messages logged from
+        generate_climos's dry_run_handler to the created file. After dry_run
+        is processed, logging.root.removeHandler(handler) resets logging 
+        configuration to redirect further logging messages to terminal.
+        '''
         filename = os.path.basename(filepath).split(".")[
             0
         ]  # Uniquely identify each dry run file
