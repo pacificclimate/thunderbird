@@ -10,7 +10,7 @@ from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
-from dp.generate_prsn import dry_run as dry_run_info
+from dp.generate_prsn import dry_run
 from thunderbird.utils import (
     is_opendap_url,
     collect_output_files,
@@ -26,6 +26,7 @@ from thunderbird.wps_io import (
 
 # Library imports
 import os
+import logging
 
 
 class GeneratePrsn(Process):
@@ -101,6 +102,24 @@ class GeneratePrsn(Process):
             status_supported=True,
         )
 
+    def dry_run_info(self, filepaths):
+        '''
+        This function creates an output file "dry.txt".
+        logging.basicConfig() is used to redirect messages logged from
+        generate_prsn's dry_run to the created file. After dry_run
+        is processed, logging.root.removeHandler(handler) resets logging 
+        configuration to redirect further logging messages to terminal.
+        '''
+        filename = os.path.join(self.workdir, "dry.txt")
+        with open(filename, "w") as f:
+            f.write("Dry Run\n")
+            logging.basicConfig(filename=filename, level=logging.INFO)
+            dry_run(filepaths)
+            for handler in logging.root.handlers[:]:
+                logging.root.removeHandler(handler)
+
+        return filename
+
     def collect_args(self, request):
         chunk_size = request.inputs["chunk_size"][0].data
         loglevel = request.inputs["loglevel"][0].data
@@ -149,9 +168,8 @@ class GeneratePrsn(Process):
                 self, response, "Dry Run", process_step="dry_run", level=loglevel
             )
             del response.outputs["output"]  # remove unnecessary output
-            dry_output_path = os.path.join(self.workdir, "dry.txt")
-            dry_run_info(filepaths, dry_output_path)
-            response.outputs["dry_output"].file = dry_output_path
+            dry_file = self.dry_run_info(filepaths)
+            response.outputs["dry_output"].file = dry_file
 
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
