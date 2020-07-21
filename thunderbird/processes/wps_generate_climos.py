@@ -9,7 +9,7 @@ from pywps.app.Common import Metadata
 
 # Tool imports
 from nchelpers import CFDataset, standard_climo_periods
-from dp.generate_climos import create_climo_files
+from dp.generate_climos import generate_climos, dry_run_handler
 from thunderbird.utils import (
     MAX_OCCURS,
     get_filepaths,
@@ -129,32 +129,24 @@ class GenerateClimos(Process):
         )
 
     def dry_run_info(self, filepath, climo):
-        output = ["Dry Run"]
-        output.append(f"File: {filepath}")
-        try:
-            input_file = CFDataset(filepath)
-        except Exception as e:
-            output.append(f"{e.__class__.__name__}: {e}")
-        else:
-            periods = input_file.climo_periods.keys() & climo
-            output.append(f"climo_periods: {periods}")
-            for attr in "project institution model emissions run".split():
-                try:
-                    output.append(f"{attr}: {getattr(input_file.metadata, attr)}")
-                except Exception as e:
-                    output.append(f"{attr}: {e.__class__.__name__}: {e}")
-            output.append(f"dependent_varnames: {input_file.dependent_varnames()}")
-            for attr in "time_resolution is_multi_year_mean".split():
-                output.append(f"{attr}: {getattr(input_file, attr)}")
-
+        '''
+        This function creates an output file with "_dry.txt" at the end.
+        logging.basicConfig() is used to redirect messages logged from
+        generate_climos's dry_run_handler to the created file. After dry_run
+        is processed, logging.root.removeHandler(handler) resets logging 
+        configuration to redirect further logging messages to terminal.
+        '''
         filename = os.path.basename(filepath).split(".")[
             0
         ]  # Uniquely identify each dry run file
         filename += "_dry.txt"
         filename = os.path.join(self.workdir, filename)
         with open(filename, "w") as f:
-            for line in output:
-                f.write(f"{line}\n")
+            f.write("Dry Run\n")
+            logging.basicConfig(filename=filename, level=logging.INFO)
+            dry_run_handler(filepath, climo)
+            for handler in logging.root.handlers[:]:
+                logging.root.removeHandler(handler)
 
         return filename
 
@@ -228,10 +220,6 @@ class GenerateClimos(Process):
             del response.outputs["dry_output"]  # remove unnecessary output
             response.update_status("Processing filepaths", 10)
             for filepath in filepaths:
-                input_file = CFDataset(filepath)
-
-                periods = [period for period in input_file.climo_periods.keys() & climo]
-
                 log_handler(
                     self,
                     response,
@@ -239,18 +227,17 @@ class GenerateClimos(Process):
                     process_step="process",
                     level=loglevel,
                 )
-                for period in periods:
-                    t_range = input_file.climo_periods[period]
-                    create_climo_files(
-                        period,
-                        self.workdir,
-                        input_file,
-                        operation,
-                        *t_range,
-                        convert_longitudes=convert_longitudes,
-                        split_vars=split_vars,
-                        output_resolutions=resolutions,
-                    )
+
+                generate_climos(
+                    filepath,
+                    self.workdir,
+                    operation,
+                    climo,
+                    convert_longitudes=convert_longitudes,
+                    split_vars=split_vars,
+                    split_intervals=split_intervals,
+                    resolutions=resolutions,
+                )
 
             log_handler(
                 self,
