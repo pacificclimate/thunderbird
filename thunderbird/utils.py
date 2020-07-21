@@ -125,3 +125,21 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
     pywps_logger.log(getattr(logging, level), message)
     stderr_logger.log(getattr(logging, level), message)
     response.update_status(message, status_percentage=status_percentage)
+
+
+def dry_run_info(filename, dry_run_method, **kwargs):
+    """
+    This function creates an output file with the given filename.
+    logging.basicConfig() is used to redirect messages logged from
+    dry_run_method to the created file. After dry_run is processed,
+    logging.root.removeHandler(handler) resets logging configuration
+    to redirect further logging messages to terminal.
+    """
+    with open(filename, "w") as f:
+        f.write("Dry Run\n")
+        logging.basicConfig(filename=filename, level=logging.INFO)
+        dry_run_method(**kwargs)
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+
+    return filename
