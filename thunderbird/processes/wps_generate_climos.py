@@ -164,6 +164,12 @@ class GenerateClimos(Process):
             loglevel,
         )
 
+    def dry_output_filename(self, filepath):
+        return os.path.join(
+            self.workdir,
+            os.path.basename(filepath).split(".")[0] + "_dry.txt",
+        ),
+
     def _handler(self, request, response):
         (
             climo,
@@ -187,10 +193,7 @@ class GenerateClimos(Process):
             del response.outputs["output"]  # remove unnecessary output
             dry_files = [
                 dry_run_info(
-                    os.path.join(
-                        self.workdir,
-                        os.path.basename(filepath).split(".")[0] + "_dry.txt",
-                    ),
+                    self.dry_output_filename(filepath),
                     dry_run_handler,
                     filepath=filepath,
                     climo=climo,
