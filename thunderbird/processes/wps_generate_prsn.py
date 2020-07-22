@@ -151,7 +151,11 @@ class GeneratePrsn(Process):
                 self, response, "Dry Run", process_step="dry_run", level=loglevel
             )
             del response.outputs["output"]  # remove unnecessary output
-            dry_file = dry_run_info(os.path.join(self.workdir, "dry.txt"), dry_run_handler, filepaths=filepaths)
+            dry_file = dry_run_info(
+                os.path.join(self.workdir, "dry.txt"),
+                dry_run_handler,
+                filepaths=filepaths,
+            )
             response.outputs["dry_output"].file = dry_file
 
         else:

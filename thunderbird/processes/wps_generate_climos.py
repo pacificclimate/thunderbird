@@ -166,8 +166,7 @@ class GenerateClimos(Process):
 
     def dry_output_filename(self, filepath):
         return os.path.join(
-            self.workdir,
-            os.path.basename(filepath).split(".")[0] + "_dry.txt",
+            self.workdir, os.path.basename(filepath).split(".")[0] + "_dry.txt",
         )
 
     def _handler(self, request, response):
