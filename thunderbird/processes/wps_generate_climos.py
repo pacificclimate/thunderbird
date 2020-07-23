@@ -16,6 +16,8 @@ from thunderbird.utils import (
     collect_output_files,
     build_meta_link,
     log_handler,
+    dry_run_info,
+    dry_output_filename,
 )
 from thunderbird.wps_io import (
     dryrun_input,
@@ -128,28 +130,6 @@ class GenerateClimos(Process):
             status_supported=True,
         )
 
-    def dry_run_info(self, filepath, climo):
-        '''
-        This function creates an output file with "_dry.txt" at the end.
-        logging.basicConfig() is used to redirect messages logged from
-        generate_climos's dry_run_handler to the created file. After dry_run
-        is processed, logging.root.removeHandler(handler) resets logging 
-        configuration to redirect further logging messages to terminal.
-        '''
-        filename = os.path.basename(filepath).split(".")[
-            0
-        ]  # Uniquely identify each dry run file
-        filename += "_dry.txt"
-        filename = os.path.join(self.workdir, filename)
-        with open(filename, "w") as f:
-            f.write("Dry Run\n")
-            logging.basicConfig(filename=filename, level=logging.INFO)
-            dry_run_handler(filepath, climo)
-            for handler in logging.root.handlers[:]:
-                logging.root.removeHandler(handler)
-
-        return filename
-
     def get_identifier(self, operation):
         """Use operation in filename to indicate that it is an output file"""
         suffix = {"mean": "Mean", "std": "SD"}[operation]
@@ -206,7 +186,15 @@ class GenerateClimos(Process):
         if dry_run:
             log_handler(self, response, "Dry Run", process_step="dry_run")
             del response.outputs["output"]  # remove unnecessary output
-            dry_files = [self.dry_run_info(filepath, climo) for filepath in filepaths]
+            dry_files = [
+                dry_run_info(
+                    dry_output_filename(self.workdir, filepath),
+                    dry_run_handler,
+                    filepath=filepath,
+                    climo=climo,
+                )
+                for filepath in filepaths
+            ]
 
             response.outputs["dry_output"].data = build_meta_link(
                 varname="dry_run",

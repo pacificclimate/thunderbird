@@ -10,12 +10,14 @@ from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
-from dp.generate_prsn import dry_run as dry_run_info
+from dp.generate_prsn import dry_run as dry_run_handler
 from thunderbird.utils import (
     is_opendap_url,
     collect_output_files,
     build_meta_link,
     log_handler,
+    dry_run_info,
+    dry_output_filename,
 )
 from thunderbird.wps_io import (
     log_level,
@@ -26,6 +28,7 @@ from thunderbird.wps_io import (
 
 # Library imports
 import os
+import logging
 
 
 class GeneratePrsn(Process):
@@ -149,9 +152,12 @@ class GeneratePrsn(Process):
                 self, response, "Dry Run", process_step="dry_run", level=loglevel
             )
             del response.outputs["output"]  # remove unnecessary output
-            dry_output_path = os.path.join(self.workdir, "dry.txt")
-            dry_run_info(filepaths, dry_output_path)
-            response.outputs["dry_output"].file = dry_output_path
+            dry_file = dry_run_info(
+                dry_output_filename(self.workdir, "prsn_dry.txt"),
+                dry_run_handler,
+                filepaths=filepaths,
+            )
+            response.outputs["dry_output"].file = dry_file
 
         else:
             del response.outputs["dry_output"]  # remove unnecessary output
