@@ -17,6 +17,7 @@ from thunderbird.utils import (
     build_meta_link,
     log_handler,
     dry_run_info,
+    dry_output_filename,
 )
 from thunderbird.wps_io import (
     dryrun_input,
@@ -164,11 +165,6 @@ class GenerateClimos(Process):
             loglevel,
         )
 
-    def dry_output_filename(self, filepath):
-        return os.path.join(
-            self.workdir, os.path.basename(filepath).split(".")[0] + "_dry.txt",
-        )
-
     def _handler(self, request, response):
         (
             climo,
@@ -192,7 +188,7 @@ class GenerateClimos(Process):
             del response.outputs["output"]  # remove unnecessary output
             dry_files = [
                 dry_run_info(
-                    self.dry_output_filename(filepath),
+                    dry_output_filename(self.workdir, filepath),
                     dry_run_handler,
                     filepath=filepath,
                     climo=climo,

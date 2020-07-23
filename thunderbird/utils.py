@@ -143,3 +143,12 @@ def dry_run_info(filename, dry_run_method, **kwargs):
             logging.root.removeHandler(handler)
 
     return filename
+
+
+def dry_output_filename(outdir, filename):
+    if filename.endswith(".nc"):
+        return os.path.join(
+            outdir, os.path.basename(filename).split(".")[0] + "_dry.txt",
+        )
+    else:
+        return os.path.join(outdir, filename)

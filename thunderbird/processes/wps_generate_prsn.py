@@ -17,6 +17,7 @@ from thunderbird.utils import (
     build_meta_link,
     log_handler,
     dry_run_info,
+    dry_output_filename,
 )
 from thunderbird.wps_io import (
     log_level,
@@ -152,7 +153,7 @@ class GeneratePrsn(Process):
             )
             del response.outputs["output"]  # remove unnecessary output
             dry_file = dry_run_info(
-                os.path.join(self.workdir, "dry.txt"),
+                dry_output_filename(self.workdir, "prsn_dry.txt"),
                 dry_run_handler,
                 filepaths=filepaths,
             )
