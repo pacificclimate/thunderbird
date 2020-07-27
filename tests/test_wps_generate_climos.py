@@ -10,10 +10,7 @@ from thunderbird.processes.wps_generate_climos import GenerateClimos
 local_test_data = [
     local_path(nc)
     for nc in TESTDATA["test_local_nc"]
-    if nc.startswith("tiny_")
-    and not nc.endswith("_climos.nc")
-    and "_gcm" not in nc
-    and "_downscaled" not in nc
+    if nc.startswith("tiny_") and not nc.endswith("_climos.nc") and "_gcm" not in nc
 ]
 # NetCDFs with flow_vectors not adequate for generate_climos
 # refer to https://github.com/pacificclimate/climate-explorer-data-prep#generate_climos-generate-climatological-means
@@ -147,7 +144,7 @@ def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
         (
             {
                 "operation": "std",
-                "climo": "7100",
+                "climo": "6190",
                 "resolutions": "monthly",
                 "convert_longitudes": "False",
                 "split_vars": "False",
