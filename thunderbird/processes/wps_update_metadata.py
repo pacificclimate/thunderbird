@@ -10,8 +10,8 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from dp.update_metadata import process_updates
 from nchelpers import CFDataset
-from thunderbird.utils import is_opendap_url, log_handler
-from thunderbird.wps_io import nc_output, log_level
+from wps_tools.utils import is_opendap_url, log_handler
+from wps_tools.io import nc_output, log_level
 
 # Library imports
 import shutil
@@ -94,7 +94,7 @@ class UpdateMetadata(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self, response, "Starting Process", process_step="start", log_level=loglevel
         )
 
         filepath = self.copy_and_get_filepath(request)
@@ -113,7 +113,7 @@ class UpdateMetadata(Process):
                 response,
                 f"Updating {filepath} metadata",
                 process_step="process",
-                level=loglevel,
+                log_level=loglevel,
             )
             process_updates(dataset, updates_instruction)
 
@@ -122,11 +122,11 @@ class UpdateMetadata(Process):
             response,
             "Building final output",
             process_step="build_output",
-            level=loglevel,
+            log_level=loglevel,
         )
         response.outputs["output"].file = filepath
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel
+            self, response, "Process Complete", process_step="complete", log_level=loglevel
         )
         return response
