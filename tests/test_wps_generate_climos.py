@@ -3,7 +3,8 @@ import pytest
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process, local_path, opendap_path
+from .testdata import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 # limiting test_data to non-climo tiny datasets
@@ -87,7 +88,7 @@ def build_params(netcdf, kwargs):
                 "convert_longitudes": "False",
                 "split_vars": "False",
                 "split_intervals": "False",
-                "dry_run": "True",
+                "dry_run": "False",
             }
         ),
     ],
