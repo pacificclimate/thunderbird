@@ -23,8 +23,8 @@ from dp.decompose_flow_vectors import (
     variable_check,
 )
 from pywps.app.exceptions import ProcessError
-from thunderbird.utils import is_opendap_url, log_handler
-from thunderbird.wps_io import log_level
+from wps_tools.utils import is_opendap_url, log_handler
+from wps_tools.io import log_level
 
 
 class DecomposeFlowVectors(Process):
@@ -89,7 +89,7 @@ class DecomposeFlowVectors(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self, response, "Starting Process", process_step="start", log_level=loglevel
         )
 
         source_file = self.get_filepath(request)
@@ -103,7 +103,7 @@ class DecomposeFlowVectors(Process):
             response,
             f"Checking {source_file} and {variable}",
             process_step="input_check",
-            level=loglevel,
+            log_level=loglevel,
         )
         try:
             source_check(source)
@@ -116,7 +116,7 @@ class DecomposeFlowVectors(Process):
             response,
             "Decomposing flow direction vectors into grids",
             process_step="process",
-            level=loglevel,
+            log_level=loglevel,
         )
         decompose_flow_vectors(source, dest_file, variable)
 
@@ -125,12 +125,12 @@ class DecomposeFlowVectors(Process):
             response,
             "Building final output",
             process_step="build_output",
-            level=loglevel,
+            log_level=loglevel,
         )
         response.outputs["output"].file = dest_file
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel
+            self, response, "Process Complete", process_step="complete", log_level=loglevel
         )
         response.update_status("Process Complete", 100)
         return response
