@@ -1,8 +1,6 @@
 import pytest
 from pkg_resources import resource_filename, resource_listdir
 
-from pywps import Service
-from pywps.tests import assert_response_success
 
 from .testdata import TESTDATA
 from wps_tools.testing import run_wps_process, local_path, opendap_path

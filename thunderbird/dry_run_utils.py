@@ -2,6 +2,7 @@
 import logging
 import os
 
+
 def dry_run_info(filename, dry_run_method, **kwargs):
     """
     This function creates an output file with the given filename.

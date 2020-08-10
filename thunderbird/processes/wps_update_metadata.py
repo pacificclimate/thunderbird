@@ -127,6 +127,10 @@ class UpdateMetadata(Process):
         response.outputs["output"].file = filepath
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", log_level=loglevel
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         return response

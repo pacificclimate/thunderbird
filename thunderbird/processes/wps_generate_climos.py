@@ -8,7 +8,7 @@ from pywps import (
 from pywps.app.Common import Metadata
 
 # Tool imports
-from nchelpers import CFDataset, standard_climo_periods
+from nchelpers import standard_climo_periods
 from dp.generate_climos import generate_climos, dry_run_handler
 from wps_tools.utils import (
     MAX_OCCURS,
@@ -25,8 +25,7 @@ from wps_tools.io import (
 )
 from thunderbird.dry_run_utils import dry_run_info, dry_output_filename
 
-# Library imports
-import logging
+# Library import
 import os
 
 
@@ -182,7 +181,9 @@ class GenerateClimos(Process):
 
         filepaths = get_filepaths(request.inputs["netcdf"])
         if dry_run:
-            log_handler(self, response, "Dry Run", process_step="dry_run", log_level=loglevel)
+            log_handler(
+                self, response, "Dry Run", process_step="dry_run", log_level=loglevel
+            )
             del response.outputs["output"]  # remove unnecessary output
             dry_files = [
                 dry_run_info(
@@ -252,6 +253,10 @@ class GenerateClimos(Process):
             )
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", log_level=loglevel
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         return response

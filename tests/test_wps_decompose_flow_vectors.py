@@ -1,13 +1,10 @@
 import pytest
 
-from pywps import Service
-from pywps.tests import assert_response_success
 
-from netCDF4 import Dataset
 from .testdata import TESTDATA
 from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
-from pywps.app.exceptions import ProcessError
+
 
 import owslib.wps
 import pkg_resources

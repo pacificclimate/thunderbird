@@ -26,9 +26,8 @@ from wps_tools.io import (
 from thunderbird.dry_run_utils import dry_run_info, dry_output_filename
 
 
-# Library imports
+# Library import
 import os
-import logging
 
 
 class GeneratePrsn(Process):
@@ -190,6 +189,10 @@ class GeneratePrsn(Process):
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", log_level=loglevel,
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         return response

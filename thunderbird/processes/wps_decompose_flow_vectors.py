@@ -3,18 +3,13 @@ from pywps import (
     Process,
     LiteralInput,
     ComplexInput,
-    LiteralOutput,
     ComplexOutput,
     FORMATS,
-    Format,
 )
 
 # Library imports
 from netCDF4 import Dataset
-import numpy as np
-import logging
 import os
-import sys
 
 # Tool imports
 from dp.decompose_flow_vectors import (
@@ -130,7 +125,11 @@ class DecomposeFlowVectors(Process):
         response.outputs["output"].file = dest_file
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", log_level=loglevel
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         response.update_status("Process Complete", 100)
         return response
