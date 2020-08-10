@@ -11,20 +11,20 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
 from dp.generate_prsn import dry_run as dry_run_handler
-from thunderbird.utils import (
+from wps_tools.utils import (
     is_opendap_url,
     collect_output_files,
     build_meta_link,
     log_handler,
-    dry_run_info,
-    dry_output_filename,
 )
-from thunderbird.wps_io import (
+from wps_tools.io import (
     log_level,
     dryrun_input,
     nc_output,
     dryrun_output,
 )
+from thunderbird.dry_run_utils import dry_run_info, dry_output_filename
+
 
 # Library imports
 import os
@@ -142,14 +142,14 @@ class GeneratePrsn(Process):
     def _handler(self, request, response):
         (chunk_size, loglevel, dry_run, output_file) = self.collect_args(request)
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self, response, "Starting Process", process_step="start", log_level=loglevel
         )
 
         filepaths = self.get_filepaths(request)
 
         if dry_run:
             log_handler(
-                self, response, "Dry Run", process_step="dry_run", level=loglevel
+                self, response, "Dry Run", process_step="dry_run", log_level=loglevel
             )
             del response.outputs["output"]  # remove unnecessary output
             dry_file = dry_run_info(
@@ -167,7 +167,7 @@ class GeneratePrsn(Process):
                 response,
                 f"Processing {filepaths} into snowfall fluxes",
                 process_step="process",
-                level=loglevel,
+                log_level=loglevel,
             )
             generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
 
@@ -176,7 +176,7 @@ class GeneratePrsn(Process):
                 response,
                 "Collecting snowfall files",
                 process_step="collect_files",
-                level=loglevel,
+                log_level=loglevel,
             )
             (prsn_file,) = collect_output_files("prsn", self.workdir)
 
@@ -185,11 +185,11 @@ class GeneratePrsn(Process):
                 response,
                 "Building final output",
                 process_step="build_output",
-                level=loglevel,
+                log_level=loglevel,
             )
             response.outputs["output"].file = os.path.join(self.workdir, prsn_file)
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel,
+            self, response, "Process Complete", process_step="complete", log_level=loglevel,
         )
         return response

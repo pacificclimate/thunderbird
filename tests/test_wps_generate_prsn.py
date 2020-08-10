@@ -4,7 +4,8 @@ import re
 from pywps import Service
 from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process, local_path, opendap_path
+from .testdata import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 local_nc_inputs = {
