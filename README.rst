@@ -29,6 +29,9 @@ Documentation
 Learn more about thunderbird in its official documentation at
 https://thunderbird.readthedocs.io.
 
+Submit bug reports, questions and feature requests at
+https://github.com/pcic/thunderbird/issues
+
 Contributing
 ------------
 

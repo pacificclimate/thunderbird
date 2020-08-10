@@ -21,6 +21,9 @@
 import os
 import sys
 
+# Add thunderbird to sys.path to avoid having to full
+# install thunderbird for autodoc.
+# Full install of thunderbird will burst memory limit on ReadTheDocs.
 sys.path.insert(0, os.path.abspath("../../"))
 
 
@@ -38,7 +41,61 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "pywps.ext_autodoc",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.imgconverter",
+    "nbsphinx",
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
+
+# To avoid having to install these and burst memory limit on ReadTheDocs.
+# List of all tested working mock imports from all birds so new birds can
+# inherit without having to test which work which do not.
+autodoc_mock_imports = [
+    "numpy",
+    "xarray",
+    "fiona",
+    "rasterio",
+    "shapely",
+    "osgeo",
+    "geopandas",
+    "pandas",
+    "statsmodels",
+    "affine",
+    "rasterstats",
+    "spotpy",
+    "matplotlib",
+    "scipy",
+    "unidecode",
+    "gdal",
+    "sentry_sdk",
+    "dask",
+    "numba",
+    "parse",
+    "siphon",
+    "sklearn",
+    "cftime",
+    "netCDF4",
+    "bottleneck",
+    "ocgis",
+    "geotiff",
+    "geos",
+    "hdf4",
+    "hdf5",
+    "zlib",
+    "pyproj",
+    "proj",
+    "cartopy",
+    "scikit-learn",
+    "cairo",
+]
+
+# Monkeypatch constant because the following are mock imports.
+# Only works if numpy is actually installed and at the same time being mocked.
+# import numpy
+# numpy.pi = 3.1416
+
+# We are using mock imports in readthedocs, so probably safer to not run the notebooks
+nbsphinx_execute = "never"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -83,6 +140,12 @@ pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
+
+# Suppress "WARNING: unknown mimetype for ..." when building EPUB.
+suppress_warnings = ["epub.unknown_project_files"]
+
+# Avoid "configuration.rst:4:duplicate label configuration, other instance in configuration.rst"
+autosectionlabel_prefix_document = True
 
 
 # -- Options for HTML output -------------------------------------------
@@ -168,7 +231,7 @@ texinfo_documents = [
         u"thunderbird Documentation",
         author,
         "thunderbird",
-        "One line description of project.",
+        "A Web Processing Service for Climate Explorer data preparation",
         "Miscellaneous",
     ),
 ]
