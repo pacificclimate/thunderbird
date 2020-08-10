@@ -2,7 +2,12 @@
 APP_ROOT := $(abspath $(lastword $(MAKEFILE_LIST))/..)
 APP_NAME := thunderbird
 
-# end of configuration
+WPS_URL = http://localhost:5001
+
+# Used in target refresh-notebooks to make it looks like the notebooks have
+# been refreshed from the production server below instead of from the local dev
+# instance so the notebooks can also be used as tutorial notebooks.
+OUTPUT_URL = https://pavics.ouranos.ca/wpsoutputs
 
 .DEFAULT_GOAL := help
 
@@ -90,8 +95,9 @@ clean-test:
 
 .PHONY: clean-dist
 clean-dist: clean
-	@echo "Run 'git clean' ..."
-	@git diff --quiet HEAD || echo "There are uncommited changes! Not doing 'git clean' ..."
+	@echo "Running 'git clean' ..."
+	@git diff --quiet HEAD || echo "There are uncommitted changes! Aborting 'git clean' ..."
+	## do not use git clean -e/--exclude here, add them to .gitignore instead
 	@-git clean -dfx
 
 ## Test targets
@@ -116,8 +122,10 @@ lint:
 .PHONY: docs
 docs:
 	@echo "Generating docs with Sphinx ..."
-	@-bash -c '$(MAKE) -C $@ clean html'
-	@echo "open your browser: open file://$(APP_ROOT)/docs/build/html/index.html"
+	@bash -c '$(MAKE) -C $@ clean html'
+	@echo "Open your browser to: file:/$(APP_ROOT)/docs/build/html/index.html"
+	## do not execute xdg-open automatically since it hangs travis and job does not complete
+	@echo "xdg-open $(APP_ROOT)/docs/build/html/index.html"
 
 ## Deployment targets
 
