@@ -17,7 +17,7 @@ opendap_data = [
     opendap_path(opendap)
     for opendap in TESTDATA["test_opendaps"]
     if not (
-        opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc")
+        opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc") or opendap.endswith("19500107.nc")
     )
 ]
 
@@ -86,7 +86,7 @@ def build_params(netcdf, kwargs):
                 "convert_longitudes": "False",
                 "split_vars": "False",
                 "split_intervals": "False",
-                "dry_run": "False",
+                "dry_run": "True",
             }
         ),
     ],
@@ -98,8 +98,8 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
 
 @pytest.mark.slow
 @pytest.mark.online
-@pytest.mark.parametrize(  # fdd_seasonal and gdd_annual data respectively
-    ("netcdf"), [(opendap_data[3], opendap_data[4])],
+@pytest.mark.parametrize(
+    ("netcdf"), [opendap_data],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
