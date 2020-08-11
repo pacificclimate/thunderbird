@@ -23,7 +23,7 @@ from wps_tools.io import (
     nc_output,
     dryrun_output,
 )
-from thunderbird.dry_run_utils import dry_run_info, dry_output_filename
+from thunderbird.utils import dry_run_info, dry_output_filename
 
 
 # Library import

@@ -17,7 +17,9 @@ opendap_data = [
     opendap_path(opendap)
     for opendap in TESTDATA["test_opendaps"]
     if not (
-        opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc") or opendap.endswith("19500107.nc")
+        opendap.endswith("_climos.nc")
+        or opendap.endswith("sample_flow_parameters.nc")
+        or opendap.endswith("19500107.nc")
     )
 ]
 
