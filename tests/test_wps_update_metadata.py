@@ -1,10 +1,9 @@
 import pytest
 from pkg_resources import resource_filename, resource_listdir
 
-from pywps import Service
-from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process, local_path, opendap_path
+from .testdata import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 
 # limiting the test data to tiny_datasets

@@ -1,9 +1,8 @@
 import pytest
 
-from pywps import Service
-from pywps.tests import assert_response_success
 
-from .common import client_for, TESTDATA, local_path, opendap_path
+from .testdata import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
 # limiting test_data to climo files
@@ -16,30 +15,17 @@ climo_opendaps = [
     if opendap.endswith("_climos.nc")
 ]
 
-client = client_for(Service(processes=[SplitMergedClimos()]))
-
-
-def check_success(datainputs):
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier="split_merged_climos",
-        datainputs=datainputs,
-    )
-    assert_response_success(resp)
-
 
 def run_single_file(netcdf):
     datainputs = f"netcdf=@xlink:href={netcdf};"
-    check_success(datainputs)
+    run_wps_process(SplitMergedClimos(), datainputs)
 
 
 def run_multiple_files(netcdfs):
     datainputs = ""
     for netcdf in netcdfs:
         datainputs += f"netcdf=@xlink:href={netcdf};"
-    check_success(datainputs)
+    run_wps_process(SplitMergedClimos(), datainputs)
 
 
 @pytest.mark.parametrize(

@@ -10,11 +10,8 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from nchelpers import CFDataset
 from dp.split_merged_climos import split_merged_climos
-from thunderbird.utils import MAX_OCCURS, get_filepaths, build_meta_link, log_handler
-from thunderbird.wps_io import log_level, meta4_output
-
-# Library import
-import logging
+from wps_tools.utils import MAX_OCCURS, get_filepaths, build_meta_link, log_handler
+from wps_tools.io import log_level, meta4_output
 
 
 class SplitMergedClimos(Process):
@@ -56,16 +53,16 @@ class SplitMergedClimos(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self, response, "Starting Process", process_step="start", log_level=loglevel
         )
 
-        filepaths = get_filepaths(request)
+        filepaths = get_filepaths(request.inputs["netcdf"])
         log_handler(
             self,
             response,
             f"Spliting climo files: {filepaths}",
             process_step="process",
-            level=loglevel,
+            log_level=loglevel,
         )
         output_filepaths = []
         for path in filepaths:
@@ -83,7 +80,7 @@ class SplitMergedClimos(Process):
             response,
             "Building final output",
             process_step="build_output",
-            level=loglevel,
+            log_level=loglevel,
         )
         response.outputs["output"].data = build_meta_link(
             varname="split_climo",
@@ -93,6 +90,10 @@ class SplitMergedClimos(Process):
         )
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         return response

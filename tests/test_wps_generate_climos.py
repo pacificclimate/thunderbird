@@ -1,9 +1,8 @@
 import pytest
 
-from pywps import Service
-from pywps.tests import assert_response_success
 
-from .common import TESTDATA, run_wps_process, local_path, opendap_path
+from .testdata import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, opendap_path
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 # limiting test_data to non-climo tiny datasets
@@ -18,7 +17,9 @@ opendap_data = [
     opendap_path(opendap)
     for opendap in TESTDATA["test_opendaps"]
     if not (
-        opendap.endswith("_climos.nc") or opendap.endswith("sample_flow_parameters.nc")
+        opendap.endswith("_climos.nc")
+        or opendap.endswith("sample_flow_parameters.nc")
+        or opendap.endswith("19500107.nc")
     )
 ]
 
@@ -99,8 +100,8 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
 
 @pytest.mark.slow
 @pytest.mark.online
-@pytest.mark.parametrize(  # fdd_seasonal and gdd_annual data respectively
-    ("netcdf"), [(opendap_data[3], opendap_data[4])],
+@pytest.mark.parametrize(
+    ("netcdf"), [opendap_data],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
