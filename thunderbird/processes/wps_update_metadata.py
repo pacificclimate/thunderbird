@@ -12,6 +12,7 @@ from dp.update_metadata import process_updates
 from nchelpers import CFDataset
 from wps_tools.utils import is_opendap_url, log_handler
 from wps_tools.io import nc_output, log_level
+from thunderbird.utils import logger
 
 # Library imports
 import shutil
@@ -94,7 +95,12 @@ class UpdateMetadata(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", log_level=loglevel
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
         )
 
         filepath = self.copy_and_get_filepath(request)
@@ -112,8 +118,9 @@ class UpdateMetadata(Process):
                 self,
                 response,
                 f"Updating {filepath} metadata",
-                process_step="process",
+                logger,
                 log_level=loglevel,
+                process_step="process",
             )
             process_updates(dataset, updates_instruction)
 
@@ -121,8 +128,9 @@ class UpdateMetadata(Process):
             self,
             response,
             "Building final output",
-            process_step="build_output",
+            logger,
             log_level=loglevel,
+            process_step="build_output",
         )
         response.outputs["output"].file = filepath
 
@@ -130,7 +138,8 @@ class UpdateMetadata(Process):
             self,
             response,
             "Process Complete",
-            process_step="complete",
+            logger,
             log_level=loglevel,
+            process_step="complete",
         )
         return response
