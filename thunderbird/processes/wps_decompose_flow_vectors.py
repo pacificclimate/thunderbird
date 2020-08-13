@@ -20,6 +20,7 @@ from dp.decompose_flow_vectors import (
 from pywps.app.exceptions import ProcessError
 from wps_tools.utils import is_opendap_url, log_handler
 from wps_tools.io import log_level
+from thunderbird.utils import logger
 
 
 class DecomposeFlowVectors(Process):
@@ -84,7 +85,12 @@ class DecomposeFlowVectors(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", log_level=loglevel
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
         )
 
         source_file = self.get_filepath(request)
@@ -97,8 +103,9 @@ class DecomposeFlowVectors(Process):
             self,
             response,
             f"Checking {source_file} and {variable}",
-            process_step="input_check",
+            logger,
             log_level=loglevel,
+            process_step="input_check",
         )
         try:
             source_check(source)
@@ -110,8 +117,9 @@ class DecomposeFlowVectors(Process):
             self,
             response,
             "Decomposing flow direction vectors into grids",
-            process_step="process",
+            logger,
             log_level=loglevel,
+            process_step="process",
         )
         decompose_flow_vectors(source, dest_file, variable)
 
@@ -119,8 +127,9 @@ class DecomposeFlowVectors(Process):
             self,
             response,
             "Building final output",
-            process_step="build_output",
+            logger,
             log_level=loglevel,
+            process_step="build_output",
         )
         response.outputs["output"].file = dest_file
 
@@ -128,8 +137,8 @@ class DecomposeFlowVectors(Process):
             self,
             response,
             "Process Complete",
-            process_step="complete",
+            logger,
             log_level=loglevel,
+            process_step="complete",
         )
-        response.update_status("Process Complete", 100)
         return response

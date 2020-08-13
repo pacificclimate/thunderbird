@@ -12,6 +12,7 @@ from nchelpers import CFDataset
 from dp.split_merged_climos import split_merged_climos
 from wps_tools.utils import MAX_OCCURS, get_filepaths, build_meta_link, log_handler
 from wps_tools.io import log_level, meta4_output
+from thunderbird.utils import logger
 
 
 class SplitMergedClimos(Process):
@@ -53,7 +54,12 @@ class SplitMergedClimos(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", log_level=loglevel
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
         )
 
         filepaths = get_filepaths(request.inputs["netcdf"])
@@ -61,8 +67,9 @@ class SplitMergedClimos(Process):
             self,
             response,
             f"Spliting climo files: {filepaths}",
-            process_step="process",
+            logger,
             log_level=loglevel,
+            process_step="process",
         )
         output_filepaths = []
         for path in filepaths:
@@ -79,8 +86,9 @@ class SplitMergedClimos(Process):
             self,
             response,
             "Building final output",
-            process_step="build_output",
+            logger,
             log_level=loglevel,
+            process_step="build_output",
         )
         response.outputs["output"].data = build_meta_link(
             varname="split_climo",
@@ -93,7 +101,8 @@ class SplitMergedClimos(Process):
             self,
             response,
             "Process Complete",
-            process_step="complete",
+            logger,
             log_level=loglevel,
+            process_step="complete",
         )
         return response
