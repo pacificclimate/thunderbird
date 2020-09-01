@@ -51,6 +51,12 @@ install-cdo:
 	@-bash -c "sudo apt-get update"
 	@-bash -c "sudo apt-get install cdo"
 
+.PHONY: install-ci
+install-ci: install-cdo
+	@echo "Installing ci requirements"
+	@-bash -c 'pip install -r requirements.txt'
+	@-bash -c 'pip install -e ".[dev]"'
+
 .PHONY: develop
 develop: install-cdo venv
 	@echo "Installing development requirements for tests and docs ..."

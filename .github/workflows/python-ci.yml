@@ -17,14 +17,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      env:
-        PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
       run: |
-        sudo apt-get update
-        sudo apt-get install cdo
-        pip install -U pip pytest
-        pip install -r requirements.txt
-        pip install -e .[dev]
+        make install-ci
     - name: Test with pytest (full)
       if: github.ref == 'refs/heads/master'
       run: |
