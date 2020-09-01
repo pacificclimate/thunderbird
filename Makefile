@@ -1,18 +1,21 @@
 # Configuration
 APP_ROOT := $(abspath $(lastword $(MAKEFILE_LIST))/..)
 APP_NAME := thunderbird
+VENV?=~/tmp/thunderbird-venv
+PYTHON=${VENV}/bin/python3
+PIP=${VENV}/bin/pip
 
 WPS_URL = http://localhost:5001
+
+export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 
 # Used in target refresh-notebooks to make it looks like the notebooks have
 # been refreshed from the production server below instead of from the local dev
 # instance so the notebooks can also be used as tutorial notebooks.
-OUTPUT_URL = https://pavics.ouranos.ca/wpsoutputs
-
-.DEFAULT_GOAL := help
+OUTPUT_URL = https://docker-dev03.pcic.uvic.ca/wpsoutputs
 
 .PHONY: all
-all: help
+all: install test clean-test
 
 .PHONY: help
 help:
@@ -37,34 +40,40 @@ help:
 ## Build targets
 
 .PHONY: install
-install:
+install: install-cdo venv
 	@echo "Installing application ..."
-	@-bash -c 'pip install -e .'
+	@-bash -c '${PIP} install -e .'
 	@echo "\nStart service with \`make start'"
 
+.PHONY: install-cdo
+install-cdo:
+	@echo "Installing cdo package ..."
+	@-bash -c "sudo apt-get update"
+	@-bash -c "sudo apt-get install cdo"
+
 .PHONY: develop
-develop:
+develop: install-cdo venv
 	@echo "Installing development requirements for tests and docs ..."
-	@-bash -c 'pip install -e ".[dev]"'
+	@-bash -c '${PIP} install -e ".[dev]"'
 
 .PHONY: start
-start:
+start: venv
 	@echo "Starting application ..."
-	@-bash -c "$(APP_NAME) start -d"
+	@-bash -c "${VENV}/bin/$(APP_NAME) start -d"
 
 .PHONY: stop
-stop:
+stop: venv
 	@echo "Stopping application ..."
-	@-bash -c "$(APP_NAME) stop"
+	@-bash -c "${VENV}/bin/$(APP_NAME) stop"
 
 .PHONY: restart
-restart: stop start
+restart: venv stop start
 	@echo "Restarting application ..."
 
 .PHONY: status
-status:
+status: venv
 	@echo "Show status ..."
-	@-bash -c "$(APP_NAME) status"
+	@-bash -c "${VENV}/bin/$(APP_NAME) status"
 
 .PHONY: clean
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
@@ -100,22 +109,26 @@ clean-dist: clean
 	## do not use git clean -e/--exclude here, add them to .gitignore instead
 	@-git clean -dfx
 
+.PHONY: venv
+venv:
+	test -d $(VENV) || python3 -m venv $(VENV)
+
 ## Test targets
 
 .PHONY: test
-test:
+test: venv
 	@echo "Running tests (skip slow and online tests) ..."
-	@bash -c 'pytest -v -m "not slow and not online" tests/'
+	@bash -c '${PYTHON} -m pytest -v -m "not slow and not online" tests/'
 
 .PHONY: test-all
-test-all:
+test-all: venv
 	@echo "Running all tests (including slow and online tests) ..."
-	@bash -c 'pytest -v tests/'
+	@bash -c '${PYTHON} -m pytest -v tests/'
 
 .PHONY: lint
-lint:
-	@echo "Running flake8 code style checks ..."
-	@bash -c 'flake8'
+lint: venv
+	@echo "Running black code style checks ..."
+	@bash -c '${PYTHON} -m black . --check'
 
 ## Sphinx targets
 
@@ -132,6 +145,6 @@ docs:
 .PHONY: dist
 dist: clean
 	@echo "Builds source and wheel package ..."
-	@-python setup.py sdist
-	@-python setup.py bdist_wheel
+	@-python3 setup.py sdist
+	@-python3 setup.py bdist_wheel
 	ls -l dist
