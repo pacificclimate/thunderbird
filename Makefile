@@ -43,7 +43,7 @@ help:
 install: install-cdo venv
 	@echo "Installing application ..."
 	@-bash -c '${PIP} install -e .'
-	@echo "\nStart service with \`make start'"
+	@echo "\nStart service with \`thunderbird start'"
 
 .PHONY: install-cdo
 install-cdo:
@@ -62,24 +62,27 @@ develop: install-cdo venv
 	@echo "Installing development requirements for tests and docs ..."
 	@-bash -c '${PIP} install -e ".[dev]"'
 
-.PHONY: start
-start: venv
-	@echo "Starting application ..."
-	@-bash -c "${VENV}/bin/$(APP_NAME) start -d"
-
-.PHONY: stop
-stop: venv
-	@echo "Stopping application ..."
-	@-bash -c "${VENV}/bin/$(APP_NAME) stop"
-
-.PHONY: restart
-restart: venv stop start
-	@echo "Restarting application ..."
-
-.PHONY: status
-status: venv
-	@echo "Show status ..."
-	@-bash -c "${VENV}/bin/$(APP_NAME) status"
+# These commands have been disabled until further notice. Due to the issues with
+# cdo's signal handling, we cannot reliably start/stop using make.
+#
+# .PHONY: start
+# start: venv
+# 	@echo "Starting application ..."
+# 	@-bash -c "${VENV}/bin/$(APP_NAME) start -d"
+#
+# .PHONY: stop
+# stop: venv
+# 	@echo "Stopping application ..."
+# 	@-bash -c "${VENV}/bin/$(APP_NAME) stop"
+#
+# .PHONY: restart
+# restart: venv stop start
+# 	@echo "Restarting application ..."
+#
+# .PHONY: status
+# status: venv
+# 	@echo "Show status ..."
+# 	@-bash -c "${VENV}/bin/$(APP_NAME) status"
 
 .PHONY: clean
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
