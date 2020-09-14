@@ -1,7 +1,7 @@
 # Configuration
 APP_ROOT := $(abspath $(lastword $(MAKEFILE_LIST))/..)
 APP_NAME := thunderbird
-VENV?=~/tmp/thunderbird-venv
+VENV?=/tmp/thunderbird-venv
 PYTHON=${VENV}/bin/python3
 PIP=${VENV}/bin/pip
 
@@ -15,7 +15,7 @@ export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 OUTPUT_URL = https://docker-dev03.pcic.uvic.ca/wpsoutputs
 
 .PHONY: all
-all: install test clean-test
+all: develop test clean-test
 
 .PHONY: help
 help:
