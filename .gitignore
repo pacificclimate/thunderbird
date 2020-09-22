@@ -70,7 +70,6 @@ docs/make.bat
 docs/doctrees/
 docs/html/
 docs/build/
-docs/source/output-sanitize.cfg
 
 # External Sources
 #src/external
