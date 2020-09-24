@@ -14,6 +14,8 @@ export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 # instance so the notebooks can also be used as tutorial notebooks.
 OUTPUT_URL = https://docker-dev03.pcic.uvic.ca/wpsoutputs
 
+SANITIZE_FILE := https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/raw/master/notebooks/output-sanitize.cfg
+
 .PHONY: all
 all: develop test clean-test test-notebooks
 
