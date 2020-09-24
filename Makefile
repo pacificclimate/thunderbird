@@ -134,6 +134,16 @@ test-all: venv
 	@echo "Running all tests (including slow and online tests) ..."
 	@bash -c '${PYTHON} -m pytest -v tests/'
 
+.PHONY: notebook-sanitizer
+notebook-sanitizer:
+	@echo "Copying notebook output sanitizer ..."
+	@-bash -c "curl -L $(SANITIZE_FILE) -o $(CURDIR)/docs/source/output-sanitize.cfg --silent"
+
+.PHONY: test-notebooks
+test-notebooks: notebook-sanitizer
+	@echo "Running notebook-based tests"
+	@bash -c "source $(VENV)/bin/activate && env WPS_URL=$(WPS_URL) pytest --nbval --verbose $(CURDIR)/docs/source/notebooks/ --sanitize-with $(CURDIR)/docs/source/output-sanitize.cfg --ignore $(CURDIR)/docs/source/notebooks/.ipynb_checkpoints"
+
 .PHONY: lint
 lint: venv
 	@echo "Running black code style checks ..."
