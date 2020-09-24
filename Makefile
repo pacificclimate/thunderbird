@@ -15,7 +15,7 @@ export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 OUTPUT_URL = https://docker-dev03.pcic.uvic.ca/wpsoutputs
 
 .PHONY: all
-all: develop test clean-test
+all: develop test clean-test test-notebooks
 
 .PHONY: help
 help:
