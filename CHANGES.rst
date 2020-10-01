@@ -1,6 +1,18 @@
 Changes
 *******
 
+1.0.0 (2020-09-25)
+==================
+
+* Update output format
+* Update testing
+* Add feature to handle multiple file inputs at once
+* Fix resolution warning bug
+* Refactor logging
+* Update required packages
+* Update repo with ``cruft``
+* Factor out functions available in ``wps-tools``
+
 0.6.0 (2020-06-25)
 ==================
 
