@@ -1,6 +1,7 @@
 [server]
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
+maxrequestsize = 100gb
 
 [logging]
 level = INFO
