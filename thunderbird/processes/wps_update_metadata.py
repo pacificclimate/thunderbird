@@ -105,14 +105,10 @@ class UpdateMetadata(Process):
         )
 
         filepath = self.copy_and_get_filepath(request)
-        updates = request.inputs["updates"][0]
+        updates = request.inputs["updates"][0].data
 
-        # determines if the input `updates` is a file or a string
-        if os.path.isfile(updates.file):
-            with open(updates.file) as ud:
-                updates_instruction = yaml.safe_load(ud)
-        else:
-            updates_instruction = yaml.safe_load(updates)
+        # Converts the yaml (updates file) content into a dictionary
+        updates_instruction = yaml.safe_load(updates)
 
         with CFDataset(filepath, mode="r+") as dataset:
             log_handler(
