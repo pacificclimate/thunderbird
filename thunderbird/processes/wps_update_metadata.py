@@ -45,7 +45,7 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[Format('yaml')],
+                supported_formats=[Format("yaml")],
             ),
             log_level,
         ]
@@ -109,7 +109,7 @@ class UpdateMetadata(Process):
 
         # determines if the input `updates` is a file or a string
         if os.path.isfile(updates.file):
-            with open(updates) as ud:
+            with open(updates.file) as ud:
                 updates_instruction = yaml.safe_load(ud)
         else:
             updates_instruction = yaml.safe_load(updates)
