@@ -38,13 +38,13 @@ class UpdateMetadata(Process):
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            LiteralInput(
+            ComplexInput(
                 "updates",
                 "Updates File(yaml)",
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                data_type="string",
+                supported_formats=[FORMATS.TEXT],
             ),
             log_level,
         ]
