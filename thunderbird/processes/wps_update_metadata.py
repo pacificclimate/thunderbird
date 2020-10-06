@@ -1,5 +1,6 @@
 # Processor imports
 from pywps import (
+    Format,
     Process,
     LiteralInput,
     ComplexInput,
@@ -44,7 +45,7 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.TEXT],
+                supported_formats=[Format('yaml')],
             ),
             log_level,
         ]
