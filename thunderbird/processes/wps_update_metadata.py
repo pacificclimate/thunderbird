@@ -105,7 +105,7 @@ class UpdateMetadata(Process):
 
         filepath = self.copy_and_get_filepath(request)
         updates = request.inputs["updates"][0]
-        
+
         # determines if the input `updates` is a file or a string
         if os.path.isfile(updates.file):
             with open(updates) as ud:
