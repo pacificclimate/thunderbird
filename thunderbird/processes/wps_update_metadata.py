@@ -107,7 +107,7 @@ class UpdateMetadata(Process):
             # Input content is directly accessible using '.url' attribute when run in docker containers
             updates = request.inputs["updates"][0].url
 
-        # Determines 'updates' is a path or a string and converts the yaml (updates file) content into a dictionary
+        # Convert yaml content to a dictionary
         if os.path.isfile(updates):
             with open(updates) as ud:
                 updates_instruction = yaml.safe_load(ud)
