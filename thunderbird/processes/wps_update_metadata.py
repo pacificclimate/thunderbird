@@ -1,10 +1,5 @@
 # Processor imports
-from pywps import (
-    Process,
-    LiteralInput,
-    ComplexInput,
-    FORMATS,
-)
+from pywps import Process, LiteralInput, ComplexInput, FORMATS, Format, exceptions
 from pywps.app.exceptions import ProcessError
 
 # Tool imports
@@ -44,7 +39,7 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.TEXT],
+                supported_formats=[Format("yaml")],
             ),
             log_level,
         ]
@@ -105,12 +100,12 @@ class UpdateMetadata(Process):
 
         filepath = self.copy_and_get_filepath(request)
 
-        # The input 'updates' is stored as an 'url' attribute when the process is run in a docker container
-        if request.inputs["updates"][0].url != None:
-            updates = request.inputs["updates"][0].url
-        # The input 'updates' is stored as a 'data' attribute when the process is run on localhost
-        elif request.inputs["updates"][0].data != None:
+        try:
+            # Input content is directly accessible using '.data' attribute
             updates = request.inputs["updates"][0].data
+        except exceptions.NoApplicableCode:
+            # Input content is directly accessible using '.url' attribute when run in docker containers
+            updates = request.inputs["updates"][0].url
 
         # Determines 'updates' is a path or a string and converts the yaml (updates file) content into a dictionary
         if os.path.isfile(updates):
