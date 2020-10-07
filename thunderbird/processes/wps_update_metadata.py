@@ -104,13 +104,20 @@ class UpdateMetadata(Process):
         )
 
         filepath = self.copy_and_get_filepath(request)
-        updates = request.inputs["updates"][0]
 
-        # Converts the yaml (updates file) content into a dictionary
-        if updates.data != None:
-            updates_instruction = yaml.safe_load(updates.data)
-        elif updates.url != None:
-            updates_instruction = yaml.safe_load(updates.url)
+        # The input 'updates' is stored as a 'data' attribute when the process is run on localhost
+        if request.inputs["updates"][0].data != None:
+            updates = request.inputs["updates"][0].data
+        # The input 'updates' is stored as an 'url' attribute when the process is run in a docker container
+        elif request.inputs["updates"][0].url != None:
+            updates = request.inputs["updates"][0].url
+
+        # Determines 'updates' is a path or a string and converts the yaml (updates file) content into a dictionary
+        if os.path.isfile(updates):
+            with open(updates) as ud:
+                updates_instruction = yaml.safe_load(ud)
+        else:
+            updates_instruction = yaml.safe_load(updates)
 
         with CFDataset(filepath, mode="r+") as dataset:
             log_handler(
