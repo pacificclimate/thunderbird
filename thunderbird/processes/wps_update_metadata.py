@@ -105,12 +105,12 @@ class UpdateMetadata(Process):
 
         filepath = self.copy_and_get_filepath(request)
 
-        # The input 'updates' is stored as a 'data' attribute when the process is run on localhost
-        if request.inputs["updates"][0].data != None:
-            updates = request.inputs["updates"][0].data
         # The input 'updates' is stored as an 'url' attribute when the process is run in a docker container
-        elif request.inputs["updates"][0].url != None:
+        if request.inputs["updates"][0].url != None:
             updates = request.inputs["updates"][0].url
+        # The input 'updates' is stored as a 'data' attribute when the process is run on localhost
+        elif request.inputs["updates"][0].data != None:
+            updates = request.inputs["updates"][0].data
 
         # Determines 'updates' is a path or a string and converts the yaml (updates file) content into a dictionary
         if os.path.isfile(updates):
