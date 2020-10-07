@@ -1,6 +1,5 @@
 # Processor imports
 from pywps import (
-    Format,
     Process,
     LiteralInput,
     ComplexInput,
@@ -45,7 +44,7 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[Format("yaml")],
+                supported_formats=[FORMATS.TEXT],
             ),
             log_level,
         ]
@@ -105,10 +104,13 @@ class UpdateMetadata(Process):
         )
 
         filepath = self.copy_and_get_filepath(request)
-        updates = request.inputs["updates"][0].data
+        updates = request.inputs["updates"][0]
 
         # Converts the yaml (updates file) content into a dictionary
-        updates_instruction = yaml.safe_load(updates)
+        if updates.data != None:
+            updates_instruction = yaml.safe_load(updates.data)
+        elif updates.url != None:
+            updates_instruction = yaml.safe_load(updates.url)
 
         with CFDataset(filepath, mode="r+") as dataset:
             log_handler(
