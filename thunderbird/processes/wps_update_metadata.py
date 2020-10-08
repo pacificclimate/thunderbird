@@ -39,7 +39,7 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[Format("yaml")],
+                supported_formats=[Format(mime_type="text/plain", extension="yaml",)],
             ),
             log_level,
         ]
