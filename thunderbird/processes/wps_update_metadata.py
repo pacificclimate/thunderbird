@@ -109,14 +109,18 @@ class UpdateMetadata(Process):
         """
         if "updates_file" in request.inputs.keys():
             try:
-                updates = request.inputs["updates_file"][0].data
+                updates = request.inputs["updates_file"][
+                    0
+                ].data  # For running in localhost
             except exceptions.NoApplicableCode:
-                updates = request.inputs["updates_file"][0].url
+                updates = request.inputs["updates_file"][
+                    0
+                ].url  # For running in Docker containers
         elif "updates_string" in request.inputs.keys():
             updates = request.inputs["updates_string"][0].data
 
         # Convert yaml content to a dictionary
-        if os.path.isfile(updates):  # For pythest
+        if os.path.isfile(updates):  # For running pytest
             with open(updates) as ud:
                 return yaml.safe_load(ud)
         else:
