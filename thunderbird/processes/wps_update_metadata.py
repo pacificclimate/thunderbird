@@ -100,7 +100,7 @@ class UpdateMetadata(Process):
         This function generates a dictionary containing the updates instruction information.
         The dictionary will be constructed using the content of the input updates_file/updates_string.
         It is desired that only one of the options is provided by the user, but if both are given, 
-        updates_file input will be used to generate whiile updates_string input will be neglected.
+        updates_file input will be used to generate while updates_string input will be neglected.
 
         There are odd behaviours of the ComplexInput updates_file; the content of the yaml file is 
         directly accessible using the .data attribute when run in localhost while it is accessible 
