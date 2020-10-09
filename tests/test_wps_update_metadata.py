@@ -1,6 +1,6 @@
 import pytest
+import os
 from pkg_resources import resource_filename, resource_listdir
-
 
 from .testdata import TESTDATA
 from wps_tools.testing import run_wps_process, local_path, opendap_path
@@ -31,7 +31,10 @@ global:
 
 
 def build_params(netcdf, updates):
-    return ("netcdf=@xlink:href={0};" "updates={1};").format(netcdf, updates)
+    if os.path.isfile(updates):
+        return f"netcdf=@xlink:href={netcdf};updates_file={updates};"
+    else:
+        return f"netcdf=@xlink:href={netcdf};updates_string={updates};"
 
 
 @pytest.mark.online
