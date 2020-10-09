@@ -108,11 +108,11 @@ class UpdateMetadata(Process):
         holds the path to the origial file path.
         """
         if "updates_file" in request.inputs.keys():
-            try:
+            if vars(request.inputs["updates_file"][0])["_data"] != None:
                 updates = request.inputs["updates_file"][
                     0
                 ].data  # For running in localhost
-            except exceptions.NoApplicableCode:
+            else:
                 updates = request.inputs["updates_file"][
                     0
                 ].url  # For running in Docker containers
