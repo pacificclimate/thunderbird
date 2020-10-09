@@ -32,9 +32,9 @@ global:
 
 def build_params(netcdf, updates):
     if os.path.isfile(updates):
-        return ("netcdf=@xlink:href={0};" "updates_file={1};").format(netcdf, updates)
+        return f"netcdf=@xlink:href={netcdf};updates_file={updates};"
     else:
-        return ("netcdf=@xlink:href={0};" "updates_string={1};").format(netcdf, updates)
+        return f"netcdf=@xlink:href={netcdf};updates_string={updates};"
 
 
 @pytest.mark.online
