@@ -1,6 +1,12 @@
 Changes
 *******
 
+1.0.1 (2020-10-13)
+==================
+
+* Allow access to local yaml file inputs
+* Adjust maximum input size
+
 1.0.0 (2020-09-25)
 ==================
 
