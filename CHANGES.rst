@@ -1,5 +1,10 @@
 Changes
 *******
+1.0.2 (2020-10-26)
+==================
+
+* Update Makefile
+* Fix malfunction in uploading local files
 
 1.0.1 (2020-10-13)
 ==================
