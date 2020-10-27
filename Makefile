@@ -4,7 +4,7 @@ APP_NAME := thunderbird
 VENV?=/tmp/thunderbird-venv
 PYTHON=${VENV}/bin/python3
 PIP=${VENV}/bin/pip
-PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
+export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 
 # Notebook targets
 LOCAL_URL = http://localhost:5001
