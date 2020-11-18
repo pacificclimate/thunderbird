@@ -1,10 +1,20 @@
-version: '3'
+version: '3.0'
 services:
-  wps:
-    build: .
-    image: pcic/thunderbird
+  thunderbird-dev:
+    image: pcic/thunderbird:latest
+    container_name: thunderbird-dev
+    environment:
+      - PYWPS_CFG=/wps.cfg
     ports:
-      - "8099:5001"
+      - "30099:5001"
+    volumes:
+      - ./dev-component/wps.cfg:/wps.cfg
+    restart: always
+
+networks:
+  default:
+    external:
+      name: pcicbr0
 
 
 # docker-compose build
