@@ -28,16 +28,13 @@ COPY . /opt/wps
 
 WORKDIR /opt/wps
 
-# Create python environment
-RUN ["python", "-m", "venv", "venv"]
-
 # Install WPS
-RUN ["/bin/bash", "-c", "source venv/bin/activate && pip install -e ."]
+RUN  pip install -e .
 
 # Start WPS service on port 5001 on 0.0.0.0
 EXPOSE 5001
 ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["source venv/bin/activate && exec thunderbird start -b 0.0.0.0"]
+CMD ["exec thunderbird start -b 0.0.0.0"]
 
 # docker build -t pacificclimate/thunderbird .
 # docker run -p 5001:5001 pacificclimate/thunderbird
