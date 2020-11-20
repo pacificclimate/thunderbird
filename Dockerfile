@@ -1,7 +1,7 @@
+# vim:set ft=dockerfile:
 FROM python:3.7-slim
-
 MAINTAINER https://github.com/pacificclimate/thunderbird
-LABEL Description="thunderbird WPS" Vendor="Birdhouse" Version="0.6.0"
+LABEL Description="thunderbird WPS" Vendor="pcic" Version="0.6.0"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
@@ -24,19 +24,17 @@ RUN apt-get update && apt-get install -y \
     # Issue link: https://github.com/advisories/GHSA-mh33-7rrq-662w
     apt-get remove -y python3-urllib3
 
-WORKDIR /code
+COPY . /opt/wps
 
-COPY requirements.txt ./
+WORKDIR /opt/wps
 
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt && \
-    pip install gunicorn
+# Install WPS
+RUN  pip install -e .
 
-COPY . .
-
+# Start WPS service on port 5001 on 0.0.0.0
 EXPOSE 5001
-
-CMD ["gunicorn", "--bind=0.0.0.0:5001", "thunderbird.wsgi:application"]
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["exec thunderbird start -b 0.0.0.0"]
 
 # docker build -t pacificclimate/thunderbird .
 # docker run -p 5001:5001 pacificclimate/thunderbird
