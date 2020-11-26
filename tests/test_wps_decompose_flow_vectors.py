@@ -2,7 +2,7 @@ import pytest
 
 
 from .testdata import TESTDATA
-from wps_tools.testing import run_wps_process, local_path, opendap_path
+from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
 
 
@@ -12,7 +12,7 @@ import os
 
 # limiting test_data to "sample_flow_parameters.nc"
 flow_vectors_opendap = [
-    opendap_path(opendap)
+    url_path(opendap, "opendap")
     for opendap in TESTDATA["test_opendaps"]
     if opendap.endswith("sample_flow_parameters.nc")
 ]

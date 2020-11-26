@@ -3,7 +3,7 @@ import os
 from pkg_resources import resource_filename, resource_listdir
 
 from .testdata import TESTDATA
-from wps_tools.testing import run_wps_process, local_path, opendap_path
+from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 
 # limiting the test data to tiny_datasets
@@ -11,7 +11,7 @@ local_data = [
     local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.startswith("tiny_")
 ]
 opendap_data = [
-    opendap_path(opendap)
+    url_path(opendap, "opendap")
     for opendap in TESTDATA["test_opendaps"]
     if opendap.startswith("tiny_")
 ]

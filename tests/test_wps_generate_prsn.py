@@ -3,7 +3,7 @@ import re
 
 
 from .testdata import TESTDATA
-from wps_tools.testing import run_wps_process, local_path, opendap_path
+from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_generate_prsn import GeneratePrsn
 
 local_nc_inputs = {
@@ -19,7 +19,7 @@ local_tiny_nc_inputs = {
 }
 
 opendap_inputs = {
-    opendap.split("_")[0]: opendap_path(opendap)
+    opendap.split("_")[0]: url_path(opendap, "opendap")
     for opendap in TESTDATA["test_opendaps"]
     if opendap.startswith("pr_")
     or opendap.startswith("tasmin_")
