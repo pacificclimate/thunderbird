@@ -2,7 +2,7 @@ import pytest
 
 
 from .testdata import TESTDATA
-from wps_tools.testing import run_wps_process, local_path, opendap_path
+from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 
 # limiting test_data to climo files
@@ -10,7 +10,7 @@ climo_local_files = [
     local_path(nc) for nc in TESTDATA["test_local_nc"] if nc.endswith("_climos.nc")
 ]
 climo_opendaps = [
-    opendap_path(opendap)
+    url_path(opendap, "opendap")
     for opendap in TESTDATA["test_opendaps"]
     if opendap.endswith("_climos.nc")
 ]

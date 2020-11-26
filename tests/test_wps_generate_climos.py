@@ -2,7 +2,7 @@ import pytest
 
 
 from .testdata import TESTDATA
-from wps_tools.testing import run_wps_process, local_path, opendap_path
+from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
 # limiting test_data to non-climo tiny datasets
@@ -14,7 +14,7 @@ local_test_data = [
 # NetCDFs with flow_vectors not adequate for generate_climos
 # refer to https://github.com/pacificclimate/climate-explorer-data-prep#generate_climos-generate-climatological-means
 opendap_data = [
-    opendap_path(opendap)
+    url_path(opendap, "opendap")
     for opendap in TESTDATA["test_opendaps"]
     if not (
         opendap.endswith("_climos.nc")
