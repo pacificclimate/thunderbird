@@ -34,7 +34,7 @@ def write_user_config(**kwargs):
 
 def get_host():
     url = configuration.get_config_value("server", "url")
-    url = url or "http://localhost:5001/wps"
+    url = url or "http://localhost:5000/wps"
 
     click.echo("starting WPS service on {}".format(url))
 
@@ -138,7 +138,7 @@ def stop():
     help="hostname in PyWPS configuration.",
 )
 @click.option(
-    "--port", metavar="PORT", default="5001", help="port in PyWPS configuration.",
+    "--port", metavar="PORT", default="5000", help="port in PyWPS configuration.",
 )
 @click.option(
     "--maxsingleinputsize",
@@ -188,7 +188,7 @@ def start(
     database,
 ):
     """Start PyWPS service.
-    This service is by default available at http://localhost:5001/wps
+    This service is by default available at http://localhost:5000/wps
     """
     if os.path.exists(PID_FILE):
         click.echo('PID file exists: "{}". Service still running?'.format(PID_FILE))

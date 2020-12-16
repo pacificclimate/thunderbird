@@ -31,12 +31,12 @@ WORKDIR /opt/wps
 # Install WPS
 RUN  pip install -e .
 
-# Start WPS service on port 5001 on 0.0.0.0
-EXPOSE 5001
+# Start WPS service on port 5000 on 0.0.0.0
+EXPOSE 5000
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["exec thunderbird start -b 0.0.0.0"]
 
 # docker build -t pacificclimate/thunderbird .
-# docker run -p 5001:5001 pacificclimate/thunderbird
-# http://localhost:5001/wps?request=GetCapabilities&service=WPS
-# http://localhost:5001/wps?request=DescribeProcess&service=WPS&identifier=all&version=1.0.0
+# docker run -p 5000:5000 pacificclimate/thunderbird
+# http://localhost:5000/wps?request=GetCapabilities&service=WPS
+# http://localhost:5000/wps?request=DescribeProcess&service=WPS&identifier=all&version=1.0.0

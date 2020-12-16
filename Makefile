@@ -7,7 +7,7 @@ PIP=${VENV}/bin/pip
 export PIP_INDEX_URL=https://pypi.pacificclimate.org/simple
 
 # Notebook targets
-LOCAL_URL = http://localhost:5001
+LOCAL_URL = http://localhost:5000
 DEV_PORT ?= $(shell bash -c 'read -ep "Target port: " port; echo $$port')
 
 # Used in target refresh-notebooks to make it looks like the notebooks have

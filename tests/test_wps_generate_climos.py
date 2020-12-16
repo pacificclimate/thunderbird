@@ -19,7 +19,7 @@ opendap_data = [
     if not (
         opendap.endswith("_climos.nc")
         or opendap.endswith("sample_flow_parameters.nc")
-        or opendap.endswith("19500107.nc")
+        or opendap.endswith("19500007.nc")
     )
 ]
 

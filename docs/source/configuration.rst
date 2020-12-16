@@ -15,7 +15,7 @@ See the thunderbird help which options are available::
 
 Start service with different hostname and port::
 
-    $ thunderbird start --hostname localhost --port 5001
+    $ thunderbird start --hostname localhost --port 5000
 
 Use a custom configuration file
 -------------------------------
@@ -32,8 +32,8 @@ For example change the hostname (*demo.org*) and logging level:
    $ vim etc/custom.cfg
    $ cat etc/custom.cfg
    [server]
-   url = http://demo.org:5001/wps
-   outputurl = http://demo.org:5001/outputs
+   url = http://demo.org:5000/wps
+   outputurl = http://demo.org:5000/outputs
 
    [logging]
    level = DEBUG
