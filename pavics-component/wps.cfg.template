@@ -2,6 +2,9 @@
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
 maxrequestsize = 65gb
+# Increase from default 2 to 14 concurrent processes to support 25
+# concurrent users (num processes approx half num users).
+parallelprocesses = 14
 
 [logging]
 level = INFO
