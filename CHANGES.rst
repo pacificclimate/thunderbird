@@ -1,6 +1,12 @@
 Changes
 *******
 
+1.1.0 (2020-12-17)
+==================
+
+* Docker reset
+* PAVICS configuration updates
+
 1.1.0 (2020-11-20)
 ==================
 
