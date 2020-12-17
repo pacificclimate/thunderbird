@@ -4,7 +4,7 @@ click==7.1.2
 jinja2==2.11.2
 netCDF4==1.5.3
 psutil==5.7.0
-pywps==4.2.6
+pywps==4.2.9
 xarray==0.15.1
 nchelpers==5.5.7
 wps-tools==0.3.1
