@@ -92,7 +92,7 @@ def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
 
 @pytest.mark.slow
 @pytest.mark.online
-# exclude tiny_datasets to mix within "day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500001-19500007.nc" datasets
+# exclude tiny_datasets to mix within "day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc" datasets
 @pytest.mark.parametrize(
     ("netcdfs"),
     [

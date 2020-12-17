@@ -7,9 +7,9 @@ TESTDATA = {
         if test_file.endswith(".nc")
     ],
     "test_opendaps": [
-        "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500001-19500007.nc",
-        "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500001-19500007.nc",
-        "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500001-19500007.nc",
+        "pr_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmin_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
+        "tasmax_day_BCCAQv2%2BANUSPLIN300_NorESM1-M_historical%2Brcp26_r1i1p1_19500101-19500107.nc",
         "tiny_gcm_climos.nc",
         "tiny_gcm_360_climos.nc",
         "tiny_downscaled_tasmax_climos.nc",
