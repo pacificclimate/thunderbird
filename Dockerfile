@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM python:3.7-slim
+FROM python:3.8-slim
 MAINTAINER https://github.com/pacificclimate/thunderbird
 LABEL Description="thunderbird WPS" Vendor="pcic" Version="0.6.0"
 
@@ -29,12 +29,12 @@ COPY . /opt/wps
 WORKDIR /opt/wps
 
 # Install WPS
-RUN  pip install -e .
+RUN pip install -e . && \
+    pip install gunicorn
 
 # Start WPS service on port 5000 on 0.0.0.0
 EXPOSE 5000
-ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["exec thunderbird start -b 0.0.0.0"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "thunderbird.wsgi:application"]
 
 # docker build -t pacificclimate/thunderbird .
 # docker run -p 5000:5000 pacificclimate/thunderbird
