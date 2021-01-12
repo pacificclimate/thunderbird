@@ -13,7 +13,7 @@ from dp.split_merged_climos import split_merged_climos
 from wps_tools.logging import log_handler
 from wps_tools.file_handling import get_filepaths, build_meta_link
 from wps_tools.io import log_level, meta4_output
-from thunderbird.utils import logger
+from thunderbird.utils import logger, MAX_OCCURS
 
 
 class SplitMergedClimos(Process):
