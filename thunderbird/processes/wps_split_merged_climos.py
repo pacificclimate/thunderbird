@@ -30,7 +30,7 @@ class SplitMergedClimos(Process):
                 "NetCDF Datasets",
                 abstract="NetCDF files to process",
                 min_occurs=1,
-                max_occurs=1000,
+                max_occurs=MAX_OCCURS,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             log_level,

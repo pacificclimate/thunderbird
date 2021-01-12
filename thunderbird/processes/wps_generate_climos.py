@@ -18,7 +18,7 @@ from wps_tools.io import (
     meta4_dryrun_output,
     log_level,
 )
-from thunderbird.utils import logger, dry_run_info, dry_output_filename
+from thunderbird.utils import logger, dry_run_info, dry_output_filename, MAX_OCCURS
 
 # Library import
 import os
@@ -47,7 +47,7 @@ class GenerateClimos(Process):
                 "Daily NetCDF Dataset",
                 abstract="NetCDF file",
                 min_occurs=1,
-                max_occurs=1000,
+                max_occurs=MAX_OCCURS,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             LiteralInput(
