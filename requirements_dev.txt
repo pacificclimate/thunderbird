@@ -6,7 +6,7 @@ pytest-notebook
 nbsphinx
 nbval>=0.9.6
 nbconvert
-sphinx>=1.7
+Sphinx==2.4.4
 bumpversion
 twine
 # Changing dependencies above this comment will create merge conflicts when updating the cookiecutter template with cruft. Add extra requirements below this line.
@@ -16,4 +16,4 @@ jupyterlab==2.1.5
 ipywidgets==7.5.1
 nodejs==0.1.1
 birdhouse-birdy==0.6.9
-beautifulsoup4==4.9.1
+beautifulsoup4==4.9.3
