@@ -12,6 +12,8 @@ handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+MAX_OCCURS = 1000
+
 
 def dry_run_info(filename, dry_run_method, **kwargs):
     """

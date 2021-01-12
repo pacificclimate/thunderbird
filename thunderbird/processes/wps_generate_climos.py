@@ -10,20 +10,15 @@ from pywps.app.Common import Metadata
 # Tool imports
 from nchelpers import standard_climo_periods
 from dp.generate_climos import generate_climos, dry_run_handler
-from wps_tools.utils import (
-    MAX_OCCURS,
-    get_filepaths,
-    collect_output_files,
-    build_meta_link,
-    log_handler,
-)
+from wps_tools.logging import log_handler
+from wps_tools.file_handling import get_filepaths, collect_output_files, build_meta_link
 from wps_tools.io import (
     dryrun_input,
     meta4_output,
     meta4_dryrun_output,
     log_level,
 )
-from thunderbird.utils import logger, dry_run_info, dry_output_filename
+from thunderbird.utils import logger, dry_run_info, dry_output_filename, MAX_OCCURS
 
 # Library import
 import os

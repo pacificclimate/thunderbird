@@ -5,7 +5,8 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from dp.update_metadata import process_updates
 from nchelpers import CFDataset
-from wps_tools.utils import is_opendap_url, log_handler
+from wps_tools.logging import log_handler
+from wps_tools.file_handling import is_opendap_url
 from wps_tools.io import nc_output, log_level
 from thunderbird.utils import logger
 
