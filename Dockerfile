@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cdo \
     git \
+    # R for Rpy2, wps-tools dependency
+    r-base \
     # HDF5 libraries for cdo
     libhdf5-serial-dev \
     netcdf-bin \
