@@ -10,7 +10,8 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from nchelpers import CFDataset
 from dp.split_merged_climos import split_merged_climos
-from wps_tools.utils import MAX_OCCURS, get_filepaths, build_meta_link, log_handler
+from wps_tools.logging import log_handler
+from wps_tools.file_handling import get_filepaths, build_meta_link
 from wps_tools.io import log_level, meta4_output
 from thunderbird.utils import logger
 
@@ -29,7 +30,7 @@ class SplitMergedClimos(Process):
                 "NetCDF Datasets",
                 abstract="NetCDF files to process",
                 min_occurs=1,
-                max_occurs=MAX_OCCURS,
+                max_occurs=1000,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             log_level,

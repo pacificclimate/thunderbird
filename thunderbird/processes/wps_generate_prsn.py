@@ -11,11 +11,12 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from dp.generate_prsn import generate_prsn_file
 from dp.generate_prsn import dry_run as dry_run_handler
-from wps_tools.utils import (
-    is_opendap_url,
+from wps_tools.logging import log_handler
+from wps_tools.file_handling import (
+    get_filepaths,
     collect_output_files,
     build_meta_link,
-    log_handler,
+    is_opendap_url,
 )
 from wps_tools.io import (
     log_level,

@@ -18,7 +18,8 @@ from dp.decompose_flow_vectors import (
     variable_check,
 )
 from pywps.app.exceptions import ProcessError
-from wps_tools.utils import is_opendap_url, log_handler
+from wps_tools.logging import log_handler
+from wps_tools.file_handling import is_opendap_url
 from wps_tools.io import log_level
 from thunderbird.utils import logger
 
