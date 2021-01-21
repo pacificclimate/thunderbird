@@ -12,4 +12,4 @@ _The Thunderbird is a mythical creature that is said to be the dominating force 
 A Web Processing Service for Climate Explorer data preparation
 
 ## Pages
-[Developer Guide](source/dev_guide.rst)
+[Installation](installation.md)
