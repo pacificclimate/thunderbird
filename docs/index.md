@@ -1,37 +1,18 @@
-## Welcome to GitHub Pages
+# Thunderbird
 
-You can use the [editor on GitHub](https://github.com/pacificclimate/thunderbird/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+![Anchore Container Scan](https://github.com/pacificclimate/thunderbird/workflows/Anchore%20Container%20Scan/badge.svg)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![Python CI](https://github.com/pacificclimate/thunderbird/workflows/Python%20CI/badge.svg)
 
-### Markdown
+![Docker Publishing](https://github.com/pacificclimate/thunderbird/workflows/Docker%20Publishing/badge.svg)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+![Chat](https://badges.gitter.im/bird-house/birdhouse.svg)
 
-```markdown
-Syntax highlighted code block
+___Thundebird___
 
-# Header 1
-## Header 2
-### Header 3
+_The Thunderbird is a mythical creature that is said to be the dominating force of all natural activity. Located in the Pacific North Western Mountains, the Thunderbird creates booms of thunder by flapping his wings and shoots bolts of lightning from his eyes, when hunters got too close to his home._
 
-- Bulleted
-- List
+A Web Processing Service for Climate Explorer data preparation
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/pacificclimate/thunderbird/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## Pages
+[Developer Guide](source/dev_guide.rst)
