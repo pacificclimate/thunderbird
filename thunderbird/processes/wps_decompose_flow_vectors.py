@@ -78,10 +78,7 @@ class DecomposeFlowVectors(Process):
         elif path.file.endswith(".nc"):
             return path.file
         else:
-            raise ProcessError(
-                "You must provide a data source (opendap/netcdf). "
-                f"Inputs provided: {request.inputs}"
-            )
+            raise ProcessError("You must provide a data source (opendap/netcdf).")
 
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
@@ -95,6 +92,7 @@ class DecomposeFlowVectors(Process):
         )
 
         source_file = self.get_filepath(request)
+        print(source_file)
         variable = request.inputs["variable"][0].data
         dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
 
@@ -110,9 +108,19 @@ class DecomposeFlowVectors(Process):
         )
         try:
             source_check(source)
+        except AttributeError as e:
+            ProcessError("netcdf file does not have latitude and longitude dimensions")
+        except ValueError as e:
+            ProcessError("netcdf file does not have a valid flow variable")
+
+        try:
             variable_check(source, variable)
-        except (AttributeError, ValueError) as e:
-            raise ProcessError(f"An error occured during the process: {e}")
+        except AttributeError as e:
+            raise ProcessError(
+                f"Variable is either not found in netcdf file or is not associated with a grid"
+            )
+        except ValueError as e:
+            raise ProcessError("Variable is not a valid flow routing")
 
         log_handler(
             self,

@@ -133,10 +133,7 @@ class GeneratePrsn(Process):
             elif path.file.endswith(".nc"):
                 filepaths[var] = path.file
             else:
-                raise ProcessError(
-                    "You must provide a data source (opendap/netcdf). "
-                    f"Inputs provided: {request.inputs}"
-                )
+                raise ProcessError("You must provide a data source (opendap/netcdf).")
         return filepaths
 
     def _handler(self, request, response):

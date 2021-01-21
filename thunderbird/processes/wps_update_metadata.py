@@ -70,7 +70,7 @@ class UpdateMetadata(Process):
         This function takes an input "request" and returns a filepath to the input data.
         As the update_metadata simply updates the original file "in place", copying the
         input data is necessary for two reasons.
-        
+
         1. The original file is maintained without any corruption
         2. Writing back to OPeNDAP file is nearly impossible
 
@@ -89,7 +89,7 @@ class UpdateMetadata(Process):
 
         else:
             raise ProcessError(
-                f"You must provide a data source (opendap/netcdf). Inputs provided: {request.inputs}"
+                "You must provide a data source (opendap/netcdf). Inputs provided"
             )
 
         copy = original[:-3] + "_copy.nc"
@@ -100,11 +100,11 @@ class UpdateMetadata(Process):
         """
         This function generates a dictionary containing the updates instruction information.
         The dictionary will be constructed using the content of the input updates_file/updates_string.
-        It is desired that only one of the options is provided by the user, but if both are given, 
+        It is desired that only one of the options is provided by the user, but if both are given,
         updates_file input will be used to generate while updates_string input will be neglected.
 
-        There are odd behaviours of the ComplexInput updates_file; the content of the yaml file is 
-        directly accessible using the .data attribute when run in localhost while it is accessible 
+        There are odd behaviours of the ComplexInput updates_file; the content of the yaml file is
+        directly accessible using the .data attribute when run in localhost while it is accessible
         as '.url' attribute when run in docker containers. When running pytest, the .data attribute
         holds the path to the origial file path.
         """
