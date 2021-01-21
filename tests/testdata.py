@@ -1,4 +1,10 @@
+import io
+import pytest
 from pkg_resources import resource_listdir
+from contextlib import redirect_stderr
+
+from wps_tools.testing import run_wps_process
+
 
 TESTDATA = {
     "test_local_nc": [
@@ -18,3 +24,11 @@ TESTDATA = {
         "sample_flow_parameters.nc",
     ],
 }
+
+
+def process_err_test(process, datainputs):
+    err = io.StringIO()
+    with redirect_stderr(err):
+        with pytest.raises(Exception):
+            run_wps_process(process(), datainputs)
+    assert "pywps.app.exceptions.ProcessError" in err.getvalue()
