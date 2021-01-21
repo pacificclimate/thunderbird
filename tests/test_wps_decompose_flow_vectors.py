@@ -65,7 +65,8 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
 )
 def test_source_check(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
-
+    print(params)
+    assert 1 == 2
     with pytest.raises(Exception):
         run_wps_process(DecomposeFlowVectors(), params)
 
