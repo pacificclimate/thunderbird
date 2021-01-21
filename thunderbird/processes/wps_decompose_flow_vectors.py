@@ -92,7 +92,6 @@ class DecomposeFlowVectors(Process):
         )
 
         source_file = self.get_filepath(request)
-        print(source_file)
         variable = request.inputs["variable"][0].data
         dest_file = os.path.join(self.workdir, request.inputs["dest_file"][0].data)
 
