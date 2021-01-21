@@ -130,7 +130,11 @@ class DecomposeFlowVectors(Process):
             log_level=loglevel,
             process_step="process",
         )
-        decompose_flow_vectors(source, dest_file, variable)
+
+        try:
+            decompose_flow_vectors(source, dest_file, variable)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,

@@ -221,16 +221,19 @@ class GenerateClimos(Process):
                     process_step="process",
                 )
 
-                generate_climos(
-                    filepath,
-                    self.workdir,
-                    operation,
-                    climo,
-                    convert_longitudes=convert_longitudes,
-                    split_vars=split_vars,
-                    split_intervals=split_intervals,
-                    resolutions=resolutions,
-                )
+                try:
+                    generate_climos(
+                        filepath,
+                        self.workdir,
+                        operation,
+                        climo,
+                        convert_longitudes=convert_longitudes,
+                        split_vars=split_vars,
+                        split_intervals=split_intervals,
+                        resolutions=resolutions,
+                    )
+                except Exception as e:
+                    raise ProcessError(f"{type(e).__name__}: {e}")
 
             log_handler(
                 self,

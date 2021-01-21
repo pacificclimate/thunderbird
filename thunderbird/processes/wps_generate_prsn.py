@@ -177,7 +177,11 @@ class GeneratePrsn(Process):
                 log_level=loglevel,
                 process_step="process",
             )
-            generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
+
+            try:
+                generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
+            except Exception as e:
+                raise ProcessError(f"{type(e).__name__}: {e}")
 
             log_handler(
                 self,
