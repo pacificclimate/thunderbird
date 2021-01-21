@@ -6,10 +6,11 @@ from pywps import (
     FORMATS,
 )
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from nchelpers import standard_climo_periods
-from dp.generate_climos import generate_climos, dry_run_handler
+from dp.generate_climos import generate_climos, dry_run_handler, input_check
 from wps_tools.logging import log_handler
 from wps_tools.file_handling import get_filepaths, collect_output_files, build_meta_link
 from wps_tools.io import (
@@ -220,6 +221,11 @@ class GenerateClimos(Process):
                     log_level=loglevel,
                     process_step="process",
                 )
+
+                if input_check(filepath, climo) == (None, []):
+                    raise ProcessError(
+                        "Invlaid input file. Run generate climos with dry run as True for more information."
+                    )
 
                 try:
                     generate_climos(
