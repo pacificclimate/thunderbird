@@ -1,6 +1,6 @@
 # Developer Guide
 - [Building the docs](#building-the-docs)
-- [Running the tests](#running-the-tests)
+- [Running tests](#running-tests)
 - [Run tests the lazy way](#run-tests-the-lazy-way)
 - [Bump a new version](#bump-a-new-version)
 
