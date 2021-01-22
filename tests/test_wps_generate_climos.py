@@ -164,31 +164,6 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
     ("netcdf"), local_test_data,
 )
 @pytest.mark.parametrize(
-    ("kwargs"),
-    [
-        (
-            {
-                "operation": "mean",
-                "climo": "6190",
-                "resolutions": ["monthly", "seasonal", "yearly"],
-                "convert_longitudes": "True",
-                "split_vars": "True",
-                "split_intervals": "True",
-                "dry_run": "False",
-            }
-        ),
-    ],
-)
-def test_wps_gen_climos_local_nc(netcdf, kwargs):
-    params = build_params(netcdf, kwargs)
-    run_wps_process(GenerateClimos(), params)
-
-
-@pytest.mark.slow
-@pytest.mark.parametrize(
-    ("netcdf"), local_test_data,
-)
-@pytest.mark.parametrize(
     ("kwargs"), [({"operation": "mean", "dry_run": "False",}),],
 )
 def test_missing_arguments(netcdf, kwargs):
