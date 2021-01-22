@@ -78,7 +78,7 @@ class SplitMergedClimos(Process):
                 input_file = CFDataset(path)
             except Exception:
                 raise ProcessError(
-                    f"The input file {path} could not be converted to a netcdf dataset"
+                    "The input for netcdf file paths could not be converted to a netcdf dataset"
                 )
             else:
                 output_filepaths.extend(split_merged_climos(input_file, self.workdir))

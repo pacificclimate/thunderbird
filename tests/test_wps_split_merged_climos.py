@@ -1,7 +1,7 @@
 import pytest
 
 
-from .testdata import TESTDATA
+from .utils import TESTDATA
 from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_split_merged_climos import SplitMergedClimos
 

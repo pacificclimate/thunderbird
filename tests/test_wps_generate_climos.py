@@ -1,7 +1,7 @@
 import pytest
 
 
-from .testdata import TESTDATA
+from .utils import TESTDATA, process_err_test
 from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_generate_climos import GenerateClimos
 
@@ -122,6 +122,31 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
 def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
     run_wps_process(GenerateClimos(), params)
+
+
+@pytest.mark.parametrize(
+    ("netcdf"),
+    [(local_path("tiny_gcm_360_day_cal.nc")), (local_path("tiny_hydromodel_gcm.nc")),],
+)
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
+        (
+            {
+                "operation": "std",
+                "climo": "6190",
+                "resolutions": ["seasonal", "yearly"],
+                "convert_longitudes": "True",
+                "split_vars": "True",
+                "split_intervals": "True",
+                "dry_run": "False",
+            }
+        ),
+    ],
+)
+def test_wps_gen_climos_input_check(netcdf, kwargs):
+    params = build_params(netcdf, kwargs)
+    process_err_test(GenerateClimos, params)
 
 
 @pytest.mark.slow

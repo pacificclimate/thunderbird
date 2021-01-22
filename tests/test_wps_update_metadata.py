@@ -2,7 +2,7 @@ import pytest
 import os
 from pkg_resources import resource_filename, resource_listdir
 
-from .testdata import TESTDATA
+from .utils import TESTDATA
 from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_update_metadata import UpdateMetadata
 

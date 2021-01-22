@@ -133,10 +133,7 @@ class GeneratePrsn(Process):
             elif path.file.endswith(".nc"):
                 filepaths[var] = path.file
             else:
-                raise ProcessError(
-                    "You must provide a data source (opendap/netcdf). "
-                    f"Inputs provided: {request.inputs}"
-                )
+                raise ProcessError("You must provide a data source (opendap/netcdf).")
         return filepaths
 
     def _handler(self, request, response):
@@ -180,7 +177,11 @@ class GeneratePrsn(Process):
                 log_level=loglevel,
                 process_step="process",
             )
-            generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
+
+            try:
+                generate_prsn_file(filepaths, chunk_size, self.workdir, output_file)
+            except Exception as e:
+                raise ProcessError(f"{type(e).__name__}: {e}")
 
             log_handler(
                 self,
