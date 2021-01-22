@@ -22,7 +22,7 @@ Submit bug reports, questions and feature requests with [Github issues](https://
 ## Contributing
 You can find information about contributing in our [Developer Guide]().
 
-Please use [`bumpversion`]() to release a new version.
+Please use [`bumpversion`](https://pypi.org/project/bumpversion/) to release a new version.
 
 ## License
 Free software: GNU General Public License v3
