@@ -12,7 +12,7 @@ _The Thunderbird is a mythical creature that is said to be the dominating force 
 A Web Processing Service for Climate Explorer data preparation
 
 ## Pages
-[Installation](installation.md)
-[Configuration](configuration.md)
-[Developer Guide](dev_guide.md)
-[Bird Usage Examples](notebooks/wps_decompose_flow_vector_demo.ipynb)
+- [Installation](installation.md)
+- [Configuration](configuration.md)
+- [Developer Guide](dev_guide.md)
+- [Bird Usage Examples](notebooks/wps_decompose_flow_vector_demo.ipynb)
