@@ -1,5 +1,4 @@
 # Thunderbird
-![Anchore Container Scan](https://github.com/pacificclimate/thunderbird/workflows/Anchore%20Container%20Scan/badge.svg)
 ![Python CI](https://github.com/pacificclimate/thunderbird/workflows/Python%20CI/badge.svg)
 ![Docker Publishing](https://github.com/pacificclimate/thunderbird/workflows/Docker%20Publishing/badge.svg)
 
