@@ -1,10 +1,8 @@
 import pytest
 
-
 from .testdata import TESTDATA, process_err_test
 from wps_tools.testing import run_wps_process, local_path, url_path
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
-
 
 import owslib.wps
 import pkg_resources
@@ -65,10 +63,7 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
 )
 def test_source_check(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
-    print(params)
-    assert 1 == 2
-    with pytest.raises(Exception):
-        run_wps_process(DecomposeFlowVectors(), params)
+    process_err_test(DecomposeFlowVectors, params)
 
 
 @pytest.mark.parametrize(

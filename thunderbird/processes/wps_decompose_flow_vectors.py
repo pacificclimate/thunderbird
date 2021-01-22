@@ -108,9 +108,11 @@ class DecomposeFlowVectors(Process):
         try:
             source_check(source)
         except AttributeError as e:
-            ProcessError("netcdf file does not have latitude and longitude dimensions")
+            raise ProcessError(
+                "netcdf file does not have latitude and longitude dimensions"
+            )
         except ValueError as e:
-            ProcessError("netcdf file does not have a valid flow variable")
+            raise ProcessError("netcdf file does not have a valid flow variable")
 
         try:
             variable_check(source, variable)
