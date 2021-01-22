@@ -1,5 +1,4 @@
 # Configuration
-
 - [Command-line options](#command-line-options)
 - [Use a custom configuration file](#use-a-custom-configuration-file)
 

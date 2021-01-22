@@ -14,3 +14,4 @@ A Web Processing Service for Climate Explorer data preparation
 ## Pages
 [Installation](installation.md)
 [Configuration](configuration.md)
+[Developer Guide](dev_guide.md)

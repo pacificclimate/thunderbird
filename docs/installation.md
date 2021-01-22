@@ -1,5 +1,4 @@
 # Installation
-
 - [Install from Github](#install-from-github)
 - [Start `thunderbird` PyWPS service](#start-thunderbird-pywps-service)
 - [Run `thunderbird` as Docker container](#run-thunderbird-as-docker-container)
