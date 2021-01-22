@@ -17,8 +17,8 @@ Welcome to the official `thunderbird` documentation. Here you will find all you 
 ## Modules
 TODO: Generate docs from docstrings
 - Process Usage Examples:
-  - [Decompose Flow Vectors](formatted_demos/wps_decompose_flow_vectors_demo.md)
-  - [Generate Climos](formatted_demos/wps_generate_climos_demo.md)
-  - [Generate Precipitation as Snow](formatted_demos/wps_generate_prsn_demo.md)
-  - [Split Merged Climos](formatted_demos/wps_split_merged_climos_demo.md)
-  - [Update Metadata](formatted_demos/wps_update_metadata_demo.md)
+  - [Decompose Flow Vectors](formatted_demos/wps_decompose_flow_vectors_demo.html)
+  - [Generate Climos](formatted_demos/wps_generate_climos_demo.html)
+  - [Generate Precipitation as Snow](formatted_demos/wps_generate_prsn_demo.html)
+  - [Split Merged Climos](formatted_demos/wps_split_merged_climos_demo.html)
+  - [Update Metadata](formatted_demos/wps_update_metadata_demo.html)
