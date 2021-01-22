@@ -8,7 +8,7 @@
 
 ![Chat](https://badges.gitter.im/bird-house/birdhouse.svg)
 
-___Thundebird___
+___Thunderbird___
 
 _The Thunderbird is a mythical creature that is said to be the dominating force of all natural activity. Located in the Pacific North Western Mountains, the Thunderbird creates booms of thunder by flapping his wings and shoots bolts of lightning from his eyes, when hunters got too close to his home._
 
