@@ -1,6 +1,6 @@
 include Makefile
 include *.txt
-include *.rst
+include *.md
 recursive-include thunderbird *
 global-exclude __pycache__
 global-exclude *.py[co]
