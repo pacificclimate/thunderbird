@@ -5,7 +5,11 @@
 - [Bump a new version](#bump-a-new-version)
 
 ## Building the docs
-TODO: fill out this section with new docs strategy
+Most of the documentation is static and does not need to be "built". That being said the jupyter notebooks that serve as demos need to be built whenever they are changed. This can be done with the `Makefile`.
+
+```
+$ make docs
+```
 
 ## Running tests
 Run tests using [`pytest`](https://docs.pytest.org/en/latest/).
