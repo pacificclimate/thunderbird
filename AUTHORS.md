@@ -7,4 +7,4 @@
 * Sangwon Lim (sangwonl@uvic.ca)
 * Long Vu
 * Eric Yvorchuk (eyvorchuk@uvic.ca)
-* Cairo Sanders (csanders@uvic.ca)
+* Cairo Sanders (cairosanders@uvic.ca)
