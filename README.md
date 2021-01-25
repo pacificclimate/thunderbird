@@ -1,6 +1,6 @@
 # Thunderbird
-![Python CI](https://github.com/pacificclimate/thunderbird/workflows/Python%20CI/badge.svg)
 ![Docker Publishing](https://github.com/pacificclimate/thunderbird/workflows/Docker%20Publishing/badge.svg)
+![Python CI](https://github.com/pacificclimate/thunderbird/workflows/Python%20CI/badge.svg)
 
 ___Thunderbird___
 
