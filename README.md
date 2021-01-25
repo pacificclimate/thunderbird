@@ -14,7 +14,7 @@ Learn more about `thunderbird` from its official [documentation](https://pacific
 Submit bug reports, questions and feature requests with [Github issues](https://github.com/pacificclimate/thunderbird/issues).
 
 ## Contributing
-You can find information about contributing in our [Developer Guide]().
+You can find information about contributing in our [Developer Guide](https://pacificclimate.github.io/thunderbird/dev_guide.html).
 
 Please use [`bumpversion`](https://pypi.org/project/bumpversion/) to release a new version.
 
