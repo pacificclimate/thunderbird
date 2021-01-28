@@ -35,8 +35,8 @@ help:
 	@echo "  test              to run tests (but skip long running tests)."
 	@echo "  test-all          to run all tests (including long running tests)."
 	@echo "  lint              to run code style checks with flake8."
-	@echo "\nSphinx targets:"
-	@echo "  docs              to generate HTML documentation with Sphinx."
+	@echo "\nDocumenation:"
+	@echo "  docs              to generate HTML documentation with nbconvert."
 	@echo "\nDeployment targets:"
 	@echo "  dist              to build source and wheel package."
 
@@ -167,7 +167,7 @@ lint: venv
 	@echo "Running black code style checks ..."
 	@bash -c '${PYTHON} -m black . --check'
 
-## Sphinx targets
+## Documentation
 
 .PHONY: docs
 docs:
