@@ -170,7 +170,7 @@ lint: venv
 ## Documentation
 
 .PHONY: docs
-docs:
+docs: venv clean
 	@echo "Updating notebook docs"
 	@bash -c 'source $(VENV)/bin/activate && jupyter nbconvert --to html notebooks/* --output-dir docs/formatted_demos/'
 
