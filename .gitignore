@@ -64,12 +64,7 @@ bootstrap.py
 
 *.pid
 
-# sphinx
-#docs/Makefile
-docs/make.bat
-docs/doctrees/
-docs/html/
-docs/build/
+# docs
 docs/output-sanitize.cfg
 
 # External Sources

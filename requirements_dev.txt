@@ -3,10 +3,8 @@ flake8
 pytest-flake8
 ipython
 pytest-notebook
-nbsphinx
 nbval>=0.9.6
 nbconvert
-Sphinx==2.4.4
 bumpversion
 twine
 # Changing dependencies above this comment will create merge conflicts when updating the cookiecutter template with cruft. Add extra requirements below this line.
