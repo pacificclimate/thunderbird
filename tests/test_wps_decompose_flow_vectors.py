@@ -1,7 +1,7 @@
 import pytest
 
-from .utils import TESTDATA, process_err_test
-from wps_tools.testing import run_wps_process, local_path, url_path
+from .utils import TESTDATA
+from wps_tools.testing import run_wps_process, local_path, url_path, process_err_test
 from thunderbird.processes.wps_decompose_flow_vectors import DecomposeFlowVectors
 
 import owslib.wps
