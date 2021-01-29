@@ -7,4 +7,4 @@ psutil==5.7.0
 pywps==4.2.9
 xarray==0.15.1
 nchelpers==5.5.7
-wps-tools==1.0.3
+wps-tools==1.2.0
