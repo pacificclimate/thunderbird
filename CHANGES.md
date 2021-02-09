@@ -1,5 +1,11 @@
 # Changes
 
+## 1.2.0
+*2021-02-08*
+
+* Build Documentation
+* Add ProcessErrors
+
 ## 1.1.0
 *2020-12-17*
 
