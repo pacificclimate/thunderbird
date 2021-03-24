@@ -35,7 +35,7 @@ classifiers = [
 ]
 
 setup(
-    name="thunderbird",
+    name="thunderbird-daccs",
     version=about["__version__"],
     description="A Web Processing Service for Climate Explorer data preparation",
     long_description=README + "\n\n" + CHANGES,
