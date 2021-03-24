@@ -29,7 +29,7 @@ COPY . /opt/wps
 WORKDIR /opt/wps
 
 # Install WPS
-RUN pip install -e . && \
+RUN pip install . && \
     pip install gunicorn
 
 # Start WPS service on port 5000 on 0.0.0.0
