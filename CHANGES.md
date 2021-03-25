@@ -1,5 +1,10 @@
 # Changes
 
+## 1.2.1
+*2021-03-25*
+
+* Clean up notebook results collection
+
 ## 1.2.0
 *2021-02-08*
 

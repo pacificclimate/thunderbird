@@ -1,7 +1,7 @@
 # vim:set ft=dockerfile:
 FROM python:3.8-slim
 MAINTAINER https://github.com/pacificclimate/thunderbird
-LABEL Description="thunderbird WPS" Vendor="pcic" Version="0.6.0"
+LABEL Description="thunderbird WPS" Vendor="pcic" Version="1.2.1"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
@@ -11,8 +11,6 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cdo \
     git \
-    # R for Rpy2, wps-tools dependency
-    r-base \
     # HDF5 libraries for cdo
     libhdf5-serial-dev \
     netcdf-bin \
