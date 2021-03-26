@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     # Removing this package prevents a scan failure. It will be reintroduced
     # once 1.24.2 becomes available through the base image.
     # Issue link: https://github.com/advisories/GHSA-mh33-7rrq-662w
-    apt-get remove -y python3-urllib3
+    apt-get remove -y python3-urllib3 python3-pil python3-pandas
 
 COPY . /opt/wps
 
