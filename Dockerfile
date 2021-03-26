@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM python:3.8-slim
+FROM python:3.9-slim
 MAINTAINER https://github.com/pacificclimate/thunderbird
 LABEL Description="thunderbird WPS" Vendor="pcic" Version="1.2.1"
 
