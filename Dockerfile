@@ -1,7 +1,7 @@
 # vim:set ft=dockerfile:
 FROM python:3.9-slim
 MAINTAINER https://github.com/pacificclimate/thunderbird
-LABEL Description="thunderbird WPS" Vendor="pcic" Version="1.2.1"
+LABEL Description="thunderbird WPS" Vendor="pcic" Version="1.2.2"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
