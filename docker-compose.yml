@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.4'
 services:
   thunderbird-dev:
     image: pcic/thunderbird:latest
