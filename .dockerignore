@@ -1,1 +1,27 @@
+# Git
 .git
+.github
+.gitignore
+
+# Build
+.pytest_cache
+
+# Config and Docs 
+dev-component/
+docs/
+etc/
+pavics-compnent/
+.dockerignore
+LICENSE.txt
+Makefile
+Dockerfile
+AUTHORS.md
+
+# Tests
+tests/
+
+# Ignore files
+*.json
+*.yml
+*.in
+*.ini
