@@ -1,10 +1,10 @@
 name: Anchore Container Scan
-on:
-  push:
-    branches:
-      - master
-      - '*security*'
-      - '*vulnerability*'
+on: [push]
+  # push:
+  #   branches:
+  #     - master
+  #     - '*security*'
+  #     - '*vulnerability*'
 
 jobs:
   Anchore-Build-Scan:
