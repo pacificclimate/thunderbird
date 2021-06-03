@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-LABEL Maintainer=https://github.com/pacificclimate/thunderbird Description="thunderbird WPS" Vendor="pcic" Version="1.2.1"
+LABEL Maintainer=https://github.com/pacificclimate/thunderbird Description="thunderbird WPS" Vendor="pcic" Version="1.2.3"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
@@ -17,6 +17,7 @@ RUN apt-get update && \
     # once 1.24.2 becomes available through the base image.
     # Issue link: https://github.com/advisories/GHSA-mh33-7rrq-662w
     apt-get remove -y python3-urllib3 && \
+    pip install -U pip && \
     pip install . && \
     pip install gunicorn
 
