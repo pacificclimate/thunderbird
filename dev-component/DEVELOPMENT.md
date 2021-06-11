@@ -9,3 +9,4 @@ export EXTRA_CONF_DIRS="/storage/data/projects/comp_support/daccs/birdhouse-conf
 
 ...
 export THUNDERBIRD_DEV_IMAGE="pcic/thunderbird:[your-tag]"
+```
