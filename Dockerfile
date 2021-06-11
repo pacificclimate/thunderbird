@@ -21,5 +21,6 @@ RUN apt-get update && \
     pip install . && \
     pip install gunicorn
 
+USER 1000
 EXPOSE 5000
 CMD ["gunicorn", "--bind=0.0.0.0:5000", "thunderbird.wsgi:application"]
