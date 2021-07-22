@@ -31,7 +31,7 @@ def get_from_pipfile(section):
         if type(version) == dict:
             print(version.items())
             version = version["version"]
-        
+
         if version == "*":
             return package
         else:
@@ -41,6 +41,7 @@ def get_from_pipfile(section):
         format_package(package, version) if version != "*" else package
         for package, version in packages
     ]
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, "README.md")).read()
