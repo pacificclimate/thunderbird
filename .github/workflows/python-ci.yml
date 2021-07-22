@@ -35,12 +35,12 @@ jobs:
     - name: Test with pytest (full)
       if: github.ref == 'refs/heads/master'
       run: |
-        py.test -m "not online" -v
+        pipenv run py.test -m "not online" -v
       
     - name: Test with pytest (fast)
       if: github.ref != 'refs/heads/master'
       run: |
-        py.test -m "not online and not slow" -v
+        pipenv run py.test -m "not online and not slow" -v
 
     - name: Linting
-      run: black . --check
+      run: pipenv run black . --check
