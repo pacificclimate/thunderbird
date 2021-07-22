@@ -1,0 +1,58 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://pypi.pacificclimate.org/simple"
+verify_ssl = false
+name = "pcic"
+
+[packages]
+cftime = "*"
+click = "*"
+Jinja2 = "*"
+netCDF4 = "*"
+psutil = "*"
+pywps = "*"
+xarray = "*"
+Werkzeug = "*"
+cdo = "*"
+
+[dev-packages]
+pytest = ">=6.0"
+flake8 = "*"
+pytest-flake8 = "*"
+ipython = "*"
+pytest-notebook = "*"
+nbsphinx = "*"
+nbval = ">=0.9.6"
+nbconvert = "*"
+Sphinx = "==2.4.4"
+bumpversion = "*"
+twine = "*"
+cruft = "*"
+black = "==19.10b0"
+jupyterlab = "==2.1.5"
+ipywidgets = "==7.5.1"
+nodejs = "==0.1.1"
+birdhouse-birdy = "==0.6.9"
+beautifulsoup4 = "==4.9.3"
+notebook = ">=6.1.5"
+Pygments = ">=2.7.4"
+toml = "*"
+
+[requires]
+python_version = "3.8"
+
+[packages.ce-dataprep]
+version = "*"
+index = "pcic"
+
+[packages.nchelpers]
+version = "*"
+index = "pcic"
+
+[packages.wps-tools]
+version = "*"
+index = "pcic"
