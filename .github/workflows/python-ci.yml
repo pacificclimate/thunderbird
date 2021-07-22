@@ -20,6 +20,7 @@ jobs:
     - name: Install pipenv & cdo
       run: |
         pip install -U pipenv
+        sudo apt-get update
         sudo apt-get install cdo
 
     - id: cache-pipenv
