@@ -78,7 +78,6 @@ src/
 
 # tests
 *.log
-*.lock
 testdata.json
 
 # IPython
