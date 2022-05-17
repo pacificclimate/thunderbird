@@ -13,7 +13,7 @@ twine
 cruft
 nbclient~=0.5.10
 black==19.10b0
-jupyterlab==2.1.5
+jupyterlab==2.2.10
 ipywidgets==7.5.1
 nodejs==0.1.1
 birdhouse-birdy==0.6.9
