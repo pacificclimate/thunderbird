@@ -11,6 +11,7 @@ bumpversion
 twine
 # Changing dependencies above this comment will create merge conflicts when updating the cookiecutter template with cruft. Add extra requirements below this line.
 cruft
+nbclient~=0.5.10
 black==19.10b0
 jupyterlab==2.1.5
 ipywidgets==7.5.1
