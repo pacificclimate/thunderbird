@@ -138,7 +138,10 @@ def stop():
     help="hostname in PyWPS configuration.",
 )
 @click.option(
-    "--port", metavar="PORT", default="5000", help="port in PyWPS configuration.",
+    "--port",
+    metavar="PORT",
+    default="5000",
+    help="port in PyWPS configuration.",
 )
 @click.option(
     "--maxsingleinputsize",

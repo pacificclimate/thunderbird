@@ -39,10 +39,12 @@ def build_params(netcdf, updates):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), opendap_data,
+    ("netcdf"),
+    opendap_data,
 )
 @pytest.mark.parametrize(
-    ("updates"), updates_yaml,
+    ("updates"),
+    updates_yaml,
 )
 def test_wps_update_metadata_opendap_yaml(netcdf, updates):
     run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
@@ -50,30 +52,36 @@ def test_wps_update_metadata_opendap_yaml(netcdf, updates):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), opendap_data,
+    ("netcdf"),
+    opendap_data,
 )
 @pytest.mark.parametrize(
-    ("updates"), updates_str,
+    ("updates"),
+    updates_str,
 )
 def test_wps_update_metadata_opendap_str(netcdf, updates):
     run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), local_data,
+    ("netcdf"),
+    local_data,
 )
 @pytest.mark.parametrize(
-    ("updates"), updates_yaml,
+    ("updates"),
+    updates_yaml,
 )
 def test_wps_update_metadata_netcdf_yaml(netcdf, updates):
     run_wps_process(UpdateMetadata(), build_params(netcdf, updates))
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), local_data,
+    ("netcdf"),
+    local_data,
 )
 @pytest.mark.parametrize(
-    ("updates"), updates_str,
+    ("updates"),
+    updates_str,
 )
 def test_wps_update_metadata_netcdf_str(netcdf, updates):
     run_wps_process(UpdateMetadata(), build_params(netcdf, updates))

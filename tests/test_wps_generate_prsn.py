@@ -42,10 +42,15 @@ def build_params(netcdfs, dry_run, chunk_size=None, output_file=None):
 
 
 @pytest.mark.parametrize(
-    ("netcdfs"), [local_nc_inputs, local_tiny_nc_inputs,],
+    ("netcdfs"),
+    [
+        local_nc_inputs,
+        local_tiny_nc_inputs,
+    ],
 )
 @pytest.mark.parametrize(
-    ("dry_run"), [("False")],
+    ("dry_run"),
+    [("False")],
 )
 def test_default_local(netcdfs, dry_run):
     params = build_params(netcdfs, dry_run)
@@ -53,10 +58,17 @@ def test_default_local(netcdfs, dry_run):
 
 
 @pytest.mark.parametrize(
-    ("netcdfs"), [local_nc_inputs, local_tiny_nc_inputs,],
+    ("netcdfs"),
+    [
+        local_nc_inputs,
+        local_tiny_nc_inputs,
+    ],
 )
 @pytest.mark.parametrize(
-    ("chunk_size", "dry_run", "output_file"), [("50", "True", "prsn_test_local.nc"),],
+    ("chunk_size", "dry_run", "output_file"),
+    [
+        ("50", "True", "prsn_test_local.nc"),
+    ],
 )
 def test_run_local(netcdfs, chunk_size, dry_run, output_file):
     params = build_params(netcdfs, dry_run, chunk_size, output_file)
@@ -66,10 +78,12 @@ def test_run_local(netcdfs, chunk_size, dry_run, output_file):
 @pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendaps"), [opendap_inputs],
+    ("opendaps"),
+    [opendap_inputs],
 )
 @pytest.mark.parametrize(
-    ("dry_run"), [("False")],
+    ("dry_run"),
+    [("False")],
 )
 def test_default_opendap(opendaps, dry_run):
     params = build_params(opendaps, dry_run)
@@ -79,11 +93,14 @@ def test_default_opendap(opendaps, dry_run):
 @pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendaps"), [opendap_inputs],
+    ("opendaps"),
+    [opendap_inputs],
 )
 @pytest.mark.parametrize(
     ("chunk_size", "dry_run", "output_file"),
-    [("50", "False", "prsn_test_opendap.nc"),],
+    [
+        ("50", "False", "prsn_test_opendap.nc"),
+    ],
 )
 def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
     params = build_params(opendaps, dry_run, chunk_size, output_file)
@@ -115,8 +132,16 @@ def test_run_opendap(opendaps, chunk_size, dry_run, output_file):
 @pytest.mark.parametrize(
     ("chunk_size", "dry_run", "output_file"),
     [
-        ("100", "True", "prsn_test_mixed1.nc",),
-        ("100", "False", "prsn_test_mixed2.nc",),
+        (
+            "100",
+            "True",
+            "prsn_test_mixed1.nc",
+        ),
+        (
+            "100",
+            "False",
+            "prsn_test_mixed2.nc",
+        ),
     ],
 )
 def test_run_mixed(netcdfs, chunk_size, dry_run, output_file):

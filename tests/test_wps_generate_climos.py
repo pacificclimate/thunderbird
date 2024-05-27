@@ -64,7 +64,8 @@ def build_params(netcdf, kwargs):
 @pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), opendap_data,
+    ("netcdf"),
+    opendap_data,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -101,7 +102,8 @@ def test_wps_gen_climos_opendap_single(netcdf, kwargs):
 @pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("netcdf"), [opendap_data],
+    ("netcdf"),
+    [opendap_data],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -126,7 +128,10 @@ def test_wps_gen_climos_opendap_multiple(netcdf, kwargs):
 
 @pytest.mark.parametrize(
     ("netcdf"),
-    [(local_path("tiny_gcm_360_day_cal.nc")), (local_path("tiny_hydromodel_gcm.nc")),],
+    [
+        (local_path("tiny_gcm_360_day_cal.nc")),
+        (local_path("tiny_hydromodel_gcm.nc")),
+    ],
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -151,7 +156,8 @@ def test_wps_gen_climos_input_check(netcdf, kwargs):
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    ("netcdf"), local_test_data,
+    ("netcdf"),
+    local_test_data,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
@@ -187,10 +193,19 @@ def test_wps_gen_climos_local_nc(netcdf, kwargs):
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    ("netcdf"), local_test_data,
+    ("netcdf"),
+    local_test_data,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"operation": "mean", "dry_run": "False",}),],
+    ("kwargs"),
+    [
+        (
+            {
+                "operation": "mean",
+                "dry_run": "False",
+            }
+        ),
+    ],
 )
 def test_missing_arguments(netcdf, kwargs):
     params = (

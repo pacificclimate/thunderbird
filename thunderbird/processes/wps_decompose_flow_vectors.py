@@ -47,7 +47,11 @@ class DecomposeFlowVectors(Process):
                 "netCDF variable describing flow direction",
                 data_type="string",
             ),
-            LiteralInput("dest_file", "destination netCDF file", data_type="string",),
+            LiteralInput(
+                "dest_file",
+                "destination netCDF file",
+                data_type="string",
+            ),
             log_level,
         ]
         outputs = [
