@@ -14,6 +14,7 @@ license = "GPL3"
 readme = "README.md"
 homepage = "http://www.pacificclimate.org/"
 repository = "https://github.com/pacificclimate/thunderbird"
+keywords = ["wps", "pywps", "birdhouse", "thunderbird"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -52,10 +53,10 @@ jinja2 = ">=2.11.3,<3.1.0"
 netcdf4 = "1.6.2"
 numpy = "^1.20.0"
 psutil = "5.9.8"
-pywps = "4.2.9"
+pywps = "4.5.0"
 xarray = "^2024.2.0"
 nchelpers = { version = "^5.5.11", source = "pcic" }
-werkzeug = "1.0.1"
+werkzeug = "2.2.3"
 wps-tools = { version = "^2.1.1", source = "pcic" }
 cdo = "1.6.0"
 poetry-dotenv-plugin = "^0.2.0"
@@ -75,7 +76,7 @@ twine = "^5.1.0"
 cruft = "^2.15.0"
 nbclient = ">=0.5.10,<0.6.0"
 black = "22.3.0"
-jupyterlab = "2.1.5"
+jupyterlab = "2.2.10"
 ipywidgets = "7.5.1"
 nodejs = "0.1.1"
 birdhouse-birdy = "0.8.4"
