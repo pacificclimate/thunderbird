@@ -3,7 +3,7 @@ APP_ROOT := $(abspath $(lastword $(MAKEFILE_LIST))/..)
 APP_NAME := thunderbird
 
 # Notebook targets
-LOCAL_URL = http://localhost:5000
+LOCAL_URL = http://localhost:5000/wps
 DEV_PORT ?= $(shell bash -c 'read -ep "Target port: " port; echo $$port')
 
 # Used in target refresh-notebooks to make it looks like the notebooks have
