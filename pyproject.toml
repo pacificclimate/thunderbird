@@ -58,6 +58,7 @@ nchelpers = { version = "^5.5.11", source = "pcic" }
 werkzeug = "1.0.1"
 wps-tools = { version = "^2.1.1", source = "pcic" }
 cdo = "1.6.0"
+poetry-dotenv-plugin = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=6.0"
