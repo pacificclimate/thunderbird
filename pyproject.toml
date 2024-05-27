@@ -93,6 +93,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
+addopts = "--strict --tb=native"
+python_files = ["test_*.py"]
 markers = [
     "online: marks tests that use online resources (deselect with '-m \"not online\"')",
     "slow: marks tests that are slow (deselect with '-m \"not slow\"')",
