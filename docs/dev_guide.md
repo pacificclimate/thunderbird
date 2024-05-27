@@ -55,9 +55,9 @@ Make a new version of `thunderbird` in the following steps:
 
 * Make sure everything is committed to GitHub.
 * Update `CHANGES.md` with the next version.
-* Dry Run: `bumpversion --dry-run --verbose --new-version 0.8.1 patch`
-* Do it: `bumpversion --new-version 0.8.1 patch`
-* ... or: `bumpversion --new-version 0.9.0 minor`
+* Dry Run: `bumpversion --dry-run --verbose patch`
+* Do it: `bumpversion patch`
+* ... or: `bumpversion minor`
 * Push it: `git push`
 * Push tag: `git push --tags`
 
