@@ -14,22 +14,22 @@ $ make docs
 ## Running tests
 Run tests using [`pytest`](https://docs.pytest.org/en/latest/).
 
-First activate the `thunderbird` Python environment and install `pytest`.
+First install the `thunderbird` Python environment.
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv)$ pip install -r requirements_dev.txt  # if not already installed
+$ poetry install --with=dev
+$ poetry shell
 # OR
-(venv)$ make install
+$ make install
+$ poetry shell
 ```
 
 Run quick tests (skip slow and online):
 ```
-(venv)$ pytest -m 'not slow and not online'"
+(thunderbird-py<python_version>)$ pytest -m 'not slow and not online'"
 ```
 Run all tests:
 ```
-(venv)$ pytest
+(thunderbird-py<python_version>)$ pytest
 ```
 
 You can also run tests on the notebooks using the `Makefile`.
@@ -39,7 +39,7 @@ $ make test-notebooks
 
 Check `black` formatting:
 ```
-(venv)$ black .
+(thunderbird-py<python_version>)$ black .
 ```
 
 ## Run tests the lazy way
