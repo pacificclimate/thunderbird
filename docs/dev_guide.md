@@ -19,7 +19,7 @@ First install the `thunderbird` Python environment.
 $ poetry install --with=dev
 $ poetry shell
 # OR
-$ make install
+$ make develop
 $ poetry shell
 ```
 
@@ -34,7 +34,7 @@ Run all tests:
 
 You can also run tests on the notebooks using the `Makefile`.
 ```
-$ make test-notebooks
+$ make test-notebooks-prod
 ```
 
 Check `black` formatting:
