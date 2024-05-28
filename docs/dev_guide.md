@@ -54,11 +54,10 @@ $ make lint
 Make a new version of `thunderbird` in the following steps:
 
 * Make sure everything is committed to GitHub.
-* Update `CHANGES.md` with the next version.
+* Update `CHANGES.md` with the next version and commit.
 * Dry Run: `bumpversion --dry-run --verbose patch`
 * Do it: `bumpversion patch`
 * ... or: `bumpversion minor`
-* Push it: `git push`
-* Push tag: `git push --tags`
+* Push it: `git push --tags`
 
 See the [bumpversion](https://pypi.org/project/bumpversion/) documentation for details.
