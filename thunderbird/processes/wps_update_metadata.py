@@ -114,7 +114,7 @@ class UpdateMetadata(Process):
         holds the path to the origial file path.
         """
         if "updates_file" in request.inputs.keys():
-            if request.inputs["updates_file"][0].data != None:
+            if not os.path.exists("/.dockerenv"):
                 updates = request.inputs["updates_file"][
                     0
                 ].data  # For running in localhost
