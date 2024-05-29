@@ -7677,8 +7677,8 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <span class="s1">    - Institution: &lt;- institution</span>
 <span class="s1">'''</span>
 
-<span class="n">thredds_host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"THREDDS_HOST"</span><span class="p">,</span> <span class="s2">"marble-dev01.pcic.uvic.ca"</span><span class="p">)</span>
-<span class="n">opendap_netcdf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">thredds_host</span><span class="si">}</span><span class="s2">/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/tiny_hydromodel_gcm_climos.nc"</span>
+<span class="n">daccs_host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DACCS_HOST"</span><span class="p">,</span> <span class="s2">"marble-dev01.pcic.uvic.ca"</span><span class="p">)</span>
+<span class="n">opendap_netcdf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">daccs_host</span><span class="si">}</span><span class="s2">/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/tiny_hydromodel_gcm_climos.nc"</span>
 <span class="n">opendap_output</span> <span class="o">=</span> <span class="n">thunderbird</span><span class="o">.</span><span class="n">update_metadata</span><span class="p">(</span><span class="n">updates_string</span> <span class="o">=</span> <span class="n">updates_string</span><span class="p">,</span> <span class="n">netcdf</span> <span class="o">=</span> <span class="n">opendap_netcdf</span><span class="p">)</span>
 <span class="n">opendap_output_data</span> <span class="o">=</span> <span class="n">opendap_output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
@@ -7738,7 +7738,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">input_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">thredds_host</span><span class="si">}</span><span class="s2">/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc"</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">input_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">daccs_host</span><span class="si">}</span><span class="s2">/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/daccs/test-data/gdd_annual_CanESM2_rcp85_r1i1p1_1951-2100.nc"</span><span class="p">)</span>
 
 <span class="c1"># Expected output metadata determined from the input yaml file</span>
 <span class="c1"># global:</span>

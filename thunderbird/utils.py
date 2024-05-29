@@ -53,4 +53,4 @@ def get_url():
         if url:
             return url
 
-    return "https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thunderbird/wps"
+    return f"https://os.getenv('DACCS_HOST')/twitcher/ows/proxy/thunderbird/wps"
