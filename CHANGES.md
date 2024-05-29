@@ -1,5 +1,10 @@
 # Changes
 
+## 1.3.0
+*2024-05-29*
+
+* Upgrade supported Python versions, and use `poetry` for installation
+
 ## 1.2.3
 *2021-06-03*
 
