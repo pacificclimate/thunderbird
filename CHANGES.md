@@ -1,5 +1,10 @@
 # Changes
 
+## 1.3.1
+*2024-05-29*
+
+* Fix `.bumpversion.cfg` and push instruction in dev doc
+
 ## 1.3.0
 *2024-05-29*
 
