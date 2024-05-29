@@ -58,6 +58,6 @@ Make a new version of `thunderbird` in the following steps:
 * Dry Run: `bumpversion --dry-run --verbose patch`
 * Do it: `bumpversion patch`
 * ... or: `bumpversion minor`
-* Push it: `git push --tags`
+* Push it: `git push --follow-tags`
 
 See the [bumpversion](https://pypi.org/project/bumpversion/) documentation for details.
