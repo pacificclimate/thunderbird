@@ -25,7 +25,7 @@ jobs:
         poetry env use python${{ matrix.python-version }}
         make install-ci
     - name: Test with pytest (full)
-      if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
       run: |
         make test-all
     - name: Test with pytest (fast)
