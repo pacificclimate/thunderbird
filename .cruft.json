@@ -11,7 +11,7 @@
             "project_repo_name": "thunderbird",
             "project_readthedocs_name": "thunderbird",
             "project_short_description": "A Web Processing Service for Climate Explorer data preparation",
-            "version": "1.2.3",
+            "version": "1.3.0",
             "open_source_license": "GNU General Public License v3",
             "http_port": "5000",
             "_copy_without_render": [
