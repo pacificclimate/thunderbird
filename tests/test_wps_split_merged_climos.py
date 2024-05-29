@@ -29,7 +29,8 @@ def run_multiple_files(netcdfs):
 
 
 @pytest.mark.parametrize(
-    "netcdf", climo_local_files,
+    "netcdf",
+    climo_local_files,
 )
 def test_single_file_local(netcdf):
     run_single_file(netcdf)
@@ -48,7 +49,8 @@ def test_multiple_files_local(netcdfs):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    "netcdf", climo_opendaps,
+    "netcdf",
+    climo_opendaps,
 )
 def test_single_file_opendap(netcdf):
     run_single_file(netcdf)

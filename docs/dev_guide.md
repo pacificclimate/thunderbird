@@ -14,32 +14,32 @@ $ make docs
 ## Running tests
 Run tests using [`pytest`](https://docs.pytest.org/en/latest/).
 
-First activate the `thunderbird` Python environment and install `pytest`.
+First install the `thunderbird` Python environment.
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv)$ pip install -r requirements_dev.txt  # if not already installed
+$ poetry install --with=dev
+$ poetry shell
 # OR
-(venv)$ make install
+$ make develop
+$ poetry shell
 ```
 
 Run quick tests (skip slow and online):
 ```
-(venv)$ pytest -m 'not slow and not online'"
+(thunderbird-py<python_version>)$ pytest -m 'not slow and not online'"
 ```
 Run all tests:
 ```
-(venv)$ pytest
+(thunderbird-py<python_version>)$ pytest
 ```
 
 You can also run tests on the notebooks using the `Makefile`.
 ```
-$ make test-notebooks
+$ make test-notebooks-prod
 ```
 
 Check `black` formatting:
 ```
-(venv)$ black .
+(thunderbird-py<python_version>)$ black .
 ```
 
 ## Run tests the lazy way
@@ -54,11 +54,10 @@ $ make lint
 Make a new version of `thunderbird` in the following steps:
 
 * Make sure everything is committed to GitHub.
-* Update `CHANGES.md` with the next version.
-* Dry Run: `bumpversion --dry-run --verbose --new-version 0.8.1 patch`
-* Do it: `bumpversion --new-version 0.8.1 patch`
-* ... or: `bumpversion --new-version 0.9.0 minor`
-* Push it: `git push`
-* Push tag: `git push --tags`
+* Update `CHANGES.md` with the next version and commit.
+* Dry Run: `bumpversion --dry-run --verbose patch`
+* Do it: `bumpversion patch`
+* ... or: `bumpversion minor`
+* Push it: `git push --tags`
 
 See the [bumpversion](https://pypi.org/project/bumpversion/) documentation for details.

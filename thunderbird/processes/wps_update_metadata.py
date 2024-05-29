@@ -40,7 +40,12 @@ class UpdateMetadata(Process):
                 abstract="The filepath of an updates file that specifies what to do to the metadata it finds in the NetCDF file",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[Format(mime_type="text/x-yaml", extension=".yaml",)],
+                supported_formats=[
+                    Format(
+                        mime_type="text/x-yaml",
+                        extension=".yaml",
+                    )
+                ],
             ),
             LiteralInput(
                 "updates_string",
@@ -109,11 +114,7 @@ class UpdateMetadata(Process):
         holds the path to the origial file path.
         """
         if "updates_file" in request.inputs.keys():
-            if vars(request.inputs["updates_file"][0])["_file"] != None:
-                updates = request.inputs["updates_file"][
-                    0
-                ].file  # For running in localhost
-            elif vars(request.inputs["updates_file"][0])["_data"] != None:
+            if not os.path.exists("/.dockerenv"):
                 updates = request.inputs["updates_file"][
                     0
                 ].data  # For running in localhost

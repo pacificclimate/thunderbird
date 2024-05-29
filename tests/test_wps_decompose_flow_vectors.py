@@ -34,10 +34,19 @@ def build_params(netcdf, kwargs):
 @pytest.mark.slow
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("opendap"), flow_vectors_opendap,
+    ("opendap"),
+    flow_vectors_opendap,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
+    ("kwargs"),
+    [
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "Flow_Direction",
+            }
+        ),
+    ],
 )
 def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
     params = build_params(opendap, kwargs)
@@ -45,10 +54,19 @@ def test_wps_decompose_flow_vectors_opendap(opendap, kwargs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), flow_vectors_nc,
+    ("netcdf"),
+    flow_vectors_nc,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
+    ("kwargs"),
+    [
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "Flow_Direction",
+            }
+        ),
+    ],
 )
 def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
@@ -56,10 +74,19 @@ def test_wps_decompose_flow_vectors_netcdf(netcdf, kwargs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), non_flow_vectors_nc,
+    ("netcdf"),
+    non_flow_vectors_nc,
 )
 @pytest.mark.parametrize(
-    ("kwargs"), [({"dest_file": "output.nc", "variable": "Flow_Direction",}),],
+    ("kwargs"),
+    [
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "Flow_Direction",
+            }
+        ),
+    ],
 )
 def test_source_check(netcdf, kwargs):
     params = build_params(netcdf, kwargs)
@@ -67,20 +94,66 @@ def test_source_check(netcdf, kwargs):
 
 
 @pytest.mark.parametrize(
-    ("netcdf"), flow_vectors_nc,
+    ("netcdf"),
+    flow_vectors_nc,
 )
 @pytest.mark.parametrize(
     ("kwargs"),
     [
-        ({"dest_file": "output.nc", "variable": "not a variable",}),
-        ({"dest_file": "output.nc", "variable": "crs",}),
-        ({"dest_file": "output.nc", "variable": "lat",}),
-        ({"dest_file": "output.nc", "variable": "lon",}),
-        ({"dest_file": "output.nc", "variable": "diffusion",}),
-        ({"dest_file": "output.nc", "variable": "Flow_Distance",}),
-        ({"dest_file": "output.nc", "variable": "Basin_ID",}),
-        ({"dest_file": "output.nc", "variable": "velocity",}),
-        ({"dest_file": "output.nc", "variable": "flow_direction",}),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "not a variable",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "crs",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "lat",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "lon",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "diffusion",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "Flow_Distance",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "Basin_ID",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "velocity",
+            }
+        ),
+        (
+            {
+                "dest_file": "output.nc",
+                "variable": "flow_direction",
+            }
+        ),
     ],
 )
 def test_variable_check(netcdf, kwargs):

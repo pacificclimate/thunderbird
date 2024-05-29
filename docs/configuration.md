@@ -6,13 +6,13 @@
 You can overwrite the default [PyWPS](http://pywps.org/) configuration by using command-line options.
 See the thunderbird help which options are available:
 ```
-(venv)$ thunderbird start --help
+(thunderbird-py<python_version>)$ thunderbird start --help
 --hostname HOSTNAME        hostname in PyWPS configuration.
 --port PORT                port in PyWPS configuration.
 ```
 Start service with different hostname and port:
 ```
-(venv)$ thunderbird start --hostname localhost --port 5000
+(thunderbird-py<python_version>)$ thunderbird start --hostname localhost --port 5000
 ```
 
 ## Use a custom configuration file
@@ -33,5 +33,5 @@ level = DEBUG
 Start the service with your custom configuration:
 ```
 # start the service with this configuration
-(venv)$ thunderbird start -c etc/custom.cfg
+(thunderbird-py<python_version>)$ thunderbird start -c etc/custom.cfg
 ```

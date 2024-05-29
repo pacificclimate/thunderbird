@@ -12,41 +12,41 @@ $ git clone https://github.com/pacificclimate/thunderbird.git
 $ cd thunderbird
 ```
 
-Create Python environment named `venv`:
+Install requirements and thunderbird app:
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-```
-
-Install requirements:
-```
-(venv)$ pip install -r requirements.txt
-```
-
-Install thunderbird app:
-```
-(venv)$ pip install -e .
+$ poetry install
 # OR
 $ make install
 ```
 
 For development you can use this command:
 ```
-$ pip install -e .[dev]
+$ poetry install --with=dev
 # OR
 $ make develop
+```
+
+After creating the environment, you can enter it with this command:
+```
+$ poetry shell
+```
+
+The environment name will be `thunderbird-py<python_version>`, and you can use an environment with a different
+Python version with the following command (provided said version is installed on your machine):
+```
+$ poetry env use <other_python_version>
 ```
 
 ## Start `thunderbird` PyWPS service
 After successful installation you can start the service using the `thunderbird` command-line.
 
 ```
-(venv)$ thunderbird --help # show help
-(venv)$ thunderbird start  # start service with default configuration
+(thunderbird-py<python_version>)$ thunderbird --help # show help
+(thunderbird-py<python_version>)$ thunderbird start  # start service with default configuration
 
 # OR
 
-(venv)$ thunderbird start --daemon # start service as daemon
+(thunderbird-py<python_version>)$ thunderbird start --daemon # start service as daemon
 loading configuration
 forked process id: 42
 ```

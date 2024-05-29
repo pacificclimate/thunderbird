@@ -36,7 +36,8 @@ def dry_run_info(filename, dry_run_method, **kwargs):
 def dry_output_filename(outdir, filename):
     if filename.endswith(".nc"):
         return os.path.join(
-            outdir, os.path.basename(filename).split(".")[0] + "_dry.txt",
+            outdir,
+            os.path.basename(filename).split(".")[0] + "_dry.txt",
         )
     else:
         return os.path.join(outdir, filename)
@@ -52,4 +53,4 @@ def get_url():
         if url:
             return url
 
-    return "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thunderbird/wps"
+    return f"https://os.getenv('DACCS_HOST')/twitcher/ows/proxy/thunderbird/wps"
