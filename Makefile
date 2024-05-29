@@ -129,9 +129,9 @@ test-all:
 	@bash -c 'poetry run pytest -v tests/'
 
 .PHONY: test-not-online
-test-all:
-    @echo "Running tests (including slow but excluding online tests) ..."
-    @bash -c 'poetry run pytest -v -m "not online" tests/'
+test-not-online:
+	@echo "Running tests (including slow but excluding online tests) ..."
+	@bash -c 'poetry run pytest -v -m "not online" tests/'
 
 .PHONY: notebook-sanitizer
 notebook-sanitizer:
