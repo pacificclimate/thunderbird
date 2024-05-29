@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-LABEL Maintainer=https://github.com/pacificclimate/thunderbird Description="thunderbird WPS" Vendor="pcic" Version="1.3.0"
+LABEL Maintainer=https://github.com/pacificclimate/thunderbird Description="thunderbird WPS" Vendor="pcic" Version="1.3.1"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
